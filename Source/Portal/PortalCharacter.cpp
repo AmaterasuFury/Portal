@@ -56,8 +56,9 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Crouch
-		//EnhancedInputComponent->BindAction
-
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &APortalCharacter::OnCrouch);
+		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &APortalCharacter::OnUnCrouch);
+		
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APortalCharacter::Move);
 
@@ -95,4 +96,14 @@ void APortalCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void APortalCharacter::OnCrouch()
+{
+	Crouch();
+}
+
+void APortalCharacter::OnUnCrouch()
+{
+	UnCrouch();
 }
