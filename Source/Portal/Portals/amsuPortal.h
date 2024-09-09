@@ -22,13 +22,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal1")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UStaticMeshComponent> MeshComponentPortal;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal1")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;
-
-private:
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
