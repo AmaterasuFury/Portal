@@ -22,6 +22,10 @@ AamsuStepOnButton::AamsuStepOnButton()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
+
+	// TODO
+	//BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AamsuStepOnButton::OnBeginOverlap);
+	//BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AamsuStepOnButton::OnEndOverlap);
 }
 
 void AamsuStepOnButton::BeginPlay()
@@ -33,8 +37,10 @@ void AamsuStepOnButton::BeginPlay()
 void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// TODO investigate tick
 	SetActorTickEnabled(true);
 
+	// TODO actor filtering
 	ButtonPressed.Execute();
 }
 

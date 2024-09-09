@@ -8,6 +8,7 @@
 
 class AamsuPortal;
 class APortalCharacter;
+class UInputAction;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTAL_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -35,9 +36,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* FireMappingContext;
 
-	/** Fire Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* FireAction;
+	TObjectPtr<UInputAction> FireLeftAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> FireRightAction;
 
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
@@ -46,15 +49,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	bool AttachWeapon(APortalCharacter* TargetCharacter);
 
-	/** Make the weapon Fire a Projectile */
-	UFUNCTION(BlueprintCallable, Category="Weapon")
-	void Fire();
+	void FireLeft();
+
+	void FireRight();
 
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> PortalOne;
 
 	UPROPERTY()
-	TObjectPtr<AamsuPortal> PortalTwo; 
+	TObjectPtr<AamsuPortal> PortalTwo;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AamsuPortal> PortalOneClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AamsuPortal> PortalTwoClass;
 	
 	/** Gets the HitResultOf the aim */
 	UFUNCTION()

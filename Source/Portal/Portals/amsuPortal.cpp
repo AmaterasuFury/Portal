@@ -19,6 +19,8 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
+
+	// TODO overlap with box
 }
 
 // Called when the game starts or when spawned

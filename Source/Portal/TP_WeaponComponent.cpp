@@ -14,6 +14,8 @@
 #include "Engine/World.h"
 #include "Portal/Portals/amsuPortal.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogPortalGun, Log, All);
+
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
@@ -21,68 +23,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
-
-void UTP_WeaponComponent::Fire()
-{
-	if (!IsValid(Character)  || !IsValid(Character->GetController()))
-	{
-		return;
-	}
-
-	// Try and fire a projectile
-//	if (ProjectileClass != nullptr)
-//	{
-//		UWorld* const World = GetWorld();
-//		if (World != nullptr)
-//		{
-//			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-//			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-//			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-//			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-//	
-//			//Set Spawn Collision Handling Override
-//			FActorSpawnParameters ActorSpawnParams;
-//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-//	
-//			// Spawn the projectile at the muzzle
-//			World->SpawnActor<APortalProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-//		}
-//	
-//	}
-
-	if (IsValid(PortalOne))
-	{
-		FHitResult AimedHit = GetAimedHitResult();
-
-		// Todo Upgrade the spawn location
-		const FVector SpawnLocation = AimedHit.ImpactPoint;
-
-		FTransform SpawnTransform(SpawnLocation);
-
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		//GetWorld()->SpawnActor<AamsuPortal>(PortalOne, SpawnTransform, SpawnParameters);
-	}
-	
-	
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-}
+// TODO spawn portals in the BeginPlay and hide them
 
 FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
@@ -139,11 +80,82 @@ bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(FireLeftAction, ETriggerEvent::Triggered, this, &ThisClass::FireLeft);
+			EnhancedInputComponent->BindAction(FireRightAction, ETriggerEvent::Triggered, this, &ThisClass::FireRight);
 		}
 	}
 
 	return true;
+}
+
+void UTP_WeaponComponent::FireLeft()
+{
+	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
+	
+	if (!IsValid(Character) || !IsValid(Character->GetController()))
+	{
+		return;
+	}
+
+	// Try and fire a projectile
+//	if (ProjectileClass != nullptr)
+//	{
+//		UWorld* const World = GetWorld();
+//		if (World != nullptr)
+//		{
+//			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
+//			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+//			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+//			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
+//	
+//			//Set Spawn Collision Handling Override
+//			FActorSpawnParameters ActorSpawnParams;
+//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+//	
+//			// Spawn the projectile at the muzzle
+//			World->SpawnActor<APortalProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+//		}
+//	
+//	}
+
+	if (IsValid(PortalOne))
+	{
+		FHitResult AimedHit = GetAimedHitResult();
+
+		// Todo Upgrade the spawn location
+		const FVector SpawnLocation = AimedHit.ImpactPoint;
+
+		FTransform SpawnTransform(SpawnLocation);
+
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// TODO
+		PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
+	}
+	
+	
+	// Try and play the sound if specified
+	if (FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+	}
+	
+	// Try and play a firing animation if specified
+	if (FireAnimation != nullptr)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+		if (AnimInstance != nullptr)
+		{
+			AnimInstance->Montage_Play(FireAnimation, 1.f);
+		}
+	}
+}
+
+void UTP_WeaponComponent::FireRight()
+{
+	UE_LOG(LogPortalGun, Log, TEXT("Fire Right"));
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

@@ -42,4 +42,8 @@ public:
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+	// TODO
+	//UPROPERTY(EditDefaultsOnly)
+	//TArray<TSubclassOf<AActor>> TriggerActorClasses;
 };
