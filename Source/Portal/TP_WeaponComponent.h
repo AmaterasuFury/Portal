@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "TP_WeaponComponent.generated.h"
 
+class AamsuPortal;
 class APortalCharacter;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -49,8 +50,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	UPROPERTY()
+	TObjectPtr<AamsuPortal> PortalOne;
+
+	UPROPERTY()
+	TObjectPtr<AamsuPortal> PortalTwo; 
+	
+	/** Gets the HitResultOf the aim */
+	UFUNCTION()
+	FHitResult GetAimedHitResult(float InCheckDistance = 20000.f,  ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+	
 protected:
-	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
