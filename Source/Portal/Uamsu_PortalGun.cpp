@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "TP_WeaponComponent.h"
+#include "Uamsu_PortalGun.h"
 #include "PortalCharacter.h"
 #include "PortalProjectile.h"
 #include "GameFramework/PlayerController.h"
@@ -15,14 +15,14 @@
 #include "Portal/Portals/amsuPortal.h"
 
 // Sets default values for this component's properties
-UTP_WeaponComponent::UTP_WeaponComponent()
+Uamsu_PortalGun::Uamsu_PortalGun()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
 
-void UTP_WeaponComponent::Fire()
+void Uamsu_PortalGun::Fire()
 {
 	if (!IsValid(Character)  || !IsValid(Character->GetController()))
 	{
@@ -84,7 +84,7 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
-FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
+FHitResult Uamsu_PortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
@@ -110,12 +110,12 @@ FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollis
 	return HitResult;
 }
 
-bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
+bool Uamsu_PortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
 
 	// Check that the character is valid, and has no weapon component yet
-	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UTP_WeaponComponent>())
+	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<Uamsu_PortalGun>())
 	{
 		return false;
 	}
@@ -139,14 +139,14 @@ bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
 		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 		{
 			// Fire
-			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &Uamsu_PortalGun::Fire);
 		}
 	}
 
 	return true;
 }
 
-void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void Uamsu_PortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "TP_WeaponComponent.generated.h"
+#include "Uamsu_PortalGun.generated.h"
 
 class AamsuPortal;
 class APortalCharacter;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PORTAL_API UTP_WeaponComponent : public USkeletalMeshComponent
+class PORTAL_API Uamsu_PortalGun : public USkeletalMeshComponent
 {
 	GENERATED_BODY()
 
@@ -40,7 +40,7 @@ public:
 	class UInputAction* FireAction;
 
 	/** Sets default values for this component's properties */
-	UTP_WeaponComponent();
+	Uamsu_PortalGun();
 
 	/** Attaches the actor to a FirstPersonCharacter */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
