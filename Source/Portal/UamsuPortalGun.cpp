@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "TP_WeaponComponent.h"
+#include "UamsuPortalGun.h"
 #include "PortalCharacter.h"
 #include "PortalProjectile.h"
 #include "GameFramework/PlayerController.h"
@@ -17,7 +17,7 @@
 DEFINE_LOG_CATEGORY_STATIC(LogPortalGun, Log, All);
 
 // Sets default values for this component's properties
-UTP_WeaponComponent::UTP_WeaponComponent()
+UamsuPortalGun::UamsuPortalGun()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -25,7 +25,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 // TODO spawn portals in the BeginPlay and hide them
 
-FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
+FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
@@ -51,12 +51,12 @@ FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollis
 	return HitResult;
 }
 
-bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
+bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
 
 	// Check that the character is valid, and has no weapon component yet
-	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UTP_WeaponComponent>())
+	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UamsuPortalGun>())
 	{
 		return false;
 	}
@@ -88,7 +88,7 @@ bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
 	return true;
 }
 
-void UTP_WeaponComponent::FireLeft()
+void UamsuPortalGun::FireLeft()
 {
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
 	
@@ -153,12 +153,12 @@ void UTP_WeaponComponent::FireLeft()
 	}
 }
 
-void UTP_WeaponComponent::FireRight()
+void UamsuPortalGun::FireRight()
 {
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Right"));
 }
 
-void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{
