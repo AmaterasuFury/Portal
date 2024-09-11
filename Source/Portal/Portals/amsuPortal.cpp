@@ -27,6 +27,9 @@ AamsuPortal::AamsuPortal()
 void AamsuPortal::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
+	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

@@ -5,6 +5,7 @@
 
 #include "Components/BoxComponent.h"
 
+DEFINE_LOG_CATEGORY_STATIC(StepOnButon, Log, All);
 
 // Sets default values
 AamsuStepOnButton::AamsuStepOnButton()
@@ -35,14 +36,36 @@ void AamsuStepOnButton::BeginPlay()
 void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// TODO actor filtering
-	ButtonPressed.Execute();
+	FilterOverlapped(OtherActor);
+	
+	//ButtonPressed.Execute();
 }
 
 void AamsuStepOnButton::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	ButtonReleased.Execute();
+	FilterOverlapped(OtherActor);
+	
+	//TODO -My- Check if the Begin/End Overlap works with the needed actors (worked with character)
+	//UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnEndOverlap Called"));
+	//ButtonReleased.Execute();
+}
+
+void AamsuStepOnButton::FilterOverlapped(AActor* InOtherActor)
+{
+	//UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnBeginOverlap Called BEFORE FILTER"));
+	if (!IsValid(InOtherActor))
+	{
+		return;
+	}
+	for (const TSubclassOf<AActor> Element : TriggerActorClasses)
+	{
+		if (InOtherActor->IsA(Element))
+		{
+			//ButtonPressed.Execute();
+			UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnBeginOverlap/OnEndOverlap Filtered and called"));
+		}
+	}
 }
 
 
