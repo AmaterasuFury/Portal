@@ -2,7 +2,7 @@
 
 
 #include "UamsuPortalGun.h"
-#include "PortalCharacter.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
 #include "PortalProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"

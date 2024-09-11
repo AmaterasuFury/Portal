@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
-#include "PortalCharacter.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
 #include "UamsuPickUpComponent.generated.h"
 
 // Declaration of the delegate that will be called when someone picks this up

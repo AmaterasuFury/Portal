@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "PortalGameMode.h"
-#include "PortalCharacter.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 APortalGameMode::APortalGameMode()

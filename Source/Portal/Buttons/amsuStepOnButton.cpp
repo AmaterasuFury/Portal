@@ -22,16 +22,14 @@ AamsuStepOnButton::AamsuStepOnButton()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
-
-	// TODO
-	//BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AamsuStepOnButton::OnBeginOverlap);
-	//BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AamsuStepOnButton::OnEndOverlap);
 }
 
 void AamsuStepOnButton::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &AamsuStepOnButton::OnBeginOverlap);
+	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &AamsuStepOnButton::OnEndOverlap);
 }
 
 void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
