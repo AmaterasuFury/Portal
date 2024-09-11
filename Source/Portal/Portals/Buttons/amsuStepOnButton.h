@@ -18,8 +18,7 @@ class PORTAL_API AamsuStepOnButton : public AActor
 
 public:
 	AamsuStepOnButton();
-	
-	virtual void Tick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
 

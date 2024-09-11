@@ -37,9 +37,6 @@ void AamsuStepOnButton::BeginPlay()
 void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// TODO investigate tick
-	SetActorTickEnabled(true);
-
 	// TODO actor filtering
 	ButtonPressed.Execute();
 }
@@ -47,13 +44,7 @@ void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 void AamsuStepOnButton::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	SetActorTickEnabled(false);
-
 	ButtonReleased.Execute();
 }
 
-void AamsuStepOnButton::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 
