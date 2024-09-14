@@ -11,7 +11,7 @@ DEFINE_LOG_CATEGORY_STATIC(StepOnButon, Log, All);
 AamsuStepOnButton::AamsuStepOnButton()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = false;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
@@ -23,6 +23,14 @@ AamsuStepOnButton::AamsuStepOnButton()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
+}
+
+void AamsuStepOnButton::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	ButtonPress(DeltaSeconds);
+	ButtonRelease(DeltaSeconds);
 }
 
 void AamsuStepOnButton::BeginPlay()
@@ -38,6 +46,9 @@ void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	FilterOverlapped(OtherActor);
 	
+	bButtonIsReleased = false;
+	bButtonIsPressed = true;
+	
 	//ButtonPressed.Execute();
 }
 
@@ -45,6 +56,9 @@ void AamsuStepOnButton::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, A
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	FilterOverlapped(OtherActor);
+
+	bButtonIsPressed = false;
+	bButtonIsReleased = true;
 	
 	//TODO -My- Check if the Begin/End Overlap works with the needed actors (worked with character)
 	//UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnEndOverlap Called"));
@@ -65,6 +79,50 @@ void AamsuStepOnButton::FilterOverlapped(AActor* InOtherActor)
 			//ButtonPressed.Execute();
 			UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnBeginOverlap/OnEndOverlap Filtered and called"));
 		}
+	}
+}
+
+void AamsuStepOnButton::ButtonPressRelease(float InDeltaTime, bool bPositivePress)
+{
+	float DeltaPress = InDeltaTime * PressSpeed;
+	const float OldButtonPressBuffer = ButtonPressBuffer;
+	float OldPlusDelta = 0.0f; 
+
+	float MaxValue = 0.0f;
+	float MinValue = 0.0f;
+	
+	if (bPositivePress)
+	{
+		OldPlusDelta = OldButtonPressBuffer - DeltaPress;
+		//MaxValue = ButtonPressRange;
+	}
+	if (!bPositivePress)
+	{
+		OldPlusDelta = OldButtonPressBuffer + DeltaPress;
+		//MinValue = -ButtonPressRange;
+	}
+
+	ButtonPressBuffer = FMath::Clamp<float>(OldPlusDelta, MinValue, MaxValue);
+
+	DeltaPress = ButtonPressBuffer - OldButtonPressBuffer;
+
+	const FVector DeltaVector(0.0f, 0.0f, DeltaPress);
+	MeshComponentButton->AddRelativeLocation(DeltaVector);
+}
+
+void AamsuStepOnButton::ButtonPress(float InDeltaTime)
+{
+	if (bButtonIsPressed)
+	{
+		ButtonPressRelease(InDeltaTime, false);
+	}
+}
+
+void AamsuStepOnButton::ButtonRelease(float InDeltaTime)
+{
+	if (bButtonIsReleased)
+	{
+		ButtonPressRelease(InDeltaTime, true);
 	}
 }
 
