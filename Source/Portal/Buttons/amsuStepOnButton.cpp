@@ -44,42 +44,56 @@ void AamsuStepOnButton::BeginPlay()
 void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	FilterOverlapped(OtherActor);
+	if (!CanBeTriggeredBy(OtherActor))
+	{
+		return;
+	}
 	
 	bButtonIsReleased = false;
 	bButtonIsPressed = true;
 	
 	//ButtonPressed.Execute();
+	ButtonPressed.Broadcast();
 }
 
 void AamsuStepOnButton::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	FilterOverlapped(OtherActor);
+	if (!CanBeTriggeredBy(OtherActor))
+	{
+		return;
+	}
 
 	bButtonIsPressed = false;
 	bButtonIsReleased = true;
 	
 	//TODO -My- Check if the Begin/End Overlap works with the needed actors (worked with character)
 	//UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnEndOverlap Called"));
-	//ButtonReleased.Execute();
+	ButtonReleased.Broadcast();
 }
 
-void AamsuStepOnButton::FilterOverlapped(AActor* InOtherActor)
+bool AamsuStepOnButton::CanBeTriggeredBy(AActor* InOtherActor) const
 {
 	//UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnBeginOverlap Called BEFORE FILTER"));
 	if (!IsValid(InOtherActor))
 	{
-		return;
+		return false;
 	}
-	for (const TSubclassOf<AActor> Element : TriggerActorClasses)
+
+	if (TriggerActorClasses.IsEmpty())
+	{
+		return true;
+	}
+	
+	for (const TSubclassOf<AActor>& Element : TriggerActorClasses)
 	{
 		if (InOtherActor->IsA(Element))
 		{
-			//ButtonPressed.Execute();
-			UE_LOG(StepOnButon, Log, TEXT("AamsuStepOnButton OnBeginOverlap/OnEndOverlap Filtered and called"));
+			return true;
 		}
 	}
+
+	return false;
 }
 
 void AamsuStepOnButton::ButtonPressRelease(float InDeltaTime, bool bPositivePress)

@@ -15,8 +15,11 @@ class PORTAL_API AamsuDoorBase : public AActor, public IamsuInteractable
 public:	
 	// Sets default values for this actor's properties
 	AamsuDoorBase();
-	
+
+	UFUNCTION(BlueprintCallable)
 	virtual void Close();
+
+	UFUNCTION(BlueprintCallable)
 	virtual void Open();
 	
 	void Lock();
