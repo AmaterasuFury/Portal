@@ -35,12 +35,22 @@ void AamsuPortal::BeginPlay()
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	if (IsValid(OtherActor))
+	{
+		Teleport(OtherActor);
+	}
 }
 
 void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void AamsuPortal::Teleport(AActor* InteractedActor)
+{
+	FVector OutTeleportDistance(0.f, 200.f, 0.f);
+	FVector TeleportLocation = AnotherPortal->GetActorLocation();
+	InteractedActor->SetActorLocation(OutTeleportDistance + TeleportLocation);
 }
 
 void AamsuPortal::Tick(float DeltaTime)

@@ -34,4 +34,10 @@ public:
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
+
+	TObjectPtr<AamsuPortal> AnotherPortal; 
+
+	bool bIsActive = false;
+
+	void Teleport(AActor* InteractedActor);
 };
