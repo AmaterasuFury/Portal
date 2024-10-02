@@ -97,29 +97,10 @@ void UamsuPortalGun::FireLeft()
 		return;
 	}
 
-	// Try and fire a projectile
-//	if (ProjectileClass != nullptr)
-//	{
-//		UWorld* const World = GetWorld();
-//		if (World != nullptr)
-//		{
-//			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-//			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-//			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-//			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-//	
-//			//Set Spawn Collision Handling Override
-//			FActorSpawnParameters ActorSpawnParams;
-//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-//	
-//			// Spawn the projectile at the muzzle
-//			World->SpawnActor<APortalProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-//		}
-//	
-//	}
 
-	if (IsValid(PortalOne))
-	{
+
+	// my Todo Add enabe/disable functions, so the portal would just hide somwhere when in is needed to imitate the destroy of it
+	
 		FHitResult AimedHit = GetAimedHitResult();
 
 		// Todo Upgrade the spawn location
@@ -132,7 +113,7 @@ void UamsuPortalGun::FireLeft()
 
 		// TODO
 		PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
-	}
+	
 	
 	
 	// Try and play the sound if specified

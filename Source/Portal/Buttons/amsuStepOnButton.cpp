@@ -52,7 +52,6 @@ void AamsuStepOnButton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	bButtonIsReleased = false;
 	bButtonIsPressed = true;
 	
-	//ButtonPressed.Execute();
 	ButtonPressed.Broadcast();
 }
 
