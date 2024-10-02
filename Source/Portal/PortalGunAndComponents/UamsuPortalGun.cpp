@@ -51,6 +51,21 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	return HitResult;
 }
 
+void UamsuPortalGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	/** Spawn the portals on the 0.0.0 positions on the beginning of the game */
+	const FVector SpawnLocation = FVector::ZeroVector;
+	FTransform SpawnTransform(SpawnLocation);
+	
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
+	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
+}
+
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
@@ -111,7 +126,7 @@ void UamsuPortalGun::FireLeft()
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		// TODO
+		// TODO just change the location of the portal that was created on th ebegin play 
 		PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
 	
 	

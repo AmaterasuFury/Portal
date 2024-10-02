@@ -68,6 +68,8 @@ public:
 	/** Gets the HitResultOf the aim */
 	UFUNCTION()
 	FHitResult GetAimedHitResult(float InCheckDistance = 20000.f,  ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+
+	virtual void BeginPlay() override;
 	
 protected:
 	UFUNCTION()
