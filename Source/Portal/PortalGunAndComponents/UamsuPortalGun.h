@@ -69,6 +69,10 @@ public:
 	UFUNCTION()
 	FHitResult GetAimedHitResult(float InCheckDistance = 20000.f,  ECollisionChannel InCollisionChannel = ECC_Visibility) const;
 
+	/** The location of the default 'hidden' from the player locations of the portals */
+	UPROPERTY(EditAnywhere)
+	FVector SpawnLocation = FVector::ZeroVector;
+
 	virtual void BeginPlay() override;
 	
 protected:

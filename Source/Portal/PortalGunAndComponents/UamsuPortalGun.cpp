@@ -24,13 +24,16 @@ UamsuPortalGun::UamsuPortalGun()
 }
 
 // TODO spawn portals in the BeginPlay and hide them
-
+PRAGMA_DISABLE_OPTIMIZATION
 FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
-	APlayerController* PlayerController = GetOwner<APlayerController>();
+	// TODO It does not get a playerControler, find the way u get ht eplayer constoler
+	AActor* ActorOwner = GetOwner<AActor>();
+	APawn* PawnOwner = Cast<APawn>(ActorOwner);
+	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
 	if (IsValid(PlayerController))
 	{
 		GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
@@ -38,7 +41,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
 
 #if ENABLE_DRAW_DEBUG && 1
-	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 0.1f, 0, 4.f);
+	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 2.1f, 0, 4.f);
 #endif
 	
 	FHitResult HitResult;
@@ -50,20 +53,20 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	
 	return HitResult;
 }
-
+PRAGMA_ENABLE_OPTIMIZATION
 void UamsuPortalGun::BeginPlay()
 {
 	Super::BeginPlay();
 
 	/** Spawn the portals on the 0.0.0 positions on the beginning of the game */
-	const FVector SpawnLocation = FVector::ZeroVector;
-	FTransform SpawnTransform(SpawnLocation);
-	
+	FTransform const SpawnTransform(SpawnLocation);
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
 	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
 	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
+	PortalOne->AnotherPortal = PortalTwo;
+	PortalTwo->AnotherPortal = PortalOne;
 }
 
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
@@ -111,23 +114,19 @@ void UamsuPortalGun::FireLeft()
 	{
 		return;
 	}
-
-
-
-	// my Todo Add enabe/disable functions, so the portal would just hide somwhere when in is needed to imitate the destroy of it
 	
 		FHitResult AimedHit = GetAimedHitResult();
 
 		// Todo Upgrade the spawn location
-		const FVector SpawnLocation = AimedHit.ImpactPoint;
+		const FVector PortalSpawnLocation = AimedHit.ImpactNormal;
 
-		FTransform SpawnTransform(SpawnLocation);
+		FTransform SpawnTransform(PortalSpawnLocation);
 
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// TODO just change the location of the portal that was created on th ebegin play 
-		PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
+	PortalOne->SetActorRelativeLocation(PortalSpawnLocation);
 	
 	
 	
@@ -151,6 +150,10 @@ void UamsuPortalGun::FireLeft()
 
 void UamsuPortalGun::FireRight()
 {
+	if (!IsValid(Character) || !IsValid(Character->GetController()))
+	{
+		return;
+	}
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Right"));
 }
 
