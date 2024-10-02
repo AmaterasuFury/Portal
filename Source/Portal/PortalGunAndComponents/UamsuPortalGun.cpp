@@ -36,7 +36,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
 	if (IsValid(PlayerController))
 	{
-		GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	}
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
 
@@ -65,8 +65,16 @@ void UamsuPortalGun::BeginPlay()
 	
 	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
 	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
-	PortalOne->AnotherPortal = PortalTwo;
-	PortalTwo->AnotherPortal = PortalOne;
+	
+	if (IsValid(PortalOne))
+	{
+		PortalOne->AnotherPortal = PortalTwo;
+	}
+	
+	if (IsValid(PortalTwo))
+	{
+		PortalTwo->AnotherPortal = PortalOne;
+	}
 }
 
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
@@ -83,8 +91,17 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 
+	AActor* OldOwner = GetOwner();
+
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
+
+	Rename(nullptr, Character);
+
+	if (IsValid(OldOwner))
+	{
+		OldOwner->Destroy();
+	}
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
