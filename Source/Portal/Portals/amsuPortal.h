@@ -35,8 +35,11 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
 
+
+	// TODO create not just this bull, but a function to: hide the actor, turn tick off (if needed), turn physic off, etc.
 	bool bIsActive = false;
 
 	void Teleport(AActor* InteractedActor);

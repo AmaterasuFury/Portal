@@ -25,7 +25,7 @@ AamsuPortal::AamsuPortal()
 
 // Called when the game starts or when spawned
 void AamsuPortal::BeginPlay()
-{
+{ // todo By default make them hidden (use the function that u are going to create ass addon to the bIsActive
 	Super::BeginPlay();
 
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
@@ -51,6 +51,7 @@ void AamsuPortal::Teleport(AActor* InteractedActor)
 	FVector OutTeleportDistance(0.f, 200.f, 0.f);
 	FVector TeleportLocation = AnotherPortal->GetActorLocation();
 	InteractedActor->SetActorLocation(OutTeleportDistance + TeleportLocation);
+	// Todo direction
 }
 
 void AamsuPortal::Tick(float DeltaTime)

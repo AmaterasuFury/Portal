@@ -30,16 +30,21 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
-	// TODO It does not get a playerControler, find the way u get ht eplayer constoler
-	AActor* ActorOwner = GetOwner<AActor>();
-	APawn* PawnOwner = Cast<APawn>(ActorOwner);
+	// TODO It does not get a playerControler, find the way u get the player constoler
+	APawn* PawnOwner = GetOwner<APawn>();
+	if (IsValid(PawnOwner))
+	{
+		FHitResult EmptyHitResult {};
+		return EmptyHitResult;
+	}
+	
 	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
 	if (IsValid(PlayerController))
 	{
 		GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	}
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
-
+ 
 #if ENABLE_DRAW_DEBUG && 1
 	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 2.1f, 0, 4.f);
 #endif
@@ -65,8 +70,12 @@ void UamsuPortalGun::BeginPlay()
 	
 	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
 	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
-	PortalOne->AnotherPortal = PortalTwo;
-	PortalTwo->AnotherPortal = PortalOne;
+
+	if (IsValid(PortalOne) && IsValid(PortalTwo))
+	{
+		PortalOne->AnotherPortal = PortalTwo;
+		PortalTwo->AnotherPortal = PortalOne;
+	}
 }
 
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
@@ -83,8 +92,17 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 
+	AActor* OldOwner = GetOwner();
+	
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
+
+	Rename(nullptr, Character);
+	
+	if (IsValid(OldOwner))
+	{
+		OldOwner->Destroy();
+	}
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
@@ -107,7 +125,7 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 }
 
 void UamsuPortalGun::FireLeft()
-{
+{ //TODO when u finish this function u can get rid of the FireRight(), cuz the would do the same, just another pointer to a portal
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
 	
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
