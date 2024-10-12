@@ -8,8 +8,8 @@
 
 class UBoxComponent;
 
-DECLARE_DELEGATE(FButtonPressedEvent)
-DECLARE_DELEGATE(FButtonReleasedEvent)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FButtonPressedEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FButtonReleasedEvent);
 
 UCLASS()
 class PORTAL_API AamsuStepOnButton : public AActor
@@ -18,8 +18,9 @@ class PORTAL_API AamsuStepOnButton : public AActor
 
 public:
 	AamsuStepOnButton();
+
+	virtual void Tick(float DeltaSeconds) override;
 	
-	virtual void Tick(float DeltaTime) override;
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,8 +34,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Button")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;
 
+	UPROPERTY(BlueprintAssignable)
 	FButtonPressedEvent ButtonPressed;
+
+	UPROPERTY(BlueprintAssignable)
 	FButtonReleasedEvent ButtonReleased;
+
+	bool bButtonIsPressed = false;
+	bool bButtonIsReleased = false;
 	
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -43,7 +50,17 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	// TODO
-	//UPROPERTY(EditDefaultsOnly)
-	//TArray<TSubclassOf<AActor>> TriggerActorClasses;
+	bool CanBeTriggeredBy(AActor* InOtherActor) const;
+
+	float PressSpeed = 60.0f;
+	float ButtonPressRange = 150.0f;
+	float ButtonPressBuffer = 0.0f;
+	
+	void ButtonPressRelease(float InDeltaTime, bool bPositivePress);
+
+	void ButtonPress(float InDeltaTime);
+	void ButtonRelease(float InDeltaTime);
+	
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<AActor>> TriggerActorClasses;
 };

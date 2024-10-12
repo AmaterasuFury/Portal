@@ -21,4 +21,7 @@ class PORTAL_API IamsuInteractable
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Interact(AActor* InteractActor);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void CanInteract(AActor* InteractActor);
 };

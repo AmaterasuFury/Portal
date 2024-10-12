@@ -1,8 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "TP_WeaponComponent.h"
-#include "PortalCharacter.h"
+#include "UamsuPortalGun.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
 #include "PortalProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
@@ -17,28 +17,36 @@
 DEFINE_LOG_CATEGORY_STATIC(LogPortalGun, Log, All);
 
 // Sets default values for this component's properties
-UTP_WeaponComponent::UTP_WeaponComponent()
+UamsuPortalGun::UamsuPortalGun()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
 // TODO spawn portals in the BeginPlay and hide them
-
-FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
+PRAGMA_DISABLE_OPTIMIZATION
+FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
-	APlayerController* PlayerController = GetOwner<APlayerController>();
+	// TODO It does not get a playerControler, find the way u get the player constoler
+	APawn* PawnOwner = GetOwner<APawn>();
+	if (!IsValid(PawnOwner))
+	{
+		FHitResult EmptyHitResult {};
+		return EmptyHitResult;
+	}
+	
+	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
 	if (IsValid(PlayerController))
 	{
-		GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	}
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
-
+ 
 #if ENABLE_DRAW_DEBUG && 1
-	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 0.1f, 0, 4.f);
+	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 2.1f, 0, 4.f);
 #endif
 	
 	FHitResult HitResult;
@@ -50,13 +58,32 @@ FHitResult UTP_WeaponComponent::GetAimedHitResult(float InCheckDistance, ECollis
 	
 	return HitResult;
 }
+PRAGMA_ENABLE_OPTIMIZATION
+void UamsuPortalGun::BeginPlay()
+{
+	Super::BeginPlay();
 
-bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
+	/** Spawn the portals on the 0.0.0 positions on the beginning of the game */
+	FTransform const SpawnTransform(SpawnLocation);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
+	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
+
+	if (IsValid(PortalOne) && IsValid(PortalTwo))
+	{
+		PortalOne->AnotherPortal = PortalTwo;
+		PortalTwo->AnotherPortal = PortalOne;
+	}
+}
+
+bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
 
 	// Check that the character is valid, and has no weapon component yet
-	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UTP_WeaponComponent>())
+	if (Character == nullptr || Character->GetInstanceComponents().FindItemByClass<UamsuPortalGun>())
 	{
 		return false;
 	}
@@ -65,8 +92,17 @@ bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 
+	AActor* OldOwner = GetOwner();
+	
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
+
+	Rename(nullptr, Character);
+	
+	if (IsValid(OldOwner))
+	{
+		OldOwner->Destroy();
+	}
 
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
@@ -88,51 +124,28 @@ bool UTP_WeaponComponent::AttachWeapon(APortalCharacter* TargetCharacter)
 	return true;
 }
 
-void UTP_WeaponComponent::FireLeft()
-{
+void UamsuPortalGun::FireLeft()
+{ //TODO when u finish this function u can get rid of the FireRight(), cuz the would do the same, just another pointer to a portal
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
 	
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
 	{
 		return;
 	}
-
-	// Try and fire a projectile
-//	if (ProjectileClass != nullptr)
-//	{
-//		UWorld* const World = GetWorld();
-//		if (World != nullptr)
-//		{
-//			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
-//			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-//			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-//			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-//	
-//			//Set Spawn Collision Handling Override
-//			FActorSpawnParameters ActorSpawnParams;
-//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-//	
-//			// Spawn the projectile at the muzzle
-//			World->SpawnActor<APortalProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-//		}
-//	
-//	}
-
-	if (IsValid(PortalOne))
-	{
+	
 		FHitResult AimedHit = GetAimedHitResult();
 
 		// Todo Upgrade the spawn location
-		const FVector SpawnLocation = AimedHit.ImpactPoint;
+		const FVector PortalSpawnLocation = AimedHit.ImpactNormal;
 
-		FTransform SpawnTransform(SpawnLocation);
+		FTransform SpawnTransform(PortalSpawnLocation);
 
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		// TODO
-		PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
-	}
+		// TODO just change the location of the portal that was created on the begin play 
+	PortalOne->SetActorRelativeLocation(PortalSpawnLocation);
+	
 	
 	
 	// Try and play the sound if specified
@@ -153,12 +166,16 @@ void UTP_WeaponComponent::FireLeft()
 	}
 }
 
-void UTP_WeaponComponent::FireRight()
+void UamsuPortalGun::FireRight()
 {
+	if (!IsValid(Character) || !IsValid(Character->GetController()))
+	{
+		return;
+	}
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Right"));
 }
 
-void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{
