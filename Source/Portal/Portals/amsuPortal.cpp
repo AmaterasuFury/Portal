@@ -49,7 +49,13 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 void AamsuPortal::Teleport(AActor* InteractedActor)
 {
 	FVector OutTeleportDistance(0.f, 200.f, 0.f);
-	FVector TeleportLocation = AnotherPortal->GetActorLocation();
+
+	if (!ensure(IsValid(AnotherPortal)))
+	{
+		return;
+	}
+	
+	FVector TeleportLocation = AnotherPortal->GetActorLocation() * AnotherPortal->GetActorForwardVector();
 	InteractedActor->SetActorLocation(OutTeleportDistance + TeleportLocation);
 	// Todo direction
 }

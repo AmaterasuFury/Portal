@@ -32,7 +32,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 
 	// TODO It does not get a playerControler, find the way u get the player constoler
 	APawn* PawnOwner = GetOwner<APawn>();
-	if (IsValid(PawnOwner))
+	if (!IsValid(PawnOwner))
 	{
 		FHitResult EmptyHitResult {};
 		return EmptyHitResult;
@@ -41,7 +41,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
 	if (IsValid(PlayerController))
 	{
-		GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	}
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
  
@@ -143,7 +143,7 @@ void UamsuPortalGun::FireLeft()
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		// TODO just change the location of the portal that was created on th ebegin play 
+		// TODO just change the location of the portal that was created on the begin play 
 	PortalOne->SetActorRelativeLocation(PortalSpawnLocation);
 	
 	
