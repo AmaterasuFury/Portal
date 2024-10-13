@@ -78,6 +78,59 @@ void UamsuPortalGun::BeginPlay()
 	}
 }
 
+void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
+{
+	//TODO when u finish this function u can get rid of the FireRight(), cuz the would do the same, just another pointer to a portal
+	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
+	
+	if (!IsValid(Character) || !IsValid(Character->GetController()))
+	{
+		return;
+	}
+	
+	FHitResult AimedHit = GetAimedHitResult();
+
+	// Todo Upgrade the spawn location
+	const FVector PortalSpawnLocation = AimedHit.ImpactNormal;
+
+	FTransform SpawnTransform(PortalSpawnLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// TODO just change the location of the portal that was created on the begin play 
+	Portal->SetActorRelativeLocation(PortalSpawnLocation);
+	
+	
+	
+	// Try and play the sound if specified
+	if (FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+	}
+	
+	// Try and play a firing animation if specified
+	if (FireAnimation != nullptr)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+		if (AnimInstance != nullptr)
+		{
+			AnimInstance->Montage_Play(FireAnimation, 1.f);
+		}
+	}
+}
+
+void UamsuPortalGun::FireLeft() 
+{
+	ShootPortal(PortalOne);
+}
+
+void UamsuPortalGun::FireRight()
+{
+	ShootPortal(PortalTwo);
+}
+
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
@@ -122,57 +175,6 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 	}
 
 	return true;
-}
-
-void UamsuPortalGun::FireLeft()
-{ //TODO when u finish this function u can get rid of the FireRight(), cuz the would do the same, just another pointer to a portal
-	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
-	
-	if (!IsValid(Character) || !IsValid(Character->GetController()))
-	{
-		return;
-	}
-	
-		FHitResult AimedHit = GetAimedHitResult();
-
-		// Todo Upgrade the spawn location
-		const FVector PortalSpawnLocation = AimedHit.ImpactNormal;
-
-		FTransform SpawnTransform(PortalSpawnLocation);
-
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		// TODO just change the location of the portal that was created on the begin play 
-	PortalOne->SetActorRelativeLocation(PortalSpawnLocation);
-	
-	
-	
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-}
-
-void UamsuPortalGun::FireRight()
-{
-	if (!IsValid(Character) || !IsValid(Character->GetController()))
-	{
-		return;
-	}
-	UE_LOG(LogPortalGun, Log, TEXT("Fire Right"));
 }
 
 void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
