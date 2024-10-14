@@ -25,7 +25,7 @@ AamsuPortal::AamsuPortal()
 
 // Called when the game starts or when spawned
 void AamsuPortal::BeginPlay()
-{ // todo By default make them hidden (use the function that u are going to create ass addon to the bIsActive
+{ // todo By default make them hidden (use the function that u are going to create as addon to the bIsActive
 	Super::BeginPlay();
 
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);

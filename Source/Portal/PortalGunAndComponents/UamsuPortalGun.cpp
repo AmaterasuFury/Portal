@@ -80,7 +80,6 @@ void UamsuPortalGun::BeginPlay()
 
 void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 {
-	//TODO when u finish this function u can get rid of the FireRight(), cuz the would do the same, just another pointer to a portal
 	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
 	
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
@@ -90,17 +89,18 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	
 	FHitResult AimedHit = GetAimedHitResult();
 
-	// Todo Upgrade the spawn location
-	const FVector PortalSpawnLocation = AimedHit.ImpactNormal;
-
-	FTransform SpawnTransform(PortalSpawnLocation);
+	// Todo Upgrade the spawn location of the portal
+	const FVector PortalSpawnLocation = AimedHit.Location;
+	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();
+	
+	const FTransform SpawnTransform(PortalSpawnRotation,PortalSpawnLocation);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// TODO just change the location of the portal that was created on the begin play 
-	Portal->SetActorRelativeLocation(PortalSpawnLocation);
-	
+	//Portal->SetActorRelativeLocation(PortalSpawnLocation);
+	Portal->SetActorTransform(SpawnTransform);
 	
 	
 	// Try and play the sound if specified
@@ -123,12 +123,18 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 
 void UamsuPortalGun::FireLeft() 
 {
-	ShootPortal(PortalOne);
+	if (IsValid(PortalOne))
+	{
+		ShootPortal(PortalOne);
+	}
 }
 
 void UamsuPortalGun::FireRight()
 {
-	ShootPortal(PortalTwo);
+	if (IsValid(PortalTwo))
+	{
+		ShootPortal(PortalTwo);
+	}
 }
 
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
