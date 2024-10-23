@@ -97,9 +97,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	// TODO just change the location of the portal that was created on the begin play 
-	//Portal->SetActorRelativeLocation(PortalSpawnLocation);
+	
 	Portal->SetActorTransform(SpawnTransform);
 	
 	
