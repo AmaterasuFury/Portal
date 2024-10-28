@@ -23,14 +23,11 @@ UamsuPortalGun::UamsuPortalGun()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
-// TODO spawn portals in the BeginPlay and hide them
-PRAGMA_DISABLE_OPTIMIZATION
 FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 
-	// TODO It does not get a playerControler, find the way u get the player constoler
 	APawn* PawnOwner = GetOwner<APawn>();
 	if (!IsValid(PawnOwner))
 	{
@@ -45,7 +42,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	}
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
  
-#if ENABLE_DRAW_DEBUG && 1
+#if ENABLE_DRAW_DEBUG && 0
 	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 0.1f, 0, 4.f);
 #endif
 	
@@ -58,7 +55,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	
 	return HitResult;
 }
-PRAGMA_ENABLE_OPTIMIZATION
+
 void UamsuPortalGun::BeginPlay()
 {
 	Super::BeginPlay();
