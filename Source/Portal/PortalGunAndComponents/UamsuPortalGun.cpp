@@ -46,7 +46,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
  
 #if ENABLE_DRAW_DEBUG && 1
-	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 2.1f, 0, 4.f);
+	DrawDebugLine(GetWorld(), ViewLocation, TraceDestination, FColor::Green, false, 0.1f, 0, 4.f);
 #endif
 	
 	FHitResult HitResult;
@@ -123,6 +123,8 @@ void UamsuPortalGun::FireLeft()
 {
 	if (IsValid(PortalOne))
 	{
+		//TODO Add and use a function to check if the portal can be spawned here
+		PortalOne->SetPortalVisibility(true);
 		ShootPortal(PortalOne);
 	}
 }
@@ -131,6 +133,8 @@ void UamsuPortalGun::FireRight()
 {
 	if (IsValid(PortalTwo))
 	{
+		//TODO Add and use a function to check if the portal can be spawned here
+		PortalTwo->SetPortalVisibility(true);
 		ShootPortal(PortalTwo);
 	}
 }

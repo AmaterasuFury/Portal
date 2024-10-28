@@ -20,7 +20,7 @@ AamsuPortal::AamsuPortal()
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
 
-	// TODO overlap with box
+	SetPortalVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +59,16 @@ void AamsuPortal::Teleport(AActor* InteractedActor)
 	InteractedActor->SetActorLocation( TeleportLocation);
 	// Todo direction
 }
+
+void AamsuPortal::SetPortalVisibility(bool MakeVisible)
+{
+	SetActorHiddenInGame(!MakeVisible);
+
+	SetActorEnableCollision(MakeVisible);
+
+	SetActorTickEnabled(MakeVisible);
+}
+
 
 void AamsuPortal::Tick(float DeltaTime)
 {

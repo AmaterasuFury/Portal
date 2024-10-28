@@ -43,4 +43,6 @@ public:
 	bool bIsActive = false;
 
 	void Teleport(AActor* InteractedActor);
+
+	void SetPortalVisibility(bool MakeVisible);
 };
