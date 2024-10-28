@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MainHUD.generated.h"
+#include "amsuMainHUD.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class PORTAL_API AMainHUD : public AHUD
+UCLASS(Abstract)
+class PORTAL_API AamsuMainHUD : public AHUD
 {
 	GENERATED_BODY()
 };
