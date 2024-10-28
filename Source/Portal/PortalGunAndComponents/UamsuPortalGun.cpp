@@ -116,11 +116,17 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	}
 }
 
+bool UamsuPortalGun::CanBeSpawnedHere()
+{
+	// TODO  finish this function
+	return false;
+}
+
 void UamsuPortalGun::FireLeft() 
 {
 	if (IsValid(PortalOne))
 	{
-		//TODO Add and use a function to check if the portal can be spawned here
+		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there
 		PortalOne->SetPortalVisibility(true);
 		ShootPortal(PortalOne);
 	}
@@ -130,7 +136,7 @@ void UamsuPortalGun::FireRight()
 {
 	if (IsValid(PortalTwo))
 	{
-		//TODO Add and use a function to check if the portal can be spawned here
+		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there
 		PortalTwo->SetPortalVisibility(true);
 		ShootPortal(PortalTwo);
 	}

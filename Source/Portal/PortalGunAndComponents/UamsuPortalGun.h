@@ -54,6 +54,8 @@ public:
 
 	void FireRight();
 
+	bool CanBeSpawnedHere();
+
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> PortalOne;
 
