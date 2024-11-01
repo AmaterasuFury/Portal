@@ -19,17 +19,17 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
-
-	SetPortalVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void AamsuPortal::BeginPlay()
-{ // todo By default make them hidden (use the function that u are going to create as addon to the bIsActive
+{
 	Super::BeginPlay();
 
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
+
+	SetPortalVisibility(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -48,25 +48,23 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AamsuPortal::Teleport(AActor* InteractedActor)
 {
-	//FVector OutTeleportDistance(0.f, 200.f, 0.f);
-
 	if (!ensure(IsValid(AnotherPortal)))
 	{
 		return;
 	}
 	
-  	FVector TeleportLocation = AnotherPortal->GetActorLocation() * AnotherPortal->GetActorForwardVector();
+  	const FVector TeleportLocation = AnotherPortal->GetActorLocation() * AnotherPortal->GetActorForwardVector();
 	InteractedActor->SetActorLocation( TeleportLocation);
 	// Todo direction
 }
 
-void AamsuPortal::SetPortalVisibility(bool MakeVisible)
+void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
 {
-	SetActorHiddenInGame(!MakeVisible);
+	SetActorHiddenInGame(!bMakeVisible);
 
-	SetActorEnableCollision(MakeVisible);
+	SetActorEnableCollision(bMakeVisible);
 
-	SetActorTickEnabled(MakeVisible);
+	SetActorTickEnabled(bMakeVisible);
 }
 
 

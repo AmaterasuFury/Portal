@@ -54,7 +54,7 @@ public:
 
 	void FireRight();
 
-	bool CanBeSpawnedHere();
+	bool CanBeSpawnedHere() const;
 
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> PortalOne;
@@ -76,8 +76,7 @@ public:
 	FVector SpawnLocation = FVector::ZeroVector;
 
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
+	
 	void ShootPortal(AamsuPortal* Portal) const;
 	
 protected:

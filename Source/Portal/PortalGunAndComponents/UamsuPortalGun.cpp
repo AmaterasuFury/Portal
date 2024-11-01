@@ -77,8 +77,6 @@ void UamsuPortalGun::BeginPlay()
 
 void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 {
-	UE_LOG(LogPortalGun, Log, TEXT("Fire Left"));
-	
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
 	{
 		return;
@@ -116,7 +114,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	}
 }
 
-bool UamsuPortalGun::CanBeSpawnedHere()
+bool UamsuPortalGun::CanBeSpawnedHere() const
 {
 	// TODO  finish this function
 	return false;

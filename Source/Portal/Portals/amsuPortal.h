@@ -44,5 +44,5 @@ public:
 
 	void Teleport(AActor* InteractedActor);
 
-	void SetPortalVisibility(bool MakeVisible);
+	void SetPortalVisibility(bool bMakeVisible);
 };
