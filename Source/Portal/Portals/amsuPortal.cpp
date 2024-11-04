@@ -19,17 +19,17 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
-
-	// TODO overlap with box
 }
 
 // Called when the game starts or when spawned
 void AamsuPortal::BeginPlay()
-{ // todo By default make them hidden (use the function that u are going to create ass addon to the bIsActive
+{
 	Super::BeginPlay();
 
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
+
+	SetPortalVisibility(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -48,19 +48,43 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AamsuPortal::Teleport(AActor* InteractedActor)
 {
-	FVector OutTeleportDistance(0.f, 200.f, 0.f);
-
 	if (!ensure(IsValid(AnotherPortal)))
 	{
 		return;
 	}
+
+	const double TeleportDistance = 200.0;
 	
-	FVector TeleportLocation = AnotherPortal->GetActorLocation() * AnotherPortal->GetActorForwardVector();
-	InteractedActor->SetActorLocation(OutTeleportDistance + TeleportLocation);
-	// Todo direction
+  	const FVector TeleportLocation = AnotherPortal->GetActorLocation() + AnotherPortal->GetActorForwardVector() * TeleportDistance;
+	InteractedActor->SetActorLocation(TeleportLocation);
+
+	const FVector NewDirection = AnotherPortal->GetActorForwardVector().Rotation().RotateVector(InteractedActor->GetActorForwardVector());
+	
+	const FRotator ResultRotation = NewDirection.Rotation();
+
+	if (const APawn* Pawn = Cast<APawn>(InteractedActor); IsValid(Pawn))
+	{
+		if (const AController* Controller = Pawn->GetController(); IsValid(Controller))
+		{
+			Pawn->GetController()->SetControlRotation(ResultRotation);
+			return;
+		}
+	}
+	InteractedActor->SetActorRotation(ResultRotation);
 }
+
+void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
+{
+	SetActorHiddenInGame(!bMakeVisible);
+
+	SetActorEnableCollision(bMakeVisible);
+
+	SetActorTickEnabled(bMakeVisible);
+}
+
 
 void AamsuPortal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+ 

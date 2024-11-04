@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Portal/Portals/amsuPortal.h"
 #include "UamsuPortalGun.generated.h"
 
 class AamsuPortal;
@@ -53,6 +54,8 @@ public:
 
 	void FireRight();
 
+	bool CanBeSpawnedHere() const;
+
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> PortalOne;
 
@@ -73,6 +76,8 @@ public:
 	FVector SpawnLocation = FVector::ZeroVector;
 
 	virtual void BeginPlay() override;
+	
+	void ShootPortal(AamsuPortal* Portal) const;
 	
 protected:
 	UFUNCTION()
