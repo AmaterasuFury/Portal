@@ -52,10 +52,25 @@ void AamsuPortal::Teleport(AActor* InteractedActor)
 	{
 		return;
 	}
+
+	const double TeleportDistance = 200.0;
 	
-  	const FVector TeleportLocation = AnotherPortal->GetActorLocation() * AnotherPortal->GetActorForwardVector();
-	InteractedActor->SetActorLocation( TeleportLocation);
-	// Todo direction
+  	const FVector TeleportLocation = AnotherPortal->GetActorLocation() + AnotherPortal->GetActorForwardVector() * TeleportDistance;
+	InteractedActor->SetActorLocation(TeleportLocation);
+
+	const FVector NewDirection = AnotherPortal->GetActorForwardVector().Rotation().RotateVector(InteractedActor->GetActorForwardVector());
+	
+	const FRotator ResultRotation = NewDirection.Rotation();
+
+	if (const APawn* Pawn = Cast<APawn>(InteractedActor); IsValid(Pawn))
+	{
+		if (const AController* Controller = Pawn->GetController(); IsValid(Controller))
+		{
+			Pawn->GetController()->SetControlRotation(ResultRotation);
+			return;
+		}
+	}
+	InteractedActor->SetActorRotation(ResultRotation);
 }
 
 void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
@@ -72,3 +87,4 @@ void AamsuPortal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+ 
