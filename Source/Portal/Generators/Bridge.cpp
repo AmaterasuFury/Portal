@@ -3,6 +3,8 @@
 
 #include "Bridge.h"
 
+#include "Components/ArrowComponent.h"
+
 
 ABridge::ABridge()
 {
@@ -13,22 +15,58 @@ ABridge::ABridge()
 	MeshComponentBridgeGenerator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bridge Generator Mesh"));
 	MeshComponentBridgeGenerator->SetupAttachment(RootComponent);
 
-	MeshFirstBridgePart
+	MeshFirstBridgePart = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("First Bridge Part Mesh"));
+	MeshFirstBridgePart->SetupAttachment(RootComponent);
+
+	InitialBridgeTransform = CreateDefaultSubobject<UArrowComponent>(TEXT("Initial Bridge Transform"));
+	InitialBridgeTransform->SetupAttachment(RootComponent);
 }
 
 
 void ABridge::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SpawnBridge();
 	
 }
 
-void ABridge::SpawnBridge(TObjectPtr<UStaticMeshComponent> OriginalMesh)
+void ABridge::SpawnBridge()
 {
-	if (!IsValid(OriginalMesh))
+	if (!ensure(IsValid(MeshFirstBridgePart)))
 	{
 		return;
 	}
+
+	DestroyBridge();
 	
+	FTransform TargetTransform = InitialBridgeTransform->GetComponentTransform();
+	TargetTransform.AddToTranslation(InitialBridgeTransform->GetForwardVector() * BridgePartLength / 2.0);
+
+	MeshFirstBridgePart->SetVisibility(true);
+	MeshFirstBridgePart->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	for (double Dist = 0; Dist < MaxBridgeLength; Dist += BridgePartLength)
+	{
+		UStaticMeshComponent* NewPart = DuplicateObject<UStaticMeshComponent>(MeshFirstBridgePart, this);
+		NewPart->RegisterComponent();
+
+		NewPart->SetWorldTransform(TargetTransform);
+
+		TargetTransform.AddToTranslation(InitialBridgeTransform->GetForwardVector() * BridgePartLength);
+
+		BridgeParts.Add(NewPart);
+	}
+
+	MeshFirstBridgePart->SetVisibility(false);
+	MeshFirstBridgePart->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+void ABridge::DestroyBridge()
+{
+	for (UStaticMeshComponent* Part : BridgeParts)
+	{
+		Part->DestroyComponent();
+	}
+	BridgeParts.Empty();
+}

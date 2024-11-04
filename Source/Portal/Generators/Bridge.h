@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Bridge.generated.h"
 
+class UArrowComponent;
+
 UCLASS()
 class PORTAL_API ABridge : public AActor
 {
@@ -20,12 +22,26 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "First BridgePart")
 	TObjectPtr<UStaticMeshComponent> MeshFirstBridgePart;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UArrowComponent> InitialBridgeTransform;
+
 	UPROPERTY(EditAnywhere)
 	float MaxBridgeLength = 1000.f;
+
 protected:
 	virtual void BeginPlay() override;
-	
-	void SpawnBridge(TObjectPtr<UStaticMeshComponent> OriginalMesh);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnBridge();
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyBridge();
+
+	UPROPERTY(EditDefaultsOnly)
+	double BridgePartLength = 100.f;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UStaticMeshComponent>> BridgeParts;
 
 	// todo make a linetrace to get distance and use the distance to spawn the bridge
 };

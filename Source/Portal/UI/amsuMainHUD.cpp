@@ -5,6 +5,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "amsuCrosshair.h"
+#include "Misc/DataValidation.h"
 
 AamsuMainHUD::AamsuMainHUD()
 {
@@ -23,3 +24,18 @@ void AamsuMainHUD::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 }
+
+#if WITH_EDITOR
+EDataValidationResult AamsuMainHUD::IsDataValid(FDataValidationContext& Context) const
+{
+	EDataValidationResult Result = Super::IsDataValid(Context);
+
+	if (CrosshairClass == nullptr)
+	{
+		Context.AddError(FText::FromString(TEXT("amsuMainHUD.cpp:35 amsuMainHUD.cpp(35) CrosshairClass is not set")));
+		Result = EDataValidationResult::Invalid;
+	}
+
+	return Result;
+}
+#endif
