@@ -6,11 +6,28 @@
 #include "GameFramework/HUD.h"
 #include "amsuMainHUD.generated.h"
 
+class UamsuCrosshair;
+
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class PORTAL_API AamsuMainHUD : public AHUD
 {
 	GENERATED_BODY()
+
+public:
+	AamsuMainHUD();
+	virtual void BeginPlay() override;
+
+#if WITH_EDITOR	
+	virtual EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif
+	
+private:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UamsuCrosshair> CrosshairClass;
+
+	UPROPERTY()
+	TObjectPtr<UamsuCrosshair> Crosshair;
 };
