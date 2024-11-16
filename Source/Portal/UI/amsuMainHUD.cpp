@@ -5,10 +5,11 @@
 
 #include "Blueprint/UserWidget.h"
 #include "amsuCrosshair.h"
+#include "Misc/DataValidation.h"
 
 AamsuMainHUD::AamsuMainHUD()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AamsuMainHUD::BeginPlay()
@@ -16,10 +17,22 @@ void AamsuMainHUD::BeginPlay()
 	Super::BeginPlay();
 
 	Crosshair = CreateWidget<UamsuCrosshair>(GetOwningPlayerController(), CrosshairClass);
-	Crosshair->AddToViewport();
+	if (ensure(IsValid(Crosshair)))
+	{
+		Crosshair->AddToViewport();
+	}
 }
 
-void AamsuMainHUD::Tick(float DeltaSeconds)
+#if WITH_EDITOR
+EDataValidationResult AamsuMainHUD::IsDataValid(FDataValidationContext& Context) const
 {
-	Super::Tick(DeltaSeconds);
+	EDataValidationResult Result =  Super::IsDataValid(Context);
+
+	if (CrosshairClass == nullptr)
+	{
+		Context.AddError(FText::FromString(TEXT("CrosshairClass is not set (amsuMainHud")));
+		Result = EDataValidationResult::Invalid;
+	}
+	return Result;
 }
+#endif
