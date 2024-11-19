@@ -16,6 +16,8 @@ class PORTAL_API AamsuBridge : public AActor
 public:
 	AamsuBridge();
 
+	virtual void OnConstruction(const FTransform& Transform) override;	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
 	TObjectPtr<UStaticMeshComponent> MeshBridgeGenerator;
 
@@ -25,13 +27,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> InitialBridgeTransform;
 
-	// Todo add the bridge category
-	UPROPERTY(EditAnywhere)
-	float MaxBridgeLength = 1000.f;
-
-	// Todo add the bridge category
-	UPROPERTY(EditAnywhere)
-	double BridgePartLength = 100;
+	/** The bridge will not spawn if the distance is bigger then Max Bridge Length */
+	UPROPERTY(EditAnywhere, Category = "Bridge")
+	float  MaxBridgeLength = 8000.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Bridge")
+	float BridgePartLength = 100;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -44,6 +46,4 @@ protected:
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> BridgeParts;
-	
-	// todo make a linetrace to get distance and use the distance to spawn the bridge
 };

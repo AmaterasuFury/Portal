@@ -20,12 +20,17 @@ AamsuBridge::AamsuBridge()
 	InitialBridgeTransform->SetupAttachment(RootComponent);
 }
 
+void AamsuBridge::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	SpawnBridge();
+}
+
 
 void AamsuBridge::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SpawnBridge();
 }
 
 void AamsuBridge::SpawnBridge()
@@ -41,12 +46,22 @@ void AamsuBridge::SpawnBridge()
 	BridgePart->SetVisibility(true);
 	BridgePart->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	
-	// Use a trace to find out how much you should spawn
-	for (double Dist = 0; Dist < MaxBridgeLength; Dist += BridgePartLength)
+
+	FHitResult HitResult;
+	FCollisionQueryParams FCollisionQueryParams;
+	FCollisionQueryParams.AddIgnoredActor(this);
+	const FVector CheckDestination = InitialBridgeTransform->GetComponentLocation() + InitialBridgeTransform->GetComponentRotation().Vector() * MaxBridgeLength;
+	
+	GetWorld()->LineTraceSingleByChannel(HitResult, InitialBridgeTransform->GetComponentLocation(), CheckDestination,
+		ECollisionChannel::ECC_Visibility, FCollisionQueryParams);
+	
+	const float FullPartsLength = HitResult.Distance - FMath::Fmod(HitResult.Distance, BridgePartLength);	
+	
+	for (float Dist = 0; Dist < FullPartsLength; Dist += BridgePartLength)
 	{
 		UStaticMeshComponent* NewPart = DuplicateObject<UStaticMeshComponent>(BridgePart, this);
 		NewPart->RegisterComponent();
-		
+	 	
 		NewPart->SetWorldTransform(TargetTransform);
 
 		TargetTransform.AddToTranslation(InitialBridgeTransform->GetForwardVector() * BridgePartLength);
@@ -54,6 +69,8 @@ void AamsuBridge::SpawnBridge()
 		BridgeParts.Add(NewPart);
 	}
 
+	// TODO Find a way to add the last part of the Bridge and to cut the mesh or find smth out
+	
 	BridgePart->SetVisibility(false);
 	BridgePart->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
