@@ -51,7 +51,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	FCollisionQueryParams FCollisionQueryParams;
 	FCollisionQueryParams.AddIgnoredActor(GetOwner());
 	
-	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceDestination, InCollisionChannel, FCollisionQueryParams );
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceDestination, InCollisionChannel, FCollisionQueryParams);
 	
 	return HitResult;
 }
