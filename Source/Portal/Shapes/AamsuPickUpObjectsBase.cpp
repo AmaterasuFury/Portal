@@ -37,7 +37,6 @@ void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 		return;
 	}
 	
-	
 }
 
 
