@@ -24,7 +24,7 @@ public:
 	float HoldDistance = 150;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	TObjectPtr<UCurveFloat> PickUpMoveSpeed;
+	float MovementSpeed = 10;
 	 
 protected:
 	virtual void BeginPlay() override;

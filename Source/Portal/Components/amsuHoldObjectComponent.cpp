@@ -28,18 +28,34 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
 {
-	APlayerController* PlayerController = GetOwner<APlayerController>();
-	if (!IsValid(PlayerController))
+	APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
+	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
-	}
-	
+	} // todo think if this is a good way to check if the character is valid.
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
 	GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	
-	FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
+	const FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
+	const FVector ObjectLocation = GetOwner()->GetActorLocation();
 	
-	// TODO find distance and move this object to it with the speed based on the curve
+	FVector HoldDirection = (HoldLocation - ObjectLocation).GetSafeNormal();
+	float CurrentDistance = (HoldLocation - ObjectLocation).Size();
+
+	float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
+	FVector Movement = HoldDirection * MovementDistance;
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Movement);	
+
+	
+	
+// todo	Drop if has blocking hit by LineTrace
+// todo	Sweep that we can move
+// todo Folow the character rotation	
+// todo (later u can try to base it on the curve)
+//	First task:
+// 
+
+	
 }
 
