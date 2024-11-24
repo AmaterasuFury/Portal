@@ -69,7 +69,7 @@ void AamsuBridge::SpawnBridge()
 		BridgeParts.Add(NewPart);
 	}
 
-	// TODO Find a way to add the last part of the Bridge and to cut the mesh or find smth out
+	// TODO Let's use scaling
 	
 	BridgePart->SetVisibility(false);
 	BridgePart->SetCollisionEnabled(ECollisionEnabled::NoCollision);
