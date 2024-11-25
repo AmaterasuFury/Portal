@@ -2,6 +2,7 @@
 
 
 #include "AamsuPickUpObjectsBase.h"
+#include "Portal/Components/amsuHoldObjectComponent.h"
 
 
 AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
@@ -13,6 +14,8 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 
 	PickUpObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
 	PickUpObjectMeshComponent->SetupAttachment(RootComponent);
+
+	HoldObjectComponent = CreateDefaultSubobject<UamsuHoldObjectComponent>(TEXT("Hold Object Component"));
 }
 
 void AamsuPickUpObjectsBase::BeginPlay()
@@ -30,13 +33,12 @@ void AamsuPickUpObjectsBase::BeginPlay()
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
-	// My TODO - this Interact supposed to let the character pick up the object and carry it (like the cubes in the Portal)
 	APlayerController* PlayerController = Cast<APlayerController>(InteractActor);
 	if (!IsValid(PlayerController))
 	{
 		return;
 	}
-	
+	HoldObjectComponent->PickUpAndCarry(InteractActor);
 }
 
 

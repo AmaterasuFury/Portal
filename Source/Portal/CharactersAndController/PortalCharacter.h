@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PortalCharacter.generated.h"
 
+class UamsuIntreactionDetectComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -38,8 +39,12 @@ class APortalCharacter : public ACharacter
 	UInputAction* CrouchAction;
 	
 	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	/** A component to detect if the aimed actor implements Interactable interface */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UamsuIntreactionDetectComponent> InteractDetectComponent;
 	
 public:
 	APortalCharacter();
