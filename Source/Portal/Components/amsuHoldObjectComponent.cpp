@@ -32,10 +32,11 @@ void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
-	} // todo think if this is a good way to check if the character is valid.
+	} 
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
-	GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	
+	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	
 	const FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
 	const FVector ObjectLocation = GetOwner()->GetActorLocation();
@@ -51,7 +52,7 @@ void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
 	
 // todo	Drop if has blocking hit by LineTrace
 // todo	Sweep that we can move
-// todo Folow the character rotation	
+// todo Follow the character rotation	
 // todo (later u can try to base it on the curve)
 //	First task:
 // 
