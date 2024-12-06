@@ -8,7 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PortalCharacter.generated.h"
 
-class UamsuIntreactionDetectComponent;
+class UamsuIntractionDetectComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -44,7 +44,7 @@ class APortalCharacter : public ACharacter
 
 	/** A component to detect if the aimed actor implements Interactable interface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UamsuIntreactionDetectComponent> InteractDetectComponent;
+	TObjectPtr<UamsuIntractionDetectComponent> InteractDetectComponent;
 	
 public:
 	APortalCharacter();

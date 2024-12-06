@@ -8,18 +8,19 @@
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PORTAL_API UamsuIntreactionDetectComponent : public UActorComponent
+class PORTAL_API UamsuIntractionDetectComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UamsuIntreactionDetectComponent();
-
-	UPROPERTY(EditAnywhere, Category = "Interaction Detection Component")
-	float CheckDistance = 200.f;
+	UamsuIntractionDetectComponent();
 
 /** Returns nullptr if no object implementing IamsuInteractable is found within the specified distance */
-	AActor* DetectInteractable();  
+	AActor* GetAimedInteractable() const;  
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Interact Detection Component")
+	float CheckDistance = 200.f;
 	
 protected:
 	// Called when the game starts

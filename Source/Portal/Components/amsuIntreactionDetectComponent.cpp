@@ -6,19 +6,19 @@
 #include "Portal/amsuInteractable.h"
 
 
-UamsuIntreactionDetectComponent::UamsuIntreactionDetectComponent()
+UamsuIntractionDetectComponent::UamsuIntractionDetectComponent()
 {
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
-void UamsuIntreactionDetectComponent::BeginPlay()
+void UamsuIntractionDetectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	
 }
 
-AActor* UamsuIntreactionDetectComponent::DetectInteractable()
+AActor* UamsuIntractionDetectComponent::GetAimedInteractable() const
 {
 	const APlayerController* OwningController = Cast<APlayerController>(GetOwner());
 	if (!ensure(IsValid(OwningController)))
@@ -37,17 +37,11 @@ AActor* UamsuIntreactionDetectComponent::DetectInteractable()
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * CheckDistance;
 	
 	
-	OwningController->GetWorld()->LineTraceSingleByChannel(HitResult,ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
+	OwningController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
 
 	AActor* HitActor = HitResult.GetActor();
-	if (HitActor)
-	{
-		 return HitActor->Implements<UamsuInteractable>() ? HitActor : nullptr;
-	}
-	else
-	{
-		return nullptr;
-	}
+	
+	return IsValid(HitActor) && HitActor->Implements<UamsuInteractable>() ? HitActor : nullptr;
 }
 
 

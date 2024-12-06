@@ -26,9 +26,9 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 }
 
-void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
+void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
 {
-	APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
+	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -41,12 +41,21 @@ void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
 	const FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
 	const FVector ObjectLocation = GetOwner()->GetActorLocation();
 	
-	FVector HoldDirection = (HoldLocation - ObjectLocation).GetSafeNormal();
-	float CurrentDistance = (HoldLocation - ObjectLocation).Size();
+	const FVector HoldDirection = (HoldLocation - ObjectLocation).GetSafeNormal();
+	const float CurrentDistance = (HoldLocation - ObjectLocation).Size();
+	
+	if (!ensure(IsValid(GetWorld())))
+	{
+		return;
+	}
+	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
+	const FVector Delta = HoldDirection * MovementDistance;
 
-	float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
-	FVector Movement = HoldDirection * MovementDistance;
-	GetOwner()->GetRootComponent()->AddRelativeLocation(Movement);	
+	if (!ensure(IsValid(GetOwner()->GetRootComponent())))
+	{
+		return;
+	}
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta);	
 
 	
 	
@@ -56,7 +65,6 @@ void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
 // todo (later u can try to base it on the curve)
 //	First task:
 // 
-
 	
 }
 

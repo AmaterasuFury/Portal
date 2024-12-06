@@ -37,7 +37,7 @@ APortalCharacter::APortalCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	InteractDetectComponent = CreateDefaultSubobject<UamsuIntreactionDetectComponent>(TEXT("Interact Detection Component"));
+	InteractDetectComponent = CreateDefaultSubobject<UamsuIntractionDetectComponent>(TEXT("Interact Detection Component"));
 }
 
 void APortalCharacter::BeginPlay()
