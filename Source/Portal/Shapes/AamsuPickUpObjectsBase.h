@@ -7,6 +7,7 @@
 #include "Portal/amsuInteractable.h"
 #include "AamsuPickUpObjectsBase.generated.h"
 
+class UamsuHoldObjectComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -27,6 +28,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pick Up Object")
 	TObjectPtr<UStaticMeshComponent> PickUpObjectMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pick Up Object")
+	TObjectPtr<UamsuHoldObjectComponent> HoldObjectComponent;
 	
 	virtual void Interact_Implementation(AActor* InteractActor) override;
 };

@@ -18,13 +18,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void PickUpAndCarry(AActor* InteractingActor);
+	void PickUpAndCarry(AActor* InteractingActor) const;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	float HoldDistance = 150;
+	float HoldDistance = 150.f;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	TObjectPtr<UCurveFloat> PickUpMoveSpeed;
+	float MovementSpeed = 10.f;
 	 
 protected:
 	virtual void BeginPlay() override;

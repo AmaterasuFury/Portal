@@ -26,20 +26,45 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 }
 
-void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor)
+void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
 {
-	APlayerController* PlayerController = GetOwner<APlayerController>();
-	if (!IsValid(PlayerController))
+	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
+	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
+	{
+		return;
+	} 
+	FVector ViewLocation = FVector::ZeroVector;
+	FRotator ViewRotation = FRotator::ZeroRotator;
+	
+	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	
+	const FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
+	const FVector ObjectLocation = GetOwner()->GetActorLocation();
+	
+	const FVector HoldDirection = (HoldLocation - ObjectLocation).GetSafeNormal();
+	const float CurrentDistance = (HoldLocation - ObjectLocation).Size();
+	
+	if (!ensure(IsValid(GetWorld())))
 	{
 		return;
 	}
+	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
+	const FVector Delta = HoldDirection * MovementDistance;
+
+	if (!ensure(IsValid(GetOwner()->GetRootComponent())))
+	{
+		return;
+	}
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta);	
+
 	
-	FVector ViewLocation = FVector::ZeroVector;
-	FRotator ViewRotation = FRotator::ZeroRotator;
-	GetOwner<APlayerController>()->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	
-	FVector HoldLocation = ViewLocation + ViewRotation.Vector() * HoldDistance;
+// todo	Drop if has blocking hit by LineTrace
+// todo	Sweep that we can move
+// todo Follow the character rotation	
+// todo (later u can try to base it on the curve)
+//	First task:
+// 
 	
-	// TODO find distance and move this object to it with the speed based on the curve
 }
 
