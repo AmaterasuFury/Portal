@@ -22,17 +22,22 @@ void AamsuPickUpObjectsBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//PickUpObjectMeshComponent->SetSimulatePhysics(true);
-	//PickUpObjectMeshComponent->SetMassOverrideInKg(NAME_None, ObjectMass, true);
-	//PickUpObjectMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	PickUpObjectMeshComponent->SetSimulatePhysics(true);
+	PickUpObjectMeshComponent->SetMassOverrideInKg(NAME_None, ObjectMass, true);
+	PickUpObjectMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	//PickUpObjectMeshComponent->SetCollisionObjectType(ECC_WorldDynamic);
-	//PickUpObjectMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	PickUpObjectMeshComponent->SetCollisionObjectType(ECC_WorldDynamic);
+	PickUpObjectMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 }
 
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
+	APlayerController* PlayerController = Cast<APlayerController>(InteractActor);
+	if (!IsValid(PlayerController))
+	{
+		return;
+	}
 	HoldObjectComponent->PickUpAndCarry(InteractActor);
 }
 

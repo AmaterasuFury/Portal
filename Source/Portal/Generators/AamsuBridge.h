@@ -22,7 +22,7 @@ public:
 	TObjectPtr<UStaticMeshComponent> MeshBridgeGenerator;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
-	TObjectPtr<UStaticMeshComponent> Bridge;
+	TObjectPtr<UStaticMeshComponent> BridgePart;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> InitialBridgeTransform;
@@ -30,13 +30,19 @@ public:
 	/** The bridge will not spawn if the distance is bigger then Max Bridge Length */
 	UPROPERTY(EditAnywhere, Category = "Bridge")
 	float  MaxBridgeLength = 8000.f;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Bridge")
+	float BridgePartLength = 100;
+	
 protected:
 	virtual void BeginPlay() override;
 
 	// todo delete the BlueprintCallable
 	UFUNCTION(BlueprintCallable)
 	void SpawnBridge();
+
+	UFUNCTION(BlueprintCallable)
+	void DestroyBridge();
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> BridgeParts;
