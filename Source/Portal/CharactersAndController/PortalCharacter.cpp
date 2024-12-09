@@ -116,10 +116,10 @@ void APortalCharacter::OnUnCrouch()
 
 void APortalCharacter::Interact()
 {
-	IamsuInteractable* InteractedActor = Cast<IamsuInteractable>(InteractDetectComponent->GetAimedIfInteractable());
+	TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedIfInteractable();
 	if (InteractedActor)
 	{
-		InteractedActor->Execute_Interact(this, this);
+		IamsuInteractable::Execute_Interact(InteractedActor.GetObject(), this);
 	}
 }
 

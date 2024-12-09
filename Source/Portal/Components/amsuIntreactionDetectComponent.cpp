@@ -18,7 +18,7 @@ void UamsuIntractionDetectComponent::BeginPlay()
 	
 }
 
-AActor* UamsuIntractionDetectComponent::GetAimedIfInteractable() const
+TScriptInterface<IamsuInteractable> UamsuIntractionDetectComponent::GetAimedIfInteractable() const
 {
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!ensure(IsValid(OwnerPawn)))
