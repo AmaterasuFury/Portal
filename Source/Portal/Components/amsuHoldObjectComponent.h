@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Portal/amsuInteractable.h"
 #include "amsuHoldObjectComponent.generated.h"
 
 
@@ -25,7 +26,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float MovementSpeed = 10.f;
-	 
+
 protected:
 	virtual void BeginPlay() override;
 };

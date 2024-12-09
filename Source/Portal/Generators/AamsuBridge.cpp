@@ -14,7 +14,7 @@ AamsuBridge::AamsuBridge()
 	MeshBridgeGenerator->SetupAttachment(RootComponent);
 
 	Bridge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("First Bridge Part Mesh"));
-	//Bridge->SetupAttachment(RootComponent);
+	Bridge->SetupAttachment(RootComponent);
 
 	InitialBridgeTransform = CreateDefaultSubobject<UArrowComponent>(TEXT("Initial Bridge Transform"));
 	InitialBridgeTransform->SetupAttachment(RootComponent);
