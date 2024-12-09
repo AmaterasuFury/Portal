@@ -18,21 +18,14 @@ void UamsuIntractionDetectComponent::BeginPlay()
 	
 }
 
-AActor* UamsuIntractionDetectComponent::GetAimedIfInteractable() const
+AActor* UamsuIntractionDetectComponent::GetAimedInteractable() const
 {
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (!ensure(IsValid(OwnerPawn)))
+	const APlayerController* OwningController = Cast<APlayerController>(GetOwner());
+	if (!ensure(IsValid(OwningController)))
 	{
 		return nullptr;
 	}
-	
-	const APlayerController* OwningController = Cast<APlayerController>(OwnerPawn->GetController());
 
-	if (!IsValid(OwningController))
-	{
-		return nullptr;
-	}
-	
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(GetOwner());

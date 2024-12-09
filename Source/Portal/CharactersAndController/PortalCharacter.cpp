@@ -10,7 +10,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
-#include "Portal/amsuInteractable.h"
 #include "Portal/Components/amsuIntreactionDetectComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -67,9 +66,6 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APortalCharacter::Look);
-
-		// Interacting
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &APortalCharacter::Interact);
 	}
 	else
 	{
@@ -113,13 +109,3 @@ void APortalCharacter::OnUnCrouch()
 {
 	UnCrouch();
 }
-
-void APortalCharacter::Interact()
-{
-	IamsuInteractable* InteractedActor = Cast<IamsuInteractable>(InteractDetectComponent->GetAimedIfInteractable());
-	if (InteractedActor)
-	{
-		InteractedActor->Execute_Interact(this, this);
-	}
-}
-

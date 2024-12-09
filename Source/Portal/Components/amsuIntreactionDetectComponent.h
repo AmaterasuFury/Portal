@@ -16,7 +16,7 @@ public:
 	UamsuIntractionDetectComponent();
 
 /** Returns nullptr if no object implementing IamsuInteractable is found within the specified distance */
-	AActor* GetAimedIfInteractable() const;  
+	AActor* GetAimedInteractable() const;  
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Interact Detection Component")

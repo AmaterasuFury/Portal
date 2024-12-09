@@ -11,6 +11,7 @@ UamsuHoldObjectComponent::UamsuHoldObjectComponent()
 	
 }
 
+
 // Called when the game starts
 void UamsuHoldObjectComponent::BeginPlay()
 {
@@ -66,5 +67,4 @@ void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
 // 
 	
 }
-
 

@@ -42,10 +42,6 @@ class APortalCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Interact Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* InteractAction; 
-	
 	/** A component to detect if the aimed actor implements Interactable interface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UamsuIntractionDetectComponent> InteractDetectComponent;
@@ -68,14 +64,10 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
-	/** Called for the crouch input */
+	
 	void OnCrouch();
 	void OnUnCrouch();
 
-	/** Called for interact input */
-	void Interact();
-	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
