@@ -13,8 +13,8 @@ AamsuBridge::AamsuBridge()
 	MeshBridgeGenerator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bridge Generator Mesh"));
 	MeshBridgeGenerator->SetupAttachment(RootComponent);
 
-	BridgePart = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("First Bridge Part Mesh"));
-	BridgePart->SetupAttachment(RootComponent);
+	Bridge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bridge Mesh"));
+	Bridge->SetupAttachment(RootComponent);
 
 	InitialBridgeTransform = CreateDefaultSubobject<UArrowComponent>(TEXT("Initial Bridge Transform"));
 	InitialBridgeTransform->SetupAttachment(RootComponent);
@@ -35,18 +35,12 @@ void AamsuBridge::BeginPlay()
 
 void AamsuBridge::SpawnBridge()
 {
-	if (!ensure(IsValid(BridgePart)))
+	if (!ensure(IsValid(Bridge) && IsValid(InitialBridgeTransform)))
 	{
 		return;
 	}
-
-	FTransform TargetTransform = InitialBridgeTransform->GetComponentTransform();
-	TargetTransform.AddToTranslation(InitialBridgeTransform->GetForwardVector() * BridgePartLength / 2.0);
-
-	BridgePart->SetVisibility(true);
-	BridgePart->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	
-
+	
 	FHitResult HitResult;
 	FCollisionQueryParams FCollisionQueryParams;
 	FCollisionQueryParams.AddIgnoredActor(this);
@@ -55,32 +49,19 @@ void AamsuBridge::SpawnBridge()
 	GetWorld()->LineTraceSingleByChannel(HitResult, InitialBridgeTransform->GetComponentLocation(), CheckDestination,
 		ECollisionChannel::ECC_Visibility, FCollisionQueryParams);
 	
-	const float FullPartsLength = HitResult.Distance - FMath::Fmod(HitResult.Distance, BridgePartLength);	
-	
-	for (float Dist = 0; Dist < FullPartsLength; Dist += BridgePartLength)
+	const float BridgeLength = HitResult.Distance;
+
+	if (BridgeLength < 0.1f)
 	{
-		UStaticMeshComponent* NewPart = DuplicateObject<UStaticMeshComponent>(BridgePart, this);
-		NewPart->RegisterComponent();
-	 	
-		NewPart->SetWorldTransform(TargetTransform);
-
-		TargetTransform.AddToTranslation(InitialBridgeTransform->GetForwardVector() * BridgePartLength);
-
-		BridgeParts.Add(NewPart);
+		return;
 	}
-
-	// TODO Let's use scaling
+	FVector Scale = FVector::ZeroVector;
+	Scale.Y = BridgeLength/ 100.f;
 	
-	BridgePart->SetVisibility(false);
-	BridgePart->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	const FVector Location = InitialBridgeTransform->GetComponentLocation() + InitialBridgeTransform->GetComponentRotation().Vector() * (BridgeLength / 2.f);
+	
+	Bridge->SetRelativeScale3D(Scale);
+	Bridge->SetRelativeLocation(Location);
 }
 
-void AamsuBridge::DestroyBridge()
-{
-	for (UStaticMeshComponent* Part : BridgeParts)
-	{
-		Part->DestroyComponent();
-	}
-	BridgeParts.Empty();
-}
 

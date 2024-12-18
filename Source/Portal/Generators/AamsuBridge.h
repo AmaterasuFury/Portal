@@ -21,8 +21,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
 	TObjectPtr<UStaticMeshComponent> MeshBridgeGenerator;
 
+	/** This Mesh should have the length of 100.f units (centimeters) to work properly */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
-	TObjectPtr<UStaticMeshComponent> BridgePart;
+	TObjectPtr<UStaticMeshComponent> Bridge;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> InitialBridgeTransform;
@@ -40,9 +41,6 @@ protected:
 	// todo delete the BlueprintCallable
 	UFUNCTION(BlueprintCallable)
 	void SpawnBridge();
-
-	UFUNCTION(BlueprintCallable)
-	void DestroyBridge();
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> BridgeParts;

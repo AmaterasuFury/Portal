@@ -8,7 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PortalCharacter.generated.h"
 
-class UamsuIntractionDetectComponent;
+class UamsuInteractionDetectComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -42,12 +42,16 @@ class APortalCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Interact Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* InteractAction; 
+	
 	/** A component to detect if the aimed actor implements Interactable interface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UamsuIntractionDetectComponent> InteractDetectComponent;
+	TObjectPtr<UamsuInteractionDetectComponent> InteractDetectComponent;
 	
 public:
-	APortalCharacter();
+	APortalCharacter();	
 
 protected:
 	virtual void BeginPlay();
@@ -64,10 +68,16 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-	
+
+	/** Called for the crouch input */
 	void OnCrouch();
 	void OnUnCrouch();
 
+	/** Called for interact input */
+	void Interact();
+	/** Called for interact stop input */
+	void InteractStop();
+	
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;

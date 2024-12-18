@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Portal/amsuInteractable.h"
 #include "Portal/Components/amsuIntreactionDetectComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -37,7 +38,7 @@ APortalCharacter::APortalCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	InteractDetectComponent = CreateDefaultSubobject<UamsuIntractionDetectComponent>(TEXT("Interact Detection Component"));
+	InteractDetectComponent = CreateDefaultSubobject<UamsuInteractionDetectComponent>(TEXT("Interact Detection Component"));
 }
 
 void APortalCharacter::BeginPlay()
@@ -66,6 +67,9 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APortalCharacter::Look);
+
+		// Interacting
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APortalCharacter::Interact);
 	}
 	else
 	{
@@ -109,3 +113,24 @@ void APortalCharacter::OnUnCrouch()
 {
 	UnCrouch();
 }
+
+void APortalCharacter::Interact()
+{
+	check(IsValid(InteractDetectComponent));
+	
+	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
+	{
+		IamsuInteractable::Execute_Interact(InteractedActor.GetObject(), this);
+	}
+}
+
+void APortalCharacter::InteractStop()
+{
+	check(IsValid(InteractDetectComponent));
+	
+	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
+	{
+		IamsuInteractable::Execute_InteractStop(InteractedActor.GetObject(), this);
+	}
+}
+

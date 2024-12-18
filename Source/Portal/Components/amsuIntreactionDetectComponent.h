@@ -6,17 +6,18 @@
 #include "Components/ActorComponent.h"
 #include "amsuIntreactionDetectComponent.generated.h"
 
+class IamsuInteractable;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class PORTAL_API UamsuIntractionDetectComponent : public UActorComponent
+class PORTAL_API UamsuInteractionDetectComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UamsuIntractionDetectComponent();
+	UamsuInteractionDetectComponent();
 
 /** Returns nullptr if no object implementing IamsuInteractable is found within the specified distance */
-	AActor* GetAimedInteractable() const;  
+	TScriptInterface<IamsuInteractable> GetAimedInteractable() const;  
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Interact Detection Component")
