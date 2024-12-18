@@ -35,7 +35,7 @@ void AamsuBridge::BeginPlay()
 
 void AamsuBridge::SpawnBridge()
 {
-	if (!ensure(IsValid(Bridge)))
+	if (!ensure(IsValid(Bridge) && IsValid(InitialBridgeTransform)))
 	{
 		return;
 	}
@@ -49,19 +49,19 @@ void AamsuBridge::SpawnBridge()
 	GetWorld()->LineTraceSingleByChannel(HitResult, InitialBridgeTransform->GetComponentLocation(), CheckDestination,
 		ECollisionChannel::ECC_Visibility, FCollisionQueryParams);
 	
-	float BridgeLength = HitResult.Distance;
+	const float BridgeLength = HitResult.Distance;
 
-	const float BridgeWidth = Bridge->GetRelativeScale3D().X;
-	const float BridgeHeight = Bridge->GetRelativeScale3D().Z;
-	
-	if (BridgeLength > 0.1f)
+	if (BridgeLength < 0.1f)
 	{
-		Bridge->SetRelativeScale3D(FVector(BridgeWidth, BridgeLength,BridgeHeight));
-
-		/* FVector Scale = Bridge->GetRelativeScale3D();
-			Scale.Y = NewLength / DefaultLength;
-			Bridge->SetRelativeScale3D(Scale);*/
-	} 
+		return;
+	}
+	FVector Scale = FVector::ZeroVector;
+	Scale.Y = BridgeLength/ 100.f;
+	
+	const FVector Location = InitialBridgeTransform->GetComponentLocation() + InitialBridgeTransform->GetComponentRotation().Vector() * (BridgeLength / 2.f);
+	
+	Bridge->SetRelativeScale3D(Scale);
+	Bridge->SetRelativeLocation(Location);
 }
 
 
