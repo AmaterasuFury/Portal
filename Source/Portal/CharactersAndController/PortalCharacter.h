@@ -51,7 +51,7 @@ class APortalCharacter : public ACharacter
 	TObjectPtr<UamsuInteractionDetectComponent> InteractDetectComponent;
 	
 public:
-	APortalCharacter();
+	APortalCharacter();	
 
 protected:
 	virtual void BeginPlay();
@@ -75,6 +75,8 @@ protected:
 
 	/** Called for interact input */
 	void Interact();
+	/** Called for interact stop input */
+	void InteractStop();
 	
 protected:
 	// APawn interface

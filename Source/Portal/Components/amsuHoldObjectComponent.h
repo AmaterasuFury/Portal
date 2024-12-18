@@ -18,7 +18,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
-	void PickUpAndCarry(AActor* InteractingActor) const;
+	UPROPERTY()
+	TObjectPtr<AActor> InteractedActor;
+	
+	void PickUpStart(AActor* InInteractedActor);
+	void PickUpEnd();
+	
+	void PickUpAndCarry() const;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float HoldDistance = 150.f;

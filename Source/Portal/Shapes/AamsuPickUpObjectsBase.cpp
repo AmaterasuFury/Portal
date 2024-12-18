@@ -33,7 +33,7 @@ void AamsuPickUpObjectsBase::BeginPlay()
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
-	HoldObjectComponent->PickUpAndCarry(InteractActor);
+	HoldObjectComponent->PickUpStart(InteractActor);
 }
 
 

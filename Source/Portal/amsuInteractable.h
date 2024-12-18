@@ -23,5 +23,8 @@ public:
 	void Interact(AActor* InteractActor);
 
 	UFUNCTION(BlueprintNativeEvent)
+	void InteractStop(AActor* InteractActor);
+
+	UFUNCTION(BlueprintNativeEvent)
 	void CanInteract(AActor* InteractActor);
 };

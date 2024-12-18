@@ -23,11 +23,24 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	PickUpAndCarry();
 }
 
-void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
+void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
+{
+	SetComponentTickEnabled(true);
+	InteractedActor = InInteractedActor;
+}
+
+void UamsuHoldObjectComponent::PickUpEnd()
+{
+	SetComponentTickEnabled(false);
+	InteractedActor = nullptr;
+}
+
+void UamsuHoldObjectComponent::PickUpAndCarry() const
 { 
-	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
+	const APlayerController* PlayerController = Cast<APlayerController>(InteractedActor);
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
