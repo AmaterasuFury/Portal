@@ -13,7 +13,7 @@ AamsuBridge::AamsuBridge()
 	MeshBridgeGenerator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bridge Generator Mesh"));
 	MeshBridgeGenerator->SetupAttachment(RootComponent);
 
-	Bridge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("First Bridge Part Mesh"));
+	Bridge = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bridge Mesh"));
 	Bridge->SetupAttachment(RootComponent);
 
 	InitialBridgeTransform = CreateDefaultSubobject<UArrowComponent>(TEXT("Initial Bridge Transform"));
@@ -35,14 +35,12 @@ void AamsuBridge::BeginPlay()
 
 void AamsuBridge::SpawnBridge()
 {
-	const float BridgeWidth = Bridge->GetRelativeScale3D().X;
-	const float BridgeHeight = Bridge->GetRelativeScale3D().Z;
-	
 	if (!ensure(IsValid(Bridge)))
 	{
 		return;
 	}
-
+	
+	
 	FHitResult HitResult;
 	FCollisionQueryParams FCollisionQueryParams;
 	FCollisionQueryParams.AddIgnoredActor(this);
@@ -52,10 +50,18 @@ void AamsuBridge::SpawnBridge()
 		ECollisionChannel::ECC_Visibility, FCollisionQueryParams);
 	
 	float BridgeLength = HitResult.Distance;
+
+	const float BridgeWidth = Bridge->GetRelativeScale3D().X;
+	const float BridgeHeight = Bridge->GetRelativeScale3D().Z;
+	
 	if (BridgeLength > 0.1f)
 	{
 		Bridge->SetRelativeScale3D(FVector(BridgeWidth, BridgeLength,BridgeHeight));
-	} // TODO find out how to move the Pivot
+
+		/* FVector Scale = Bridge->GetRelativeScale3D();
+			Scale.Y = NewLength / DefaultLength;
+			Bridge->SetRelativeScale3D(Scale);*/
+	} 
 }
 
 

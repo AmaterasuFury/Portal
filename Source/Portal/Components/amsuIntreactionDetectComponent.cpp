@@ -6,19 +6,19 @@
 #include "Portal/amsuInteractable.h"
 
 
-UamsuIntractionDetectComponent::UamsuIntractionDetectComponent()
+UamsuInteractionDetectComponent::UamsuInteractionDetectComponent()
 {
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
-void UamsuIntractionDetectComponent::BeginPlay()
+void UamsuInteractionDetectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	
 }
 
-AActor* UamsuIntractionDetectComponent::GetAimedIfInteractable() const
+TScriptInterface<IamsuInteractable> UamsuInteractionDetectComponent::GetAimedInteractable() const
 {
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!ensure(IsValid(OwnerPawn)))

@@ -26,7 +26,7 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 }
 
 void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
-{
+{ // TODO let the PickUpAndCarry() be called only to turn tick on and and start the pickup move (just make a small separate function for that
 	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{

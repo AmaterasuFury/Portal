@@ -38,7 +38,7 @@ APortalCharacter::APortalCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
-	InteractDetectComponent = CreateDefaultSubobject<UamsuIntractionDetectComponent>(TEXT("Interact Detection Component"));
+	InteractDetectComponent = CreateDefaultSubobject<UamsuInteractionDetectComponent>(TEXT("Interact Detection Component"));
 }
 
 void APortalCharacter::BeginPlay()
@@ -69,7 +69,7 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APortalCharacter::Look);
 
 		// Interacting
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &APortalCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APortalCharacter::Interact);
 	}
 	else
 	{
@@ -116,10 +116,11 @@ void APortalCharacter::OnUnCrouch()
 
 void APortalCharacter::Interact()
 {
-	IamsuInteractable* InteractedActor = Cast<IamsuInteractable>(InteractDetectComponent->GetAimedIfInteractable());
-	if (InteractedActor)
+	check(IsValid(InteractDetectComponent));
+	
+	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
 	{
-		InteractedActor->Execute_Interact(this, this);
+		IamsuInteractable::Execute_Interact(InteractedActor.GetObject(), this);
 	}
 }
 
