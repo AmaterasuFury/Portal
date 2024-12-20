@@ -20,18 +20,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
 	TObjectPtr<UStaticMeshComponent> MeshBridgeGenerator;
-
-	/** This Mesh should have the length of 100.f units (centimeters) to work properly */
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bridge")
 	TObjectPtr<UStaticMeshComponent> Bridge;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UArrowComponent> InitialBridgeTransform;
-
-	/** The bridge will not spawn if the distance is bigger then Max Bridge Length */
+	
 	UPROPERTY(EditAnywhere, Category = "Bridge")
 	float  MaxBridgeLength = 8000.f;
-	
+
+	/** This is the length of the default mesh for the bridge in the units (centimeters) (the Vector.Y),
+	 * based on which the bridge generation is going to happen */
 	UPROPERTY(EditAnywhere, Category = "Bridge")
 	float BridgePartLength = 100;
 	

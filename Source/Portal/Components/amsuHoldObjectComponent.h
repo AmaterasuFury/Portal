@@ -19,7 +19,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY()
-	TObjectPtr<AActor> InteractedActor;
+	TObjectPtr<AActor> InteractingActor;
 	
 	void PickUpStart(AActor* InInteractedActor);
 	void PickUpEnd();

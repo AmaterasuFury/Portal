@@ -55,13 +55,13 @@ void AamsuBridge::SpawnBridge()
 	{
 		return;
 	}
-	FVector Scale = FVector::ZeroVector;
-	Scale.Y = BridgeLength/ 100.f;
+	FVector Scale = FVector::OneVector;
+	Scale.Y = BridgeLength/ BridgePartLength;
 	
 	const FVector Location = InitialBridgeTransform->GetComponentLocation() + InitialBridgeTransform->GetComponentRotation().Vector() * (BridgeLength / 2.f);
 	
-	Bridge->SetRelativeScale3D(Scale);
-	Bridge->SetRelativeLocation(Location);
+	Bridge->SetWorldScale3D(Scale);
+	Bridge->SetWorldLocation(Location);
 }
 
 
