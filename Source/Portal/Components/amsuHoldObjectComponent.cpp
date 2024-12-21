@@ -24,10 +24,23 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	PickUpAndCarry();
 }
 
-void UamsuHoldObjectComponent::PickUpAndCarry(AActor* InteractingActor) const
+void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
+	SetComponentTickEnabled(true);
+	InteractingActor = InInteractedActor;
+}
+
+void UamsuHoldObjectComponent::PickUpEnd()
+{
+	SetComponentTickEnabled(false);
+	InteractingActor = nullptr;
+}
+
+void UamsuHoldObjectComponent::PickUpAndCarry() const // todo pass deltatime as argument and use it in the tick  
+{ 
 	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
