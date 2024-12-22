@@ -44,7 +44,7 @@ class APortalCharacter : public ACharacter
 
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* InteractAction; 
+	UInputAction* InteractAction;
 	
 	/** A component to detect if the aimed actor implements Interactable interface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
@@ -77,8 +77,7 @@ protected:
 	void Interact();
 	/** Called for interact stop input */
 	void InteractStop();
-	
-protected:
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface

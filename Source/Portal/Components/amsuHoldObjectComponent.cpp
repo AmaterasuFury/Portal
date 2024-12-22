@@ -24,13 +24,13 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	PickUpAndCarry();
+	PickUpAndCarry(DeltaTime);
 }
 
 void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
-	SetComponentTickEnabled(true);
 	InteractingActor = InInteractedActor;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UamsuHoldObjectComponent::PickUpEnd()
@@ -39,7 +39,7 @@ void UamsuHoldObjectComponent::PickUpEnd()
 	InteractingActor = nullptr;
 }
 
-void UamsuHoldObjectComponent::PickUpAndCarry() const // todo pass deltatime as argument and use it in the tick  
+void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime) const  
 { 
 	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
@@ -61,7 +61,7 @@ void UamsuHoldObjectComponent::PickUpAndCarry() const // todo pass deltatime as 
 	{
 		return;
 	}
-	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
+	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * InDeltaTime, 0.f, CurrentDistance);
 	const FVector Delta = HoldDirection * MovementDistance;
 
 	if (!ensure(IsValid(GetOwner()->GetRootComponent())))

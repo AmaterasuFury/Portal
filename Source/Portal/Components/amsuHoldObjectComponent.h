@@ -24,7 +24,7 @@ public:
 	void PickUpStart(AActor* InInteractedActor);
 	void PickUpEnd();
 	
-	void PickUpAndCarry() const;
+	void PickUpAndCarry(float InDeltaTime) const;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float HoldDistance = 150.f;
