@@ -4,7 +4,7 @@
 #include "amsuIntreactionDetectComponent.h"
 
 #include "Portal/amsuInteractable.h"
-
+#include "Portal/MyCollisionChannels.h"
 
 UamsuInteractionDetectComponent::UamsuInteractionDetectComponent()
 {
@@ -43,8 +43,7 @@ TScriptInterface<IamsuInteractable> UamsuInteractionDetectComponent::GetAimedInt
 	OwningController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * CheckDistance;
 	
-	
-	OwningController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
+	OwningController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, Portal::ECC_Interaction, CollisionQueryParams);
 
 	AActor* HitActor = HitResult.GetActor();
 	
