@@ -4,7 +4,7 @@
 #include "AamsuPickUpObjectsBase.h"
 #include "Portal/Components/amsuHoldObjectComponent.h"
 
-#include "Portal/MyCollisionChannels.h"
+#include "..\amsuMyCollisionChannels.h"
 
 AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 {

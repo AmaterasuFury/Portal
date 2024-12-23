@@ -72,6 +72,12 @@ void UamsuPortalGun::BeginPlay()
 	{
 		PortalOne->AnotherPortal = PortalTwo;
 		PortalTwo->AnotherPortal = PortalOne;
+
+		if (ensure(IsValid(Character)))
+		{
+			Character->PortalOne = PortalOne;
+			Character->PortalTwo = PortalTwo;
+		}
 	}
 }
 
@@ -112,6 +118,8 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+	
+	Portal->ActivatePortal(true);
 }
 
 bool UamsuPortalGun::CanBeSpawnedHere() const

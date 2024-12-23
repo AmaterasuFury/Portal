@@ -19,6 +19,10 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
+
+	// todo Delete 
+	//BoxOverlapComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	//BoxOverlapComponent->SetCollisionResponseToChannel(ECC_)
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +48,12 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void AamsuPortal::ActivatePortal(bool bActivate)
+{
+	OnPortalStateChange.Broadcast();
+	bIsActive = bActivate;
 }
 
 void AamsuPortal::Teleport(AActor* InteractedActor)

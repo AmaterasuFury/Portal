@@ -16,6 +16,8 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+class AamsuPortal;
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
@@ -88,5 +90,9 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	UPROPERTY()
+	TObjectPtr<AamsuPortal> PortalOne;
+	UPROPERTY()
+	TObjectPtr<AamsuPortal> PortalTwo;
 };
 

@@ -30,4 +30,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<UImage> CrosshairPortalTwo;
 
+	virtual void NativeOnInitialized() override;
+	
+	void UpdatePortalsState();
+
+	void UpdateCrosshairOne();
+	void UpdateCrosshairTwo();
 };
