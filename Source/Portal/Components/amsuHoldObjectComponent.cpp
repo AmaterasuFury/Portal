@@ -7,7 +7,7 @@
 // Sets default values for this component's properties
 UamsuHoldObjectComponent::UamsuHoldObjectComponent()
 {
-	PrimaryComponentTick.bStartWithTickEnabled = false;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
 	
 }
 
