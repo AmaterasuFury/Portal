@@ -7,7 +7,8 @@
 // Sets default values for this component's properties
 UamsuHoldObjectComponent::UamsuHoldObjectComponent()
 {
-	PrimaryComponentTick.bStartWithTickEnabled = true;
+	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = false;
 	
 }
 
@@ -30,13 +31,13 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
 	InteractingActor = InInteractedActor;
-	PrimaryComponentTick.bCanEverTick = true;
+	SetComponentTickEnabled(true);
 }
 
 void UamsuHoldObjectComponent::PickUpEnd()
 {
-	SetComponentTickEnabled(false);
 	InteractingActor = nullptr;
+	SetComponentTickEnabled(false);
 }
 
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime) const  

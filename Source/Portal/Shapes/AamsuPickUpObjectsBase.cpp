@@ -9,7 +9,7 @@
 AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
