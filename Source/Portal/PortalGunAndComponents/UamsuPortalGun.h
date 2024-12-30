@@ -85,7 +85,7 @@ protected:
 
 private:
 	/** The Character holding this weapon*/
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<APortalCharacter> Character;
 	
 };

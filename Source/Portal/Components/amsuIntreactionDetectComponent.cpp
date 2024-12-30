@@ -4,7 +4,7 @@
 #include "amsuIntreactionDetectComponent.h"
 
 #include "Portal/amsuInteractable.h"
-#include "..\amsuMyCollisionChannels.h"
+#include "Portal/amsuMyCollisionChannels.h"
 
 UamsuInteractionDetectComponent::UamsuInteractionDetectComponent()
 {
