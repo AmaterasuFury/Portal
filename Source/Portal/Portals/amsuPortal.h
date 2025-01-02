@@ -9,7 +9,7 @@
 class UBoxComponent;
 class UStaticMeshComponent;
 
-DECLARE_MULTICAST_DELEGATE(FPortalStateDelegate)
+DECLARE_MULTICAST_DELEGATE_OneParam(FPortalStateDelegate, bool /* IsActive */)
 
 UCLASS()
 class PORTAL_API AamsuPortal : public AActor
@@ -51,4 +51,5 @@ public:
 	void Teleport(AActor* InteractedActor);
 
 	void SetPortalVisibility(bool bMakeVisible);
+	
 };

@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PortalCharacter.generated.h"
 
+class UamsuPortalGun;
 class UamsuInteractionDetectComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -19,6 +20,8 @@ struct FInputActionValue;
 class AamsuPortal;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+DECLARE_DELEGATE(FGunPickedUp)
 
 UCLASS(config=Game)
 class APortalCharacter : public ACharacter
@@ -90,9 +93,13 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	UPROPERTY()
-	TObjectPtr<AamsuPortal> PortalOne;
-	UPROPERTY()
-	TObjectPtr<AamsuPortal> PortalTwo;
+	/** Is set when the character picks up the portal gun */
+	UPROPERTY(Transient)
+	TObjectPtr<UamsuPortalGun> PortalGun;
+	
+	FGunPickedUp OnGunPickedUp;
+
+	// Executes the 
+	void OnGunPickUpExecute();
 };
 

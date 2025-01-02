@@ -31,9 +31,11 @@ public:
 	TObjectPtr<UImage> CrosshairPortalTwo;
 
 	virtual void NativeOnInitialized() override;
-	
-	void UpdatePortalsState();
 
-	void UpdateCrosshairOne();
-	void UpdateCrosshairTwo();
+	void OnPortalGunPickedUpBind();
+	
+	void BindCrosshairDelegates();
+
+	void UpdateCrosshairOne(bool IsActive);
+	void UpdateCrosshairTwo(bool IsActive);
 };
