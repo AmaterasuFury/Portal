@@ -52,7 +52,7 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 
 void AamsuPortal::ActivatePortal(bool bActivate)
 {
-	OnPortalStateChange.Broadcast();
+	OnPortalStateChange.Broadcast(bActivate);
 	bIsActive = bActivate;
 }
 

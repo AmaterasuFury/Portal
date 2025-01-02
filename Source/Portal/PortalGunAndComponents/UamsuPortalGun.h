@@ -87,5 +87,4 @@ private:
 	/** The Character holding this weapon*/
 	UPROPERTY(Transient)
 	TObjectPtr<APortalCharacter> Character;
-	
 };
