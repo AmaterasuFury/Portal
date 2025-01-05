@@ -20,9 +20,7 @@ AamsuPortal::AamsuPortal()
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
 
-	// todo Delete 
-	//BoxOverlapComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	//BoxOverlapComponent->SetCollisionResponseToChannel(ECC_)
+	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
 }
 
 // Called when the game starts or when spawned
@@ -50,10 +48,16 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
+// TODO upgrade this function to hide the portal in the world based on the bool that it gets
 void AamsuPortal::ActivatePortal(bool bActivate)
 {
-	OnPortalStateChange.Broadcast(bActivate);
+	if (bIsActive == bActivate)
+	{
+		return;
+	}
+
 	bIsActive = bActivate;
+	OnPortalStateChange.Broadcast(bActivate);
 }
 
 void AamsuPortal::Teleport(AActor* InteractedActor)

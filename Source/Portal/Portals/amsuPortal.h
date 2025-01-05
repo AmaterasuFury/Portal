@@ -40,10 +40,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
 	
-	// TODO use not just this boll, but an ActivatePortal() function to: hide the actor, turn tick off (if needed), turn physic off, etc.
 	bool bIsActive = false;
-
-	UFUNCTION()
+	
 	void ActivatePortal(bool bActivate);
 
 	FPortalStateDelegate OnPortalStateChange;

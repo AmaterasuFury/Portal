@@ -12,6 +12,7 @@ void UamsuCrosshair::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
 	CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
 	CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
 
@@ -37,27 +38,27 @@ void UamsuCrosshair::BindCrosshairDelegates()
 		PortalCharacter->PortalGun->PortalTwo->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairTwo);
 	}
 }
-
+// TODO think about changing the image instead of having 4 widgets (like probably use two different textures (for enabled/disabled states))
 void UamsuCrosshair::UpdateCrosshairOne(bool IsActive)
 {
 	if (IsActive)  // TODO think if u need to add a function so u wont double the code
 	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::Visible);
+		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 	else
 	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::Visible);
+		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 }
 
 void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
 {
-	if (IsActive)
+	if (IsActive)  // TODO think if u need to add a function so u wont double the code
 	{
-		
+		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 	else
 	{
-		
+		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 }
