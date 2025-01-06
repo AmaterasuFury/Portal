@@ -17,9 +17,7 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 	PickUpObjectMeshComponent->SetupAttachment(RootComponent);
 
 	PickUpObjectMeshComponent->SetCollisionProfileName(TEXT("Custom"));
-	PickUpObjectMeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	PickUpObjectMeshComponent->SetCollisionResponseToChannel(Portal::ECC_Interaction, ECR_Block);
-	PickUpObjectMeshComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	
 	HoldObjectComponent = CreateDefaultSubobject<UamsuHoldObjectComponent>(TEXT("Hold Object Component"));
 }

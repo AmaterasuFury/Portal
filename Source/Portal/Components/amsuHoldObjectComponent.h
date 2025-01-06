@@ -24,13 +24,13 @@ public:
 	void PickUpStart(AActor* InInteractedActor);
 	void PickUpEnd();
 	
-	void PickUpAndCarry(float InDeltaTime) const;
+	void PickUpAndCarry(float InDeltaTime);
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float HoldDistance = 150.f;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	float MovementSpeed = 10.f;
+	float MovementSpeed = 1000.f;
 	 
 protected:
 	virtual void BeginPlay() override;
