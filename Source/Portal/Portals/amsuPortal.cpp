@@ -48,16 +48,24 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
-// TODO upgrade this function to hide the portal in the world based on the bool that it gets
-void AamsuPortal::ActivatePortal(bool bActivate)
+void AamsuPortal::PortalPlaced(bool bPlacePortal)
 {
-	if (bIsActive == bActivate)
+	if (bIsActive == bPlacePortal)
 	{
 		return;
 	}
+	
+	if (bPlacePortal)
+	{
+		SetPortalVisibility(true);
+	}
+	else
+	{
+		SetPortalVisibility(false);
+	}
 
-	bIsActive = bActivate;
-	OnPortalStateChange.Broadcast(bActivate);
+	bIsActive = bPlacePortal;
+	OnPortalStateChange.Broadcast(bPlacePortal);
 }
 
 void AamsuPortal::Teleport(AActor* InteractedActor)

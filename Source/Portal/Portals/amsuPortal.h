@@ -42,7 +42,7 @@ public:
 	
 	bool bIsActive = false;
 	
-	void ActivatePortal(bool bActivate);
+	void PortalPlaced(bool bPlacePortal);
 
 	FPortalStateDelegate OnPortalStateChange;
 
