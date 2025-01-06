@@ -19,9 +19,17 @@ void UamsuHoldObjectComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UamsuHoldObjectComponent::CancelTimer()
+{
+	if (TraceTimerSet)
+	{
+		TimerTillDrop.Invalidate();
+	}
+}
+
 
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                              FActorComponentTickFunction* ThisTickFunction)
+                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -77,13 +85,18 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(InteractingActor);
-	
+	// todo delete the Playcontroller, just use GetWorld()
 	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
 
-	if (HitResult.GetActor() != GetOwner())
+	if (HitResult.GetActor() != GetOwner() && !TraceTimerSet)
 	{
-		
-		PickUpEnd();
+		TraceTimerSet = true;
+		//PickUpEnd();
+	}
+	
+	if (TraceTimerSet && !TimerTillDrop.IsValid())
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerTillDrop, this, &UamsuHoldObjectComponent::PickUpEnd, ObjectReleaseTime, false);
 	}
 	
 	
