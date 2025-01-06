@@ -19,15 +19,6 @@ void UamsuHoldObjectComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UamsuHoldObjectComponent::CancelTimer()
-{
-	if (TraceTimerSet)
-	{
-		TimerTillDrop.Invalidate();
-	}
-}
-
-
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
@@ -88,17 +79,17 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	// todo delete the Playcontroller, just use GetWorld()
 	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
 
-	if (HitResult.GetActor() != GetOwner() && !TraceTimerSet)
-	{
-		TraceTimerSet = true;
-		//PickUpEnd();
-	}
+	FTimerManager& Manager = GetWorld()->GetTimerManager();
 	
-	if (TraceTimerSet && !TimerTillDrop.IsValid())
+	if (HitResult.GetActor() != GetOwner() && !Manager.IsTimerActive(TimerTillDrop))
 	{
-		GetWorld()->GetTimerManager().SetTimer(TimerTillDrop, this, &UamsuHoldObjectComponent::PickUpEnd, ObjectReleaseTime, false);
+		Manager.SetTimer(TimerTillDrop, this, &UamsuHoldObjectComponent::PickUpEnd, ObjectReleaseTime, false);
 	}
-	
+
+	if (HitResult.GetActor() == GetOwner())
+	{
+		Manager.ClearTimer(TimerTillDrop);
+	}
 	
 // todo	Drop if has blocking hit by LineTrace
 // todo	Sweep that we can move
