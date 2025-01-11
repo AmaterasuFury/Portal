@@ -2,6 +2,7 @@
 
 
 #include "amsuHoldObjectComponent.h"
+#include "Portal/HelperHeaders/amsuGetHelper.h"
 
 
 // Sets default values for this component's properties
@@ -38,11 +39,11 @@ void UamsuHoldObjectComponent::PickUpEnd()
 	InteractingActor = nullptr;
 	SetComponentTickEnabled(false);
 }
-PRAGMA_DISABLE_OPTIMIZATION
+
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
 {
-	const APawn* InteractingPawn = Cast<APawn>(InteractingActor);
-	const APlayerController* PlayerController = Cast<APlayerController>(InteractingPawn->GetController());
+	
+	const APlayerController* PlayerController = GetPlayerController(InteractingActor); 
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -98,5 +99,3 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 // 
 	
 }
-
-PRAGMA_ENABLE_OPTIMIZATION
