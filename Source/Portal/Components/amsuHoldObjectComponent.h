@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "amsuHoldObjectComponent.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogHoldObjectComponent, Log, All);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PORTAL_API UamsuHoldObjectComponent : public UActorComponent

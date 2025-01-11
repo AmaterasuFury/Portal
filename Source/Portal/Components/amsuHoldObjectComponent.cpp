@@ -4,6 +4,7 @@
 #include "amsuHoldObjectComponent.h"
 #include "Portal/HelperHeaders/amsuGetHelper.h"
 
+DEFINE_LOG_CATEGORY(LogHoldObjectComponent)
 
 // Sets default values for this component's properties
 UamsuHoldObjectComponent::UamsuHoldObjectComponent()
@@ -32,12 +33,16 @@ void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
 	InteractingActor = InInteractedActor;
 	SetComponentTickEnabled(true);
+	
+	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpStart() Called"));
 }
 
 void UamsuHoldObjectComponent::PickUpEnd() 
 {
 	InteractingActor = nullptr;
 	SetComponentTickEnabled(false);
+
+	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpEnd() Called"));
 }
 
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
