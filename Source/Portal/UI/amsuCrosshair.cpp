@@ -16,15 +16,15 @@ void UamsuCrosshair::NativeOnInitialized()
 	CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
 	CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
 
-	OnPortalGunPickedUpBind();
+	SubscribeOnPortalGunPickedUp();
 }
 
-void UamsuCrosshair::OnPortalGunPickedUpBind()
+void UamsuCrosshair::SubscribeOnPortalGunPickedUp()
 {
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
-		PortalCharacter->OnGunPickedUp.BindUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
+		PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
 	}
 }
 

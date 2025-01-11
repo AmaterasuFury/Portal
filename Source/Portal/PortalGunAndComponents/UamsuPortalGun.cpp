@@ -187,7 +187,7 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 		}
 	}
 
-	Character->OnGunPickUpExecute();
+	Character->BroadcastOnGunPickUp();
 	
 	return true;
 }

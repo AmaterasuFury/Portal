@@ -32,7 +32,7 @@ public:
 
 	virtual void NativeOnInitialized() override;
 
-	void OnPortalGunPickedUpBind();
+	void SubscribeOnPortalGunPickedUp();
 	
 	void BindCrosshairDelegates();
 
