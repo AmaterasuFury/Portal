@@ -48,21 +48,14 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
-void AamsuPortal::PortalPlaced(bool bPlacePortal)
+void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 {
 	if (bIsActive == bPlacePortal)
 	{
 		return;
 	}
 	
-	if (bPlacePortal)
-	{
-		SetPortalVisibility(true);
-	}
-	else
-	{
-		SetPortalVisibility(false);
-	}
+	SetPortalVisibility(bPlacePortal);
 
 	bIsActive = bPlacePortal;
 	OnPortalStateChange.Broadcast(bPlacePortal);

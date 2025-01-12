@@ -113,7 +113,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 		}
 	}
 	
-	Portal->PortalPlaced(true);
+	Portal->OnPortalPlaced(true);
 }
 
 bool UamsuPortalGun::CanBeSpawnedHere() const
