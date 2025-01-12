@@ -19,46 +19,47 @@ void UamsuCrosshair::NativeOnInitialized()
 	SubscribeOnPortalGunPickedUp();
 }
 
+void UamsuCrosshair::NativeDestruct()
+{
+	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	if (IsValid(PortalCharacter))
+	{
+		PortalCharacter->OnGunPickedUp.Clear();
+	}
+	
+	Super::NativeDestruct();
+}
+
 void UamsuCrosshair::SubscribeOnPortalGunPickedUp()
 {
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
-		PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
+		BindCrosshairDelegateHandle = PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
 	}
 }
 
 
 void UamsuCrosshair::BindCrosshairDelegates()
 {
-	const APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
 		PortalCharacter->PortalGun->PortalOne->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairOne);
 		PortalCharacter->PortalGun->PortalTwo->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairTwo);
+		
+		PortalCharacter->OnGunPickedUp.Remove(BindCrosshairDelegateHandle);
 	}
 }
 // TODO think about changing the image instead of having 4 widgets (like probably use two different textures (for enabled/disabled states))
-void UamsuCrosshair::UpdateCrosshairOne(bool IsActive)
+void UamsuCrosshair::UpdateCrosshairOne(bool bIsActive)
 {
-	if (IsActive)  // TODO think if u need to add a function so u wont double the code
-	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	else
-	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	CrosshairPortalOne->SetVisibility(bIsActive ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	MainCrosshair->Brush.SetResourceObject()
+	UObject* ResourceObject = 
 }
 
 void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
 {
-	if (IsActive)  // TODO think if u need to add a function so u wont double the code
-	{
-		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	else
-	{
-		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	CrosshairPortalTwo->SetVisibility(IsActive ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
 }

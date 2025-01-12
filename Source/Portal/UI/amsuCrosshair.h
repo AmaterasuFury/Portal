@@ -31,11 +31,15 @@ public:
 	TObjectPtr<UImage> CrosshairPortalTwo;
 
 	virtual void NativeOnInitialized() override;
+	virtual void NativeDestruct() override;
 
 	void SubscribeOnPortalGunPickedUp();
 	
 	void BindCrosshairDelegates();
 
-	void UpdateCrosshairOne(bool IsActive);
+	void UpdateCrosshairOne(bool bIsActive);
 	void UpdateCrosshairTwo(bool IsActive);
+
+private:
+	FDelegateHandle BindCrosshairDelegateHandle;
 };

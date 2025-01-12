@@ -43,7 +43,7 @@ TScriptInterface<IamsuInteractable> UamsuInteractionDetectComponent::GetAimedInt
 	OwningController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * CheckDistance;
 	
-	OwningController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, Portal::ECC_Interaction, CollisionQueryParams);
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, Portal::ECC_Interaction, CollisionQueryParams);
 
 	AActor* HitActor = HitResult.GetActor();
 	
