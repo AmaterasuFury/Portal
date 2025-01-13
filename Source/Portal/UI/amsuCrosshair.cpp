@@ -12,10 +12,17 @@ void UamsuCrosshair::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
-	CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
-	CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
+	MainCrosshair->SetVisibility(ESlateVisibility::Collapsed);
+	//CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
+	//CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
 
+	// TODO Modify or delete and just dont set any in the UImage
+	CrosshairPortalOne->SetBrushFromTexture(nullptr);
+	//CrosshairPortalOne->SetBrushTintColor(FLinearColor::Transparent);
+	CrosshairPortalTwo->SetBrushFromTexture(nullptr);
+	//CrosshairPortalTwo->SetBrushTintColor(FLinearColor::Transparent);
+	// ^ TODO Modify or delete and just dont set any in the UImag ^
+	
 	SubscribeOnPortalGunPickedUp();
 }
 
@@ -45,6 +52,8 @@ void UamsuCrosshair::BindCrosshairDelegates()
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
+		MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
+		
 		PortalCharacter->PortalGun->PortalOne->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairOne);
 		PortalCharacter->PortalGun->PortalTwo->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairTwo);
 		
@@ -54,12 +63,10 @@ void UamsuCrosshair::BindCrosshairDelegates()
 // TODO think about changing the image instead of having 4 widgets (like probably use two different textures (for enabled/disabled states))
 void UamsuCrosshair::UpdateCrosshairOne(bool bIsActive)
 {
-	CrosshairPortalOne->SetVisibility(bIsActive ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
-	MainCrosshair->Brush.SetResourceObject()
-	UObject* ResourceObject = 
+	CrosshairPortalOne->SetBrushFromTexture(bIsActive ? ActiveCrosshairPortalOneTexture : DisabledCrosshairPortalOneTexture);
 }
 
 void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
 {
-	CrosshairPortalTwo->SetVisibility(IsActive ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+	CrosshairPortalTwo->SetBrushFromTexture(IsActive ? ActiveCrosshairPortalTwoTexture : DisabledCrosshairPortalTwoTexture);
 }
