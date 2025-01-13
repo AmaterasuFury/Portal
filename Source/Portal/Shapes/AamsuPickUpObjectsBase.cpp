@@ -4,6 +4,7 @@
 #include "AamsuPickUpObjectsBase.h"
 #include "Portal/Components/amsuHoldObjectComponent.h"
 
+#include "Portal/amsuMyCollisionChannels.h"
 
 AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 {
@@ -15,6 +16,9 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 	PickUpObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
 	PickUpObjectMeshComponent->SetupAttachment(RootComponent);
 
+	PickUpObjectMeshComponent->SetCollisionProfileName(TEXT("Custom"));
+	PickUpObjectMeshComponent->SetCollisionResponseToChannel(Portal::ECC_Interaction, ECR_Block);
+	
 	HoldObjectComponent = CreateDefaultSubobject<UamsuHoldObjectComponent>(TEXT("Hold Object Component"));
 }
 
@@ -35,5 +39,3 @@ void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
 	HoldObjectComponent->PickUpStart(InteractActor);
 }
-
-

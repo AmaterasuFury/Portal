@@ -77,6 +77,11 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
+void APortalCharacter::OnGunPickUpExecute()
+{
+	OnGunPickedUp.ExecuteIfBound();
+}
+
 
 void APortalCharacter::Move(const FInputActionValue& Value)
 {

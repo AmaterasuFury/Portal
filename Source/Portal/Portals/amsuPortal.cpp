@@ -19,6 +19,8 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
+
+	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +46,26 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+}
+
+void AamsuPortal::PortalPlaced(bool bPlacePortal)
+{
+	if (bIsActive == bPlacePortal)
+	{
+		return;
+	}
+	
+	if (bPlacePortal)
+	{
+		SetPortalVisibility(true);
+	}
+	else
+	{
+		SetPortalVisibility(false);
+	}
+
+	bIsActive = bPlacePortal;
+	OnPortalStateChange.Broadcast(bPlacePortal);
 }
 
 void AamsuPortal::Teleport(AActor* InteractedActor)

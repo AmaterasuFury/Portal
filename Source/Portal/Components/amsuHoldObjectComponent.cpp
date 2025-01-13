@@ -7,6 +7,7 @@
 // Sets default values for this component's properties
 UamsuHoldObjectComponent::UamsuHoldObjectComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 	
 }
@@ -24,24 +25,25 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	PickUpAndCarry();
+	PickUpAndCarry(DeltaTime);
 }
 
 void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
-	SetComponentTickEnabled(true);
 	InteractingActor = InInteractedActor;
+	SetComponentTickEnabled(true);
 }
 
-void UamsuHoldObjectComponent::PickUpEnd()
+void UamsuHoldObjectComponent::PickUpEnd() 
 {
-	SetComponentTickEnabled(false);
 	InteractingActor = nullptr;
+	SetComponentTickEnabled(false);
 }
-
-void UamsuHoldObjectComponent::PickUpAndCarry() const // todo pass deltatime as argument and use it in the tick  
-{ 
-	const APlayerController* PlayerController = Cast<APlayerController>(InteractingActor);
+PRAGMA_DISABLE_OPTIMIZATION
+void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
+{
+	const APawn* InteractingPawn = Cast<APawn>(InteractingActor);
+	const APlayerController* PlayerController = Cast<APlayerController>(InteractingPawn->GetController());
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -61,23 +63,36 @@ void UamsuHoldObjectComponent::PickUpAndCarry() const // todo pass deltatime as 
 	{
 		return;
 	}
-	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * GetOwner()->GetWorld()->DeltaTimeSeconds, 0.f, CurrentDistance);
+	const float MovementDistance = FMath::Clamp<float>(MovementSpeed * InDeltaTime, 0.f, CurrentDistance);
 	const FVector Delta = HoldDirection * MovementDistance;
 
 	if (!ensure(IsValid(GetOwner()->GetRootComponent())))
 	{
 		return;
 	}
-	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta);	
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);	
 
+	
+	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * HoldDistance;
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(InteractingActor);
+	
+	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
+
+	if (HitResult.GetActor() != GetOwner())
+	{
+		
+		PickUpEnd();
+	}
 	
 	
 // todo	Drop if has blocking hit by LineTrace
 // todo	Sweep that we can move
 // todo Follow the character rotation	
-// todo (later u can try to base it on the curve)
 //	First task:
 // 
 	
 }
 
+PRAGMA_ENABLE_OPTIMIZATION

@@ -56,10 +56,10 @@ public:
 
 	bool CanBeSpawnedHere() const;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<AamsuPortal> PortalOne;
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<AamsuPortal> PortalTwo;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -85,5 +85,6 @@ protected:
 
 private:
 	/** The Character holding this weapon*/
-	APortalCharacter* Character;
+	UPROPERTY(Transient)
+	TObjectPtr<APortalCharacter> Character;
 };

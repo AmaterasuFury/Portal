@@ -9,6 +9,8 @@
 class UBoxComponent;
 class UStaticMeshComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FPortalStateDelegate, bool /* IsActive */)
+
 UCLASS()
 class PORTAL_API AamsuPortal : public AActor
 {
@@ -37,12 +39,15 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
-
-
-	// TODO create not just this bull, but a function to: hide the actor, turn tick off (if needed), turn physic off, etc.
+	
 	bool bIsActive = false;
+	
+	void PortalPlaced(bool bPlacePortal);
+
+	FPortalStateDelegate OnPortalStateChange;
 
 	void Teleport(AActor* InteractedActor);
 
 	void SetPortalVisibility(bool bMakeVisible);
+	
 };

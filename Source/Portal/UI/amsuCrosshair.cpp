@@ -2,3 +2,63 @@
 
 
 #include "amsuCrosshair.h"
+
+#include "Components/Image.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
+#include "Portal/PortalGunAndComponents/UamsuPortalGun.h"
+#include "Portal/Portals/amsuPortal.h"
+
+void UamsuCrosshair::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
+	CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
+	CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
+
+	OnPortalGunPickedUpBind();
+}
+
+void UamsuCrosshair::OnPortalGunPickedUpBind()
+{
+	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	if (IsValid(PortalCharacter))
+	{
+		PortalCharacter->OnGunPickedUp.BindUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
+	}
+}
+
+
+void UamsuCrosshair::BindCrosshairDelegates()
+{
+	const APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	if (IsValid(PortalCharacter))
+	{
+		PortalCharacter->PortalGun->PortalOne->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairOne);
+		PortalCharacter->PortalGun->PortalTwo->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairTwo);
+	}
+}
+// TODO think about changing the image instead of having 4 widgets (like probably use two different textures (for enabled/disabled states))
+void UamsuCrosshair::UpdateCrosshairOne(bool IsActive)
+{
+	if (IsActive)  // TODO think if u need to add a function so u wont double the code
+	{
+		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	else
+	{
+		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+}
+
+void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
+{
+	if (IsActive)  // TODO think if u need to add a function so u wont double the code
+	{
+		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	else
+	{
+		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+}

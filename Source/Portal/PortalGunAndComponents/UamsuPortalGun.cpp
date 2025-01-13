@@ -112,6 +112,8 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+	
+	Portal->PortalPlaced(true);
 }
 
 bool UamsuPortalGun::CanBeSpawnedHere() const
@@ -134,7 +136,7 @@ void UamsuPortalGun::FireRight()
 {
 	if (IsValid(PortalTwo))
 	{
-		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there
+		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there AND broadcast to the chrosshair
 		PortalTwo->SetPortalVisibility(true);
 		ShootPortal(PortalTwo);
 	}
@@ -165,7 +167,9 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 	{
 		OldOwner->Destroy();
 	}
-
+	
+	Character->PortalGun = this;
+	
 	// Set up action bindings
 	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
 	{
@@ -183,6 +187,8 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 		}
 	}
 
+	Character->OnGunPickUpExecute();
+	
 	return true;
 }
 

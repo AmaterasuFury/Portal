@@ -8,6 +8,7 @@
 #include "Logging/LogMacros.h"
 #include "PortalCharacter.generated.h"
 
+class UamsuPortalGun;
 class UamsuInteractionDetectComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -16,7 +17,11 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 
+class AamsuPortal;
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+DECLARE_DELEGATE(FGunPickedUp)
 
 UCLASS(config=Game)
 class APortalCharacter : public ACharacter
@@ -44,7 +49,7 @@ class APortalCharacter : public ACharacter
 
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* InteractAction; 
+	TObjectPtr<UInputAction> InteractAction;
 	
 	/** A component to detect if the aimed actor implements Interactable interface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact Detection Component", meta = (AllowPrivateAccess = "true"))
@@ -77,8 +82,7 @@ protected:
 	void Interact();
 	/** Called for interact stop input */
 	void InteractStop();
-	
-protected:
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -89,5 +93,13 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	/** Is set when the character picks up the portal gun */
+	UPROPERTY(Transient)
+	TObjectPtr<UamsuPortalGun> PortalGun;
+	
+	FGunPickedUp OnGunPickedUp;
+
+	// Executes the 
+	void OnGunPickUpExecute();
 };
 
