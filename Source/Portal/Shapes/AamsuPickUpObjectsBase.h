@@ -17,11 +17,6 @@ class PORTAL_API AamsuPickUpObjectsBase : public AActor, public IamsuInteractabl
 
 public:
 	AamsuPickUpObjectsBase();
-	
-protected:
-	virtual void BeginPlay() override;
-	
-public:
 
 	UPROPERTY(EditAnywhere)
 	float ObjectMass = 100.0f;
