@@ -31,7 +31,13 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
+	if (bAlreadyHolding)
+	{
+		PickUpEnd();
+		return;
+	}
 	InteractingActor = InInteractedActor;
+	bAlreadyHolding = true;
 	SetComponentTickEnabled(true);
 	
 	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpStart() Called"));
@@ -40,6 +46,7 @@ void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 void UamsuHoldObjectComponent::PickUpEnd() 
 {
 	InteractingActor = nullptr;
+	bAlreadyHolding = false;
 	SetComponentTickEnabled(false);
 
 	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpEnd() Called"));
@@ -82,8 +89,8 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(InteractingActor);
-	// todo delete the Playcontroller, just use GetWorld()
-	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
+	
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
 
 	FTimerManager& Manager = GetWorld()->GetTimerManager();
 	
@@ -97,7 +104,7 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 		Manager.ClearTimer(TimerTillDrop);
 	}
 	
-// todo	Drop if has blocking hit by LineTrace
+
 // todo	Sweep that we can move
 // todo Follow the character rotation	
 //	First task:

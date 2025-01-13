@@ -42,4 +42,6 @@ protected:
 
 private:
 	FTimerHandle TimerTillDrop;
+
+	bool bAlreadyHolding = false;
 };
