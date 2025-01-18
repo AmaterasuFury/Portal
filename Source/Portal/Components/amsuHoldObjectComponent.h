@@ -36,12 +36,12 @@ public:
 	/** Time before dropping an object if it is not in front of a character or something is between them*/
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float ObjectReleaseTime = 1.f;
+
+	bool bAlreadyHolding = false;
 	 
 protected:
 	virtual void BeginPlay() override;
-
+	
 private:
 	FTimerHandle TimerTillDrop;
-
-	bool bAlreadyHolding = false;
 };

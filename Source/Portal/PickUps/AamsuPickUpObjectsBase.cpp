@@ -26,5 +26,12 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
-	HoldObjectComponent->PickUpStart(InteractActor);
+	if (!HoldObjectComponent->bAlreadyHolding)
+	{
+		HoldObjectComponent->PickUpStart(InteractActor);
+	}
+	else
+	{
+		HoldObjectComponent->PickUpEnd();
+	}
 }
