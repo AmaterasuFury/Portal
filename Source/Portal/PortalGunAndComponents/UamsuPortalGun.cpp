@@ -113,7 +113,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 		}
 	}
 	
-	Portal->PortalPlaced(true);
+	Portal->OnPortalPlaced(true);
 }
 
 bool UamsuPortalGun::CanBeSpawnedHere() const
@@ -187,7 +187,7 @@ bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 		}
 	}
 
-	Character->OnGunPickUpExecute();
+	Character->BroadcastOnGunPickUp();
 	
 	return true;
 }

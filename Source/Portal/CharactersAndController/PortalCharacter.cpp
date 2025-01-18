@@ -77,9 +77,9 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 }
 
-void APortalCharacter::OnGunPickUpExecute()
+void APortalCharacter::BroadcastOnGunPickUp()
 {
-	OnGunPickedUp.ExecuteIfBound();
+	OnGunPickedUp.Broadcast();
 }
 
 

@@ -22,17 +22,6 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 	HoldObjectComponent = CreateDefaultSubobject<UamsuHoldObjectComponent>(TEXT("Hold Object Component"));
 }
 
-void AamsuPickUpObjectsBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//PickUpObjectMeshComponent->SetSimulatePhysics(true);
-	//PickUpObjectMeshComponent->SetMassOverrideInKg(NAME_None, ObjectMass, true);
-	//PickUpObjectMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	//PickUpObjectMeshComponent->SetCollisionObjectType(ECC_WorldDynamic);
-	//PickUpObjectMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-}
 
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)

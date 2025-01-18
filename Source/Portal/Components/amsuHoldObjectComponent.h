@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "amsuHoldObjectComponent.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogHoldObjectComponent, Log, All);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PORTAL_API UamsuHoldObjectComponent : public UActorComponent
@@ -31,7 +32,16 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float MovementSpeed = 1000.f;
+
+	/** Time before dropping an object if it is not in front of a character or something is between them*/
+	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
+	float ObjectReleaseTime = 1.f;
 	 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	FTimerHandle TimerTillDrop;
+
+	bool bAlreadyHolding = false;
 };

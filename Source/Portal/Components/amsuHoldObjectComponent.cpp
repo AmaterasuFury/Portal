@@ -2,7 +2,9 @@
 
 
 #include "amsuHoldObjectComponent.h"
+#include "Portal/HelperHeaders/amsuGetHelper.h"
 
+DEFINE_LOG_CATEGORY(LogHoldObjectComponent)
 
 // Sets default values for this component's properties
 UamsuHoldObjectComponent::UamsuHoldObjectComponent()
@@ -19,9 +21,8 @@ void UamsuHoldObjectComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                              FActorComponentTickFunction* ThisTickFunction)
+                                             FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -30,20 +31,31 @@ void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 
 void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 {
+	if (bAlreadyHolding)
+	{
+		PickUpEnd();
+		return;
+	}
 	InteractingActor = InInteractedActor;
+	bAlreadyHolding = true;
 	SetComponentTickEnabled(true);
+	
+	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpStart() Called"));
 }
 
 void UamsuHoldObjectComponent::PickUpEnd() 
 {
 	InteractingActor = nullptr;
+	bAlreadyHolding = false;
 	SetComponentTickEnabled(false);
+
+	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpEnd() Called"));
 }
-PRAGMA_DISABLE_OPTIMIZATION
+
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
 {
-	const APawn* InteractingPawn = Cast<APawn>(InteractingActor);
-	const APlayerController* PlayerController = Cast<APlayerController>(InteractingPawn->GetController());
+	
+	const APlayerController* PlayerController = GetPlayerController(InteractingActor); 
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -78,21 +90,24 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(InteractingActor);
 	
-	PlayerController->GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
+	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceEnd, ECC_Visibility, CollisionQueryParams);
 
-	if (HitResult.GetActor() != GetOwner())
+	FTimerManager& Manager = GetWorld()->GetTimerManager();
+	
+	if (HitResult.GetActor() != GetOwner() && !Manager.IsTimerActive(TimerTillDrop))
 	{
-		
-		PickUpEnd();
+		Manager.SetTimer(TimerTillDrop, this, &UamsuHoldObjectComponent::PickUpEnd, ObjectReleaseTime, false);
+	}
+
+	if (HitResult.GetActor() == GetOwner())
+	{
+		Manager.ClearTimer(TimerTillDrop);
 	}
 	
-	
-// todo	Drop if has blocking hit by LineTrace
+
 // todo	Sweep that we can move
 // todo Follow the character rotation	
 //	First task:
 // 
 	
 }
-
-PRAGMA_ENABLE_OPTIMIZATION

@@ -12,53 +12,61 @@ void UamsuCrosshair::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
-	CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
-	CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
+	MainCrosshair->SetVisibility(ESlateVisibility::Collapsed);
+	//CrosshairPortalOne->SetVisibility(ESlateVisibility::Hidden);
+	//CrosshairPortalTwo->SetVisibility(ESlateVisibility::Hidden);
 
-	OnPortalGunPickedUpBind();
+	// TODO Modify or delete and just dont set any in the UImage
+	CrosshairPortalOne->SetBrushFromTexture(nullptr);
+	//CrosshairPortalOne->SetBrushTintColor(FLinearColor::Transparent);
+	CrosshairPortalTwo->SetBrushFromTexture(nullptr);
+	//CrosshairPortalTwo->SetBrushTintColor(FLinearColor::Transparent);
+	// ^ TODO Modify or delete and just dont set any in the UImag ^
+	
+	SubscribeOnPortalGunPickedUp();
 }
 
-void UamsuCrosshair::OnPortalGunPickedUpBind()
+void UamsuCrosshair::NativeDestruct()
 {
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
-		PortalCharacter->OnGunPickedUp.BindUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
+		PortalCharacter->OnGunPickedUp.Clear();
+	}
+	
+	Super::NativeDestruct();
+}
+
+void UamsuCrosshair::SubscribeOnPortalGunPickedUp()
+{
+	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	if (IsValid(PortalCharacter))
+	{
+		BindCrosshairDelegateHandle = PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
 	}
 }
 
 
 void UamsuCrosshair::BindCrosshairDelegates()
 {
-	const APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
+	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
+		MainCrosshair->SetVisibility(ESlateVisibility::HitTestInvisible);
+		
 		PortalCharacter->PortalGun->PortalOne->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairOne);
 		PortalCharacter->PortalGun->PortalTwo->OnPortalStateChange.AddUObject(this, &UamsuCrosshair::UpdateCrosshairTwo);
+		
+		PortalCharacter->OnGunPickedUp.Remove(BindCrosshairDelegateHandle);
 	}
 }
 // TODO think about changing the image instead of having 4 widgets (like probably use two different textures (for enabled/disabled states))
-void UamsuCrosshair::UpdateCrosshairOne(bool IsActive)
+void UamsuCrosshair::UpdateCrosshairOne(bool bIsActive)
 {
-	if (IsActive)  // TODO think if u need to add a function so u wont double the code
-	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	else
-	{
-		CrosshairPortalOne->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	CrosshairPortalOne->SetBrushFromTexture(bIsActive ? ActiveCrosshairPortalOneTexture : DisabledCrosshairPortalOneTexture);
 }
 
 void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
 {
-	if (IsActive)  // TODO think if u need to add a function so u wont double the code
-	{
-		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	else
-	{
-		CrosshairPortalTwo->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	CrosshairPortalTwo->SetBrushFromTexture(IsActive ? ActiveCrosshairPortalTwoTexture : DisabledCrosshairPortalTwoTexture);
 }

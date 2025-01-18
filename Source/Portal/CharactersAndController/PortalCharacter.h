@@ -21,7 +21,7 @@ class AamsuPortal;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
-DECLARE_DELEGATE(FGunPickedUp)
+DECLARE_MULTICAST_DELEGATE(FGunPickedUp)
 
 UCLASS(config=Game)
 class APortalCharacter : public ACharacter
@@ -100,6 +100,6 @@ public:
 	FGunPickedUp OnGunPickedUp;
 
 	// Executes the 
-	void OnGunPickUpExecute();
+	void BroadcastOnGunPickUp();
 };
 
