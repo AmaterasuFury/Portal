@@ -129,13 +129,4 @@ void APortalCharacter::Interact()
 	}
 }
 
-void APortalCharacter::InteractStop()
-{
-	check(IsValid(InteractDetectComponent));
-	
-	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
-	{
-		IamsuInteractable::Execute_InteractStop(InteractedActor.GetObject(), this);
-	}
-}
 

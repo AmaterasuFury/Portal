@@ -80,8 +80,6 @@ protected:
 
 	/** Called for interact input */
 	void Interact();
-	/** Called for interact stop input */
-	void InteractStop();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
