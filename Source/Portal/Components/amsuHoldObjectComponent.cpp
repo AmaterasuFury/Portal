@@ -2,7 +2,7 @@
 
 
 #include "amsuHoldObjectComponent.h"
-#include "Portal/HelperHeaders/amsuGetHelper.h"
+#include "Portal/CodeHelpers/amsuGetHelper.h"
 
 DEFINE_LOG_CATEGORY(LogHoldObjectComponent)
 
@@ -55,7 +55,7 @@ void UamsuHoldObjectComponent::PickUpEnd()
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
 {
 	
-	const APlayerController* PlayerController = GetPlayerController(InteractingActor); 
+	const APlayerController* PlayerController = amsuGetHelper::GetPlayerController(InteractingActor); 
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -82,8 +82,11 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	{
 		return;
 	}
-	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);	
-
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);
+//
+	//FRotator RotationDelta = FRotator::ZeroRotator;
+	//
+	//GetOwner()->GetRootComponent()->AddLocalRotation(RotationDelta);
 	
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * HoldDistance;
 	FHitResult HitResult;

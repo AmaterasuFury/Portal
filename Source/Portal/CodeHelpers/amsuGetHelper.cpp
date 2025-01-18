@@ -1,9 +1,8 @@
 ﻿#pragma once
 
-#include "CoreMinimal.h"
+#include "Portal/CodeHelpers/amsuGetHelper.h"
 
-// TODO upgrade and refactor - use templates 
-inline APlayerController* GetPlayerController(AActor* Actor)
+APlayerController* amsuGetHelper::GetPlayerController(AActor* Actor)
 {
 	if (!IsValid(Actor))
 	{
@@ -12,3 +11,5 @@ inline APlayerController* GetPlayerController(AActor* Actor)
 	const APawn* InteractingPawn = Cast<APawn>(Actor);
 	return Cast<APlayerController>(InteractingPawn->GetController());
 }
+
+
