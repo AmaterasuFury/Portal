@@ -8,7 +8,12 @@ APlayerController* amsuGetHelper::GetPlayerController(AActor* Actor)
 	{
 		return nullptr;
 	}
+
 	const APawn* InteractingPawn = Cast<APawn>(Actor);
+	if (!IsValid(InteractingPawn))
+	{
+		return nullptr;
+	}
 	return Cast<APlayerController>(InteractingPawn->GetController());
 }
 
