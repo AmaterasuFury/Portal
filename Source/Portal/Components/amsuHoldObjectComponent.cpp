@@ -90,11 +90,12 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	{
 		return;
 	}
+	
+	FRotator DeltaRotation = FRotator::ZeroRotator;
+	DeltaRotation.Yaw = ViewRotation.Yaw;
+	
 	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);
-//
-	//FRotator RotationDelta = FRotator::ZeroRotator;
-	//
-	//GetOwner()->GetRootComponent()->AddLocalRotation(RotationDelta);
+	GetOwner()->GetRootComponent()->SetRelativeRotation(DeltaRotation, true);
 	
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * HoldDistance;
 	FHitResult HitResult;
@@ -116,9 +117,6 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	}
 	
 
-// todo	Sweep that we can move
-// todo Follow the character rotation	
-//	First task:
-// 
+// todo Make the Sweep work 
 	
 }
