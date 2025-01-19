@@ -34,10 +34,10 @@ public:
 
 	void SubscribeOnPortalGunPickedUp();
 	
-	void BindCrosshairDelegates();
+	void HandleGunPickedUp();
 
 	void UpdateCrosshairOne(bool bIsActive);
-	void UpdateCrosshairTwo(bool IsActive);
+	void UpdateCrosshairTwo(bool bIsActive);
 
 	/** The texture u have to set*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Crosshair")

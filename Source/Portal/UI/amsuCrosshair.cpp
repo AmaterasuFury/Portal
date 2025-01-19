@@ -31,7 +31,7 @@ void UamsuCrosshair::NativeDestruct()
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
-		PortalCharacter->OnGunPickedUp.Clear();
+		PortalCharacter->OnGunPickedUp.Remove(BindCrosshairDelegateHandle);
 	}
 	
 	Super::NativeDestruct();
@@ -42,12 +42,12 @@ void UamsuCrosshair::SubscribeOnPortalGunPickedUp()
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
 	{
-		BindCrosshairDelegateHandle = PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::BindCrosshairDelegates);
+		BindCrosshairDelegateHandle = PortalCharacter->OnGunPickedUp.AddUObject(this, &UamsuCrosshair::HandleGunPickedUp);
 	}
 }
 
 
-void UamsuCrosshair::BindCrosshairDelegates()
+void UamsuCrosshair::HandleGunPickedUp()
 {
 	APortalCharacter* const PortalCharacter = GetOwningPlayerPawn<APortalCharacter>();
 	if (IsValid(PortalCharacter))
@@ -66,7 +66,7 @@ void UamsuCrosshair::UpdateCrosshairOne(bool bIsActive)
 	CrosshairPortalOne->SetBrushFromTexture(bIsActive ? ActiveCrosshairPortalOneTexture : DisabledCrosshairPortalOneTexture);
 }
 
-void UamsuCrosshair::UpdateCrosshairTwo(bool IsActive)
+void UamsuCrosshair::UpdateCrosshairTwo(bool bIsActive)
 {
-	CrosshairPortalTwo->SetBrushFromTexture(IsActive ? ActiveCrosshairPortalTwoTexture : DisabledCrosshairPortalTwoTexture);
+	CrosshairPortalTwo->SetBrushFromTexture(bIsActive ? ActiveCrosshairPortalTwoTexture : DisabledCrosshairPortalTwoTexture);
 }
