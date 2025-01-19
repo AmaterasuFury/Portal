@@ -21,6 +21,14 @@ void UamsuHoldObjectComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UamsuHoldObjectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	FTimerManager& Manager = GetWorld()->GetTimerManager();
+
+	Manager.ClearTimer(TimerTillDrop);
+	Super::EndPlay(EndPlayReason);
+}
+
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
