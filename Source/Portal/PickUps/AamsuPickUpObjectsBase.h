@@ -10,6 +10,8 @@
 class UamsuHoldObjectComponent;
 class UStaticMeshComponent;
 
+DECLARE_LOG_CATEGORY_EXTERN(amsuPickUpObjectsBase, Log, All);
+
 UCLASS()
 class PORTAL_API AamsuPickUpObjectsBase : public AActor, public IamsuInteractable
 {
@@ -28,4 +30,6 @@ public:
 	TObjectPtr<UamsuHoldObjectComponent> HoldObjectComponent;
 	
 	virtual void Interact_Implementation(AActor* InteractActor) override;
+
+	void PhysicsToggle(bool bPhysicsOn);
 };

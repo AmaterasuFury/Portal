@@ -6,6 +6,8 @@
 
 #include "Portal/amsuMyCollisionChannels.h"
 
+DEFINE_LOG_CATEGORY(amsuPickUpObjectsBase);
+
 AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,7 +15,7 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
-	PickUpObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
+	PickUpObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pick Up Object Mesh"));
 	PickUpObjectMeshComponent->SetupAttachment(RootComponent);
 
 	PickUpObjectMeshComponent->SetCollisionProfileName(TEXT("Custom"));
@@ -35,3 +37,24 @@ void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 		HoldObjectComponent->PickUpEnd();
 	}
 }
+
+void AamsuPickUpObjectsBase::PhysicsToggle(bool bPhysicsOn)
+{
+	if (!IsValid(PickUpObjectMeshComponent))
+	{
+		return;
+	}
+	if (bPhysicsOn)
+	{
+		UE_LOG(amsuPickUpObjectsBase, Log, TEXT("Physics Toggle ON (true)"))
+		PickUpObjectMeshComponent->SetSimulatePhysics(true);
+		PickUpObjectMeshComponent->SetEnableGravity(true);
+	}
+	else
+	{
+		UE_LOG(amsuPickUpObjectsBase, Log, TEXT("Physics Toggle Off (false)"))
+		PickUpObjectMeshComponent->SetSimulatePhysics(false);
+		PickUpObjectMeshComponent->SetEnableGravity(false);
+	}
+}
+

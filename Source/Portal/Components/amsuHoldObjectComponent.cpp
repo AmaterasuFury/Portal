@@ -3,6 +3,7 @@
 
 #include "amsuHoldObjectComponent.h"
 #include "Portal/CodeHelpers/amsuGetHelper.h"
+#include "Portal/PickUps/AamsuPickUpObjectsBase.h"
 
 DEFINE_LOG_CATEGORY(LogHoldObjectComponent)
 
@@ -44,6 +45,13 @@ void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 		PickUpEnd();
 		return;
 	}
+	
+	AamsuPickUpObjectsBase* PickUpObject = Cast<AamsuPickUpObjectsBase>(GetOwner());
+	if (IsValid(PickUpObject))
+	{
+		PickUpObject->PhysicsToggle(false);
+	}
+	
 	InteractingActor = InInteractedActor;
 	bAlreadyHolding = true;
 	SetComponentTickEnabled(true);
@@ -56,6 +64,12 @@ void UamsuHoldObjectComponent::PickUpEnd()
 	InteractingActor = nullptr;
 	bAlreadyHolding = false;
 	SetComponentTickEnabled(false);
+
+	AamsuPickUpObjectsBase* PickUpObject = Cast<AamsuPickUpObjectsBase>(GetOwner());
+	if (IsValid(PickUpObject))
+	{
+		PickUpObject->PhysicsToggle(true);
+	}
 
 	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpEnd() Called"));
 }
