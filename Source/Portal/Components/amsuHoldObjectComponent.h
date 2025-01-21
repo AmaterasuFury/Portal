@@ -31,11 +31,11 @@ public:
 	float HoldDistance = 150.f;
 
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	float MovementSpeed = 1000.f;
+	float MovementSpeed = 1500.f;
 
 	/** Time before dropping an object if it is not in front of a character or something is between them*/
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
-	float ObjectReleaseTime = 1.f;
+	float ObjectReleaseTime = 0.2f;
 
 	bool bAlreadyHolding = false;
 	 

@@ -13,10 +13,8 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
-
 	PickUpObjectMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pick Up Object Mesh"));
-	PickUpObjectMeshComponent->SetupAttachment(RootComponent);
+	RootComponent = PickUpObjectMeshComponent;
 
 	PickUpObjectMeshComponent->SetCollisionProfileName(TEXT("Custom"));
 	PickUpObjectMeshComponent->SetCollisionResponseToChannel(Portal::ECC_Interaction, ECR_Block);
