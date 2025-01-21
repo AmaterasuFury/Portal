@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AamsuBridge.h"
+#include "AamsuGenerator.h"
 #include "Components/ArrowComponent.h"
 
-AamsuBridge::AamsuBridge()
+AamsuGenerator::AamsuGenerator()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -20,7 +20,7 @@ AamsuBridge::AamsuBridge()
 	InitialBridgeTransform->SetupAttachment(RootComponent);
 }
 
-void AamsuBridge::OnConstruction(const FTransform& Transform)
+void AamsuGenerator::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
@@ -28,12 +28,12 @@ void AamsuBridge::OnConstruction(const FTransform& Transform)
 }
 
 
-void AamsuBridge::BeginPlay()
+void AamsuGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AamsuBridge::SpawnBridge()
+void AamsuGenerator::SpawnBridge()
 {
 	if (!ensure(IsValid(Bridge) && IsValid(InitialBridgeTransform)))
 	{
