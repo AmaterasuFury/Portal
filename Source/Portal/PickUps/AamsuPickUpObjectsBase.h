@@ -31,5 +31,5 @@ public:
 	
 	virtual void Interact_Implementation(AActor* InteractActor) override;
 
-	void PhysicsToggle(bool bPhysicsOn);
+	void PhysicsToggle(bool bPhysicsOn) const;
 };

@@ -26,7 +26,7 @@ AamsuPickUpObjectsBase::AamsuPickUpObjectsBase()
 
 void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 {
-	if (!HoldObjectComponent->bAlreadyHolding)
+	if (!HoldObjectComponent->IsAlreadyHolding())
 	{
 		HoldObjectComponent->PickUpStart(InteractActor);
 	}
@@ -36,7 +36,7 @@ void AamsuPickUpObjectsBase::Interact_Implementation(AActor* InteractActor)
 	}
 }
 
-void AamsuPickUpObjectsBase::PhysicsToggle(bool bPhysicsOn)
+void AamsuPickUpObjectsBase::PhysicsToggle(bool bPhysicsOn) const 
 {
 	if (!IsValid(PickUpObjectMeshComponent))
 	{
@@ -45,14 +45,13 @@ void AamsuPickUpObjectsBase::PhysicsToggle(bool bPhysicsOn)
 	if (bPhysicsOn)
 	{
 		UE_LOG(amsuPickUpObjectsBase, Log, TEXT("Physics Toggle ON (true)"))
-		PickUpObjectMeshComponent->SetSimulatePhysics(true);
-		PickUpObjectMeshComponent->SetEnableGravity(true);
 	}
 	else
 	{
 		UE_LOG(amsuPickUpObjectsBase, Log, TEXT("Physics Toggle Off (false)"))
-		PickUpObjectMeshComponent->SetSimulatePhysics(false);
-		PickUpObjectMeshComponent->SetEnableGravity(false);
 	}
+	
+	PickUpObjectMeshComponent->SetSimulatePhysics(bPhysicsOn);
+	PickUpObjectMeshComponent->SetEnableGravity(bPhysicsOn);
 }
 

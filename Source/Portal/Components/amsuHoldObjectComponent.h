@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float ObjectReleaseTime = 0.2f;
 
-	bool bAlreadyHolding = false;
+	bool IsAlreadyHolding() const;
 	 
 protected:
 	virtual void BeginPlay() override;
@@ -45,4 +45,6 @@ protected:
 	
 private:
 	FTimerHandle TimerTillDrop;
+
+	bool bAlreadyHolding = false;
 };

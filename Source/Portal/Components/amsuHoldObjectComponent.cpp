@@ -30,6 +30,11 @@ void UamsuHoldObjectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+bool UamsuHoldObjectComponent::IsAlreadyHolding() const
+{
+	return bAlreadyHolding;
+}
+
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
