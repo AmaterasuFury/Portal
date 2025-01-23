@@ -112,6 +112,17 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	
 	FRotator DeltaRotation = FRotator::ZeroRotator;
 	DeltaRotation.Yaw = ViewRotation.Yaw;
+
+// ToDO Refactor or delete 	
+//	const float Distance = FVector::Dist(InteractingActor->GetActorLocation(), ObjectLocation);
+//	if (Distance <= MinMoveDistance)
+//	{
+//		FVector PushDirection = (ObjectLocation - InteractingActor->GetActorLocation()).GetSafeNormal();
+//
+//		FVector AdditionalPush = PushDirection * (MinMoveDistance - Distance);
+//		
+//		Delta += AdditionalPush;
+//	}
 	
 	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);
 	GetOwner()->GetRootComponent()->SetRelativeRotation(DeltaRotation, true);

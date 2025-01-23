@@ -30,6 +30,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float HoldDistance = 150.f;
 
+//  ToDO Refactor or delete 	
+//	/** The distance tha will not be exceeded when the character holds an object and rotates 
+//	 * (So the object would not "go through the character */
+//	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
+//	float MinMoveDistance = 50.f;
+
 	UPROPERTY(EditAnywhere, Category = "Hold Object Component")
 	float MovementSpeed = 1500.f;
 
