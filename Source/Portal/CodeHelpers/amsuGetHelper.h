@@ -7,4 +7,6 @@
 struct amsuGetHelper
 {
 	static APlayerController* GetPlayerController(AActor* Actor);
+
+	static TArray<APlayerController*> GetAllPlayerControllers(const UWorld* World);
 };
