@@ -17,15 +17,27 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Aimed Actor Component Parameters")
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = "Turret parameters")
 	/** Recommended value is about 90 degrees */
 	float FOVAngle = 90.f;
+
+	UPROPERTY(EditAnywhere, Category = "Turret parameters")
+	float CheckDistance = 3000.f;
 	
-	/** Gets all actors in the FOV, of the owner. Notice: the function checks the actors by their location, if the actor is big, the function might not detect it */
-	TArray<AActor*> FOVActorsCheck(float InCheckDistance, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
-
-	TArray<AActor*> GetAllActorsInRadius(float InCheckDistance, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
-
+	/** Gets all characters in the FOV, of the owner*/
+	TArray<APlayerController*> FOVCharactersCheck(float InCheckDistance) const;
+	
 	/** Checks if an actor is being Out Of Sight by doing LineTraceSingleByChannel */
-	bool IsActorCovered(FVector OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+	bool IsCharacterCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+
+	/** Scans for the character in the provided FOVAngle and shot if finds */
+	void OnActiveMode(bool bActivate);
+	
+	
+	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
+	
+private:
+	bool bIsInActiveRadius = false;
 };

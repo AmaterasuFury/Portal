@@ -3,7 +3,7 @@
 
 #include "AamsuTurret.h"
 #include "Engine/OverlapResult.h"
-
+#include "Portal/CodeHelpers/amsuGetHelper.h"
 
 AamsuTurret::AamsuTurret()
 {
@@ -13,70 +13,73 @@ AamsuTurret::AamsuTurret()
 void AamsuTurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	TArray<APlayerController*> FOVCharacters = FOVCharactersCheck(CheckDistance);
+
+	OnActiveMode(bIsInActiveRadius);
 }
 
-/** Notice: the function checks the actors by their location, if the actor is big, the function might not detect it.
- * If u want to make this function more accurate u would have to implement a logic to additionally trace a linetrace to actors angle, but it would cost you more of the performance, of course */
-TArray<AActor*> AamsuTurret::FOVActorsCheck(float InCheckDistance, ECollisionChannel InCollisionChannel) const
-{ 
-	const TArray<AActor*> AllActorsInRadius = GetAllActorsInRadius(InCheckDistance, InCollisionChannel);
-	TArray<AActor*> ActorsInFOV;
+void AamsuTurret::BeginPlay()
+{
+	Super::BeginPlay();
 
-	const FVector OwnerPosition = GetOwner()->GetActorLocation();
-	const FVector NormalizedOwnerForward = GetOwner()->GetActorForwardVector();
+	PlayerControllersInWorld = amsuGetHelper::GetAllPlayerControllers(GetWorld());
+
+	SetActorTickEnabled(true);
+}
+
+// todo fix description
+/** If u want to make this function more accurate u would have to implement a logic to additionally trace a linetrace to actors angle, but it would cost you more of the performance, of course */
+TArray<APlayerController*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
+{
+	TArray<APlayerController*> PlayerControllersInRadius;
+	if (PlayerControllersInWorld.IsEmpty())
+	{
+		return PlayerControllersInWorld;
+	}
+
+	const FVector TurretLocation = GetOwner()->GetTargetLocation();
 	
+	
+	for (TObjectPtr<APlayerController> PlayerController : PlayerControllersInWorld)
+	{
+		if (FVector::Dist(PlayerController->GetTargetLocation(), TurretLocation) <= InCheckDistance)
+		{
+			PlayerControllersInRadius.Add(PlayerController);
+		}
+	}
+	if (PlayerControllersInRadius.IsEmpty())
+	{
+		return PlayerControllersInRadius;
+	}
+
+	TArray<APlayerController*> PlayerControllersInFOV;
+	
+	const FVector NormalizedOwnerForward = GetOwner()->GetActorForwardVector();
 	TArray<FVector> NormalizedDirectionToTargets;
 	
-	for (const auto ActorInRadius : AllActorsInRadius)
+	for (APlayerController* PlayerController: PlayerControllersInRadius)
 	{
-		if (IsValid(ActorInRadius))
+		if (IsValid(PlayerController))
 		{
-			const FVector NormalizedDirectionToTarget = (ActorInRadius->GetActorLocation() - OwnerPosition).GetSafeNormal();
+			const FVector NormalizedDirectionToTarget = (PlayerController->GetTargetLocation() - TurretLocation).GetSafeNormal();
 
 			const float DotProduct = FVector::DotProduct(NormalizedOwnerForward, NormalizedDirectionToTarget);
 			
 			const float Threshold = FMath::Cos(FMath::DegreesToRadians(FOVAngle / 2));
 			
-			if (DotProduct >= Threshold && !IsActorCovered(OwnerPosition, ActorInRadius)) 
+			if (DotProduct >= Threshold && !IsCharacterCovered(TurretLocation, PlayerController)) 
 			{
-				ActorsInFOV.Add(ActorInRadius);
+				PlayerControllersInFOV.Add(PlayerController);
 			}
 		}
 	}
 	
-	return ActorsInFOV;
+	return PlayerControllersInFOV;
 }
 
-TArray<AActor*> AamsuTurret::GetAllActorsInRadius(float InCheckDistance, ECollisionChannel InCollisionChannel) const
-{
-	TArray<AActor*> FoundActors;
-	TArray<FOverlapResult> OutOverlaps;
-	FCollisionQueryParams FCollisionQueryParams;
-	
-	TArray<AActor*> IgnoredActors;
-	IgnoredActors.Add(GetOwner());
-	
-	FCollisionQueryParams.AddIgnoredActors(IgnoredActors);
-	
-	GetWorld()->OverlapMultiByChannel(OutOverlaps, GetOwner()->GetActorLocation(), FQuat::Identity, InCollisionChannel,
-		FCollisionShape::MakeSphere(InCheckDistance), FCollisionQueryParams);
-	
 
-	
-	
-	for (const FOverlapResult& OutOverlap : OutOverlaps)
-	{
-		if (!IsValid(OutOverlap.GetActor()))
-		{
-			continue;
-		}
-		FoundActors.Add(OutOverlap.GetActor());
-	}
-	
-	return FoundActors;
-}
-
-bool AamsuTurret::IsActorCovered(FVector OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel) const
+bool AamsuTurret::IsCharacterCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel) const
 {
 	FHitResult HitResult;
 	FCollisionQueryParams FCollisionQueryParams;
@@ -87,3 +90,15 @@ bool AamsuTurret::IsActorCovered(FVector OwnerPosition, AActor* TargetActor, ECo
 	
 	return HitResult.GetActor() != TargetActor;
 }
+
+void AamsuTurret::OnActiveMode(bool bActivate)
+{
+	//TArray<AActor*> AllFOVActors = FOVCharactersCheck(CheckDistance, ECC_Pawn);
+//
+	//TArray<ACharacter*> FOVCharacters;
+	//for (AActor* FOVActor : FOVActors)
+	//{
+	//	 
+	//}
+}
+
