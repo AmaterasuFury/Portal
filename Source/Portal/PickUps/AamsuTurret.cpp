@@ -5,6 +5,8 @@
 #include "Engine/OverlapResult.h"
 #include "Portal/CodeHelpers/amsuGetHelper.h"
 
+DEFINE_LOG_CATEGORY(amsuTurret)
+
 AamsuTurret::AamsuTurret()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,14 +20,14 @@ void AamsuTurret::Tick(float DeltaTime)
 
 	OnActiveMode(bIsInActiveRadius);
 }
-
+PRAGMA_DISABLE_OPTIMIZATION
 void AamsuTurret::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerControllersInWorld = amsuGetHelper::GetAllPlayerControllers(GetWorld());
-
 	SetActorTickEnabled(true);
+
+	PlayerControllersInWorld = amsuGetHelper::GetAllPlayerControllers(GetWorld());
 }
 
 // todo fix description
@@ -37,8 +39,13 @@ TArray<APlayerController*> AamsuTurret::FOVCharactersCheck(float InCheckDistance
 	{
 		return PlayerControllersInWorld;
 	}
-
-	const FVector TurretLocation = GetOwner()->GetTargetLocation();
+	
+	if (!IsValid(RootComponent))
+	{
+		UE_LOG(amsuTurret, Log, TEXT("WARNING, the RootComponet of the amsuTurret is not valid"))
+	}
+	//const AActor* ThisActor = this;
+	const FVector TurretLocation = RootComponent->GetComponentLocation();;
 	
 	
 	for (TObjectPtr<APlayerController> PlayerController : PlayerControllersInWorld)
@@ -55,12 +62,13 @@ TArray<APlayerController*> AamsuTurret::FOVCharactersCheck(float InCheckDistance
 
 	TArray<APlayerController*> PlayerControllersInFOV;
 	
-	const FVector NormalizedOwnerForward = GetOwner()->GetActorForwardVector();
+	const FVector NormalizedOwnerForward = RootComponent->GetForwardVector();
 	TArray<FVector> NormalizedDirectionToTargets;
 	
 	for (APlayerController* PlayerController: PlayerControllersInRadius)
 	{
-		if (IsValid(PlayerController))
+		const APawn* CharacterPawn = PlayerController->GetPawn();
+		if (IsValid(CharacterPawn))
 		{
 			const FVector NormalizedDirectionToTarget = (PlayerController->GetTargetLocation() - TurretLocation).GetSafeNormal();
 
@@ -68,7 +76,9 @@ TArray<APlayerController*> AamsuTurret::FOVCharactersCheck(float InCheckDistance
 			
 			const float Threshold = FMath::Cos(FMath::DegreesToRadians(FOVAngle / 2));
 			
-			if (DotProduct >= Threshold && !IsCharacterCovered(TurretLocation, PlayerController)) 
+			bool bTempBool = IsCharacterCovered(TurretLocation, PlayerController, ECC_Pawn);
+			
+			if (DotProduct >= Threshold && !bTempBool) 
 			{
 				PlayerControllersInFOV.Add(PlayerController);
 			}
@@ -84,13 +94,24 @@ bool AamsuTurret::IsCharacterCovered(const FVector& OwnerPosition, AActor* Targe
 	FHitResult HitResult;
 	FCollisionQueryParams FCollisionQueryParams;
 
-	FCollisionQueryParams.AddIgnoredActor(GetOwner());
+	//FCollisionQueryParams.AddIgnoredActor(this);
+	FCollisionQueryParams.AddIgnoredActor(this);
 	
-	GetWorld()->LineTraceSingleByChannel(HitResult, OwnerPosition, TargetActor->GetActorLocation(), InCollisionChannel, FCollisionQueryParams );
+	GetWorld()->LineTraceSingleByChannel(HitResult, OwnerPosition, TargetActor->GetActorLocation(), InCollisionChannel, FCollisionQueryParams);
+
+	FVector Temp1TargetACtorVector = TargetActor->GetActorLocation();
+#if ENABLE_DRAW_DEBUG && 1
+	FVector TempTargetACtorVector = TargetActor->GetActorLocation();
+	DrawDebugLine(GetWorld(), OwnerPosition, TempTargetACtorVector, FColor::Green,
+		true, 0.1f, 0, 4.f);
+#endif
+	
+	
+	AActor* TempActor = HitResult.GetActor();
 	
 	return HitResult.GetActor() != TargetActor;
 }
-
+PRAGMA_ENABLE_OPTIMIZATION
 void AamsuTurret::OnActiveMode(bool bActivate)
 {
 	//TArray<AActor*> AllFOVActors = FOVCharactersCheck(CheckDistance, ECC_Pawn);

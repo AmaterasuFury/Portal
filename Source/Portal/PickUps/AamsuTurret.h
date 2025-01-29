@@ -6,6 +6,7 @@
 #include "AamsuPickUpObjectsBase.h"
 #include "AamsuTurret.generated.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(amsuTurret, Log, Warning)
 
 UCLASS()
 class PORTAL_API AamsuTurret : public AamsuPickUpObjectsBase

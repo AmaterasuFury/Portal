@@ -113,7 +113,7 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	FRotator DeltaRotation = FRotator::ZeroRotator;
 	DeltaRotation.Yaw = ViewRotation.Yaw;
 
-// ToDO Refactor or delete 	
+// ToDO Refactor or delete 	and just dont colide with the character
 //	const float Distance = FVector::Dist(InteractingActor->GetActorLocation(), ObjectLocation);
 //	if (Distance <= MinMoveDistance)
 //	{
