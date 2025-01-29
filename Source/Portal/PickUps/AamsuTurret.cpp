@@ -67,16 +67,16 @@ TArray<APlayerController*> AamsuTurret::FOVCharactersCheck(float InCheckDistance
 	
 	for (APlayerController* PlayerController: PlayerControllersInRadius)
 	{
-		const APawn* CharacterPawn = PlayerController->GetPawn();
+		APawn* CharacterPawn = PlayerController->GetPawn();
 		if (IsValid(CharacterPawn))
 		{
-			const FVector NormalizedDirectionToTarget = (PlayerController->GetTargetLocation() - TurretLocation).GetSafeNormal();
+			const FVector NormalizedDirectionToTarget = (CharacterPawn->GetActorLocation() - TurretLocation).GetSafeNormal();
 
 			const float DotProduct = FVector::DotProduct(NormalizedOwnerForward, NormalizedDirectionToTarget);
 			
 			const float Threshold = FMath::Cos(FMath::DegreesToRadians(FOVAngle / 2));
 			
-			bool bTempBool = IsCharacterCovered(TurretLocation, PlayerController, ECC_Pawn);
+			bool bTempBool = IsCharacterCovered(TurretLocation, CharacterPawn, ECC_Pawn);
 			
 			if (DotProduct >= Threshold && !bTempBool) 
 			{
@@ -103,7 +103,7 @@ bool AamsuTurret::IsCharacterCovered(const FVector& OwnerPosition, AActor* Targe
 #if ENABLE_DRAW_DEBUG && 1
 	FVector TempTargetACtorVector = TargetActor->GetActorLocation();
 	DrawDebugLine(GetWorld(), OwnerPosition, TempTargetACtorVector, FColor::Green,
-		true, 0.1f, 0, 4.f);
+		false, 0.1f, 0, 4.f);
 #endif
 	
 	
