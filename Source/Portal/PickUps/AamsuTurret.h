@@ -28,16 +28,18 @@ public:
 	float CheckDistance = 3000.f;
 	
 	/** Gets all characters in the FOV, of the owner*/
-	TArray<APlayerController*> FOVCharactersCheck(float InCheckDistance) const;
+	TArray<APawn*> FOVCharactersCheck(float InCheckDistance) const;
 	
 	/** Checks if an actor is being Out Of Sight by doing LineTraceSingleByChannel */
-	bool IsCharacterCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+	bool IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
 
 	/** Scans for the character in the provided FOVAngle and shot if finds */
 	void OnActiveMode(bool bActivate);
 	
 	
 	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
+
+	void Shoot(APawn* Pawn);
 	
 private:
 	bool bIsInActiveRadius = false;
