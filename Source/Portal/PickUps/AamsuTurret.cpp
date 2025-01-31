@@ -16,11 +16,11 @@ void AamsuTurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<APawn*> FOVCharacters = FOVCharactersCheck(CheckDistance);
+	
 
 	OnActiveMode(bIsInActiveRadius);
 }
-PRAGMA_DISABLE_OPTIMIZATION
+
 void AamsuTurret::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,8 +30,8 @@ void AamsuTurret::BeginPlay()
 	PlayerControllersInWorld = amsuGetHelper::GetAllPlayerControllers(GetWorld());
 }
 
-// todo fix description
-/** If u want to make this function more accurate u would have to implement a logic to additionally trace a linetrace to actors angle, but it would cost you more of the performance, of course */
+
+/** Returns all pawns in the FOV that are owned by PlayerController*/
 TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
 {
 	TArray<APawn*> PlayerPawnsInRadius;
@@ -64,7 +64,7 @@ TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
 		return PlayerPawnsInRadius;
 	}
 
-	TArray<APawn*> PlayerControllersInFOV;
+	TArray<APawn*> PlayerPawnsInFOV;
 	
 	const FVector NormalizedOwnerForward = RootComponent->GetForwardVector();
 	TArray<FVector> NormalizedDirectionToTargets;
@@ -81,12 +81,12 @@ TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
 			
 			if (DotProduct >= Threshold && !IsActorCovered(TurretLocation, PlayerPawn, ECC_Pawn)) 
 			{
-				PlayerControllersInFOV.Add(PlayerPawn);
+				PlayerPawnsInFOV.Add(PlayerPawn);
 			}
 		}
 	}
 	
-	return PlayerControllersInFOV;
+	return PlayerPawnsInFOV;
 }
 
 
@@ -99,7 +99,7 @@ bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetAct
 	
 	GetWorld()->LineTraceSingleByChannel(HitResult, OwnerPosition, TargetActor->GetActorLocation(), InCollisionChannel, FCollisionQueryParams);
 
-#if ENABLE_DRAW_DEBUG && 1
+#if ENABLE_DRAW_DEBUG && 0
 	if (HitResult.GetActor() == TargetActor)
 	{
 		DrawDebugLine(GetWorld(), OwnerPosition, TargetActor->GetActorLocation(), FColor::Green,
@@ -109,20 +109,47 @@ bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetAct
 	
 	return HitResult.GetActor() != TargetActor;
 }
-PRAGMA_ENABLE_OPTIMIZATION
+
 void AamsuTurret::OnActiveMode(bool bActivate)
 {
-	//TArray<AActor*> AllFOVActors = FOVCharactersCheck(CheckDistance, ECC_Pawn);
-//
-	//TArray<ACharacter*> FOVCharacters;
-	//for (AActor* FOVActor : FOVActors)
-	//{
-	//	 
-	//}
+	TArray<APawn*> FOVCharacters = FOVCharactersCheck(CheckDistance);
+	
+	if (FOVCharacters.IsEmpty())
+	{
+		return;
+	}
+	if (FOVCharacters.Num() == 1)
+	{
+		TargetPawn = FOVCharacters[0];
+	}
+	else
+	{
+		if (!FOVCharacters.Contains(TargetPawn))
+		{
+			TargetPawn = FOVCharacters[FMath::RandRange(0,FOVCharacters.Num())];
+		}
+	}
+
+#if ENABLE_DRAW_DEBUG && 1
+	DrawDebugLine(GetWorld(), RootComponent->GetComponentLocation(), TargetPawn->GetActorLocation(), FColor::Red,
+		false, 0.1f, 0, 4.f);
+	
+#endif
+	
+	//Shoot(TargetPawn);
 }
 
 void AamsuTurret::Shoot(APawn* Pawn)
 {
+	
+	
 	// TODO first shoot a debuglinetrace
+#if ENABLE_DRAW_DEBUG && 0
+	DrawDebugLine(GetWorld(), RootComponent->GetComponentLocation(), TargetActor->GetActorLocation(), FColor::Green,
+		false, 0.1f, 0, 4.f);
+	
+#endif
+
+	
 }
 

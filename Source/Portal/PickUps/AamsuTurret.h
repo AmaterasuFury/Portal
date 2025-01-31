@@ -42,5 +42,8 @@ public:
 	void Shoot(APawn* Pawn);
 	
 private:
+	UPROPERTY(Transient)
+	TObjectPtr<APawn> TargetPawn = nullptr;
+	
 	bool bIsInActiveRadius = false;
 };
