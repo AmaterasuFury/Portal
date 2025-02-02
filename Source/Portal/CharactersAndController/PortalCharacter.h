@@ -20,6 +20,7 @@ struct FInputActionValue;
 class AamsuPortal;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogHealthCharacter, Log, All);
 
 DECLARE_MULTICAST_DELEGATE(FGunPickedUp)
 
@@ -99,5 +100,22 @@ public:
 
 	// Executes the 
 	void BroadcastOnGunPickUp();
+	
+	void DamageCharacter(float DamageGiven, float InDeltaTime);
+
+	void HealthRegenerate(float HealPerSecond, float InDeltaTime);
+
+	void Tick(float DeltaSeconds) override;
+	
+private:
+	//** The health that the character is going to be spawned with */
+	UPROPERTY(EditAnywhere, Category = "Health")
+	float MaxHealth = 100;
+
+	UPROPERTY(Transient)
+	float Health = 100;
+
+	UPROPERTY(EditAnywhere, Category = "Health")
+	float HealthRegeneratePerSecond = 20;
 };
 

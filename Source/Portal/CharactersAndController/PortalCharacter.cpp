@@ -14,6 +14,7 @@
 #include "Portal/Components/amsuIntreactionDetectComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
+DEFINE_LOG_CATEGORY(LogHealthCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // APortalCharacter
@@ -45,6 +46,8 @@ void APortalCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	Health = MaxHealth;
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -80,6 +83,27 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APortalCharacter::BroadcastOnGunPickUp()
 {
 	OnGunPickedUp.Broadcast();
+}
+
+void APortalCharacter::DamageCharacter(float DamageGiven, float InDeltaTime)
+{
+	Health -= DamageGiven * InDeltaTime;
+}
+
+void APortalCharacter::HealthRegenerate(float HealPerSecond, float InDeltaTime)
+{
+	if (MaxHealth > Health)
+	{
+		Health = FMath::Clamp(Health + (HealPerSecond * InDeltaTime), 0.f, MaxHealth) ;
+	}
+}
+
+void APortalCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	HealthRegenerate(HealthRegeneratePerSecond, DeltaSeconds);
+	UE_LOG(LogHealthCharacter, Log, TEXT("The Character health is: %f"), Health);
 }
 
 
