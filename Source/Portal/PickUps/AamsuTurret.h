@@ -26,6 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Turret parameters")
 	float CheckDistance = 3000.f;
+
+	//** The damage of the turret  */
+	UPROPERTY(EditAnywhere, Category = "Turret parameters")
+	float TurretDamage = 90.f;
 	
 	/** Gets all characters in the FOV, of the owner*/
 	TArray<APawn*> FOVCharactersCheck(float InCheckDistance) const;
@@ -34,16 +38,14 @@ public:
 	bool IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
 
 	/** Scans for the character in the provided FOVAngle and shot if finds */
-	void OnActiveMode(bool bActivate);
+	void OnActiveMode(float InDeltaTime);
 	
 	
 	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
 
-	void Shoot(APawn* Pawn);
+	void DeactivateTurret();
 	
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<APawn> TargetPawn = nullptr;
-	
-	bool bIsInActiveRadius = false;
 };

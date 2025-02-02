@@ -3,6 +3,7 @@
 
 #include "AamsuTurret.h"
 #include "Engine/OverlapResult.h"
+#include "Portal/CharactersAndController/PortalCharacter.h"
 #include "Portal/CodeHelpers/amsuGetHelper.h"
 
 DEFINE_LOG_CATEGORY(amsuTurret)
@@ -18,7 +19,7 @@ void AamsuTurret::Tick(float DeltaTime)
 
 	
 
-	OnActiveMode(bIsInActiveRadius);
+	OnActiveMode(DeltaTime);
 }
 
 void AamsuTurret::BeginPlay()
@@ -108,10 +109,11 @@ bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetAct
 #endif
 	
 	return HitResult.GetActor() != TargetActor;
-}
+} 
 
-void AamsuTurret::OnActiveMode(bool bActivate)
+void AamsuTurret::OnActiveMode(float InDeltaTime)
 {
+	
 	TArray<APawn*> FOVCharacters = FOVCharactersCheck(CheckDistance);
 	
 	if (FOVCharacters.IsEmpty())
@@ -130,26 +132,21 @@ void AamsuTurret::OnActiveMode(bool bActivate)
 		}
 	}
 
+	//** Shoot */
 #if ENABLE_DRAW_DEBUG && 1
 	DrawDebugLine(GetWorld(), RootComponent->GetComponentLocation(), TargetPawn->GetActorLocation(), FColor::Red,
 		false, 0.1f, 0, 4.f);
 	
 #endif
-	
-	//Shoot(TargetPawn);
+	APortalCharacter* TargetCharacter = Cast<APortalCharacter>(TargetPawn);
+
+	TargetCharacter->DamageCharacter(TurretDamage, InDeltaTime);
 }
 
-void AamsuTurret::Shoot(APawn* Pawn)
+void AamsuTurret::DeactivateTurret()
 {
-	
-	
-	// TODO first shoot a debuglinetrace
-#if ENABLE_DRAW_DEBUG && 0
-	DrawDebugLine(GetWorld(), RootComponent->GetComponentLocation(), TargetActor->GetActorLocation(), FColor::Green,
-		false, 0.1f, 0, 4.f);
-	
-#endif
-
-	
+	SetActorTickEnabled(false);
 }
+
+
 
