@@ -106,6 +106,10 @@ public:
 	void HealthRegenerate(float HealPerSecond, float InDeltaTime);
 
 	void Tick(float DeltaSeconds) override;
+
+	void HealthCHeck();
+	
+	void Die();
 	
 private:
 	//** The health that the character is going to be spawned with */

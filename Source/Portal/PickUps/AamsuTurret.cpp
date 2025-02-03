@@ -2,7 +2,6 @@
 
 
 #include "AamsuTurret.h"
-#include "Engine/OverlapResult.h"
 #include "Portal/CharactersAndController/PortalCharacter.h"
 #include "Portal/CodeHelpers/amsuGetHelper.h"
 
