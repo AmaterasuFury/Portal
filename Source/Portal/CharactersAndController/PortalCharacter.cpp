@@ -87,37 +87,33 @@ void APortalCharacter::BroadcastOnGunPickUp()
 void APortalCharacter::DamageCharacter(float DamageGiven, float InDeltaTime)
 {
 	Health -= DamageGiven * InDeltaTime;
+
+	if (Health <= 0.f)
+	{
+		Die();
+	}
 }
 
 void APortalCharacter::HealthRegenerate(float HealPerSecond, float InDeltaTime)
 {
 	if (MaxHealth > Health)
 	{
-		Health = FMath::Clamp(Health + (HealPerSecond * InDeltaTime), 0.f, MaxHealth) ;
+		Health = FMath::Clamp(Health + (HealPerSecond * InDeltaTime), 0.f, MaxHealth);
 	}
 }
 
 void APortalCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	HealthCHeck();
 	
 	HealthRegenerate(HealthRegeneratePerSecond, DeltaSeconds);
-	UE_LOG(LogHealthCharacter, Log, TEXT("The Character health is: %f"), Health);
-}
-
-void APortalCharacter::HealthCHeck()
-{
-	if (Health < 0.f)
-	{
-		Die();
-	}
+	UE_LOG(LogHealthCharacter, Verbose, TEXT("The Character health is: %f"), Health);
 }
 
 void APortalCharacter::Die()
 {
 	//TODO Implement Death
+	UE_LOG(LogHealthCharacter, Verbose, TEXT("DEAD!!!!"));
 }
 
 
