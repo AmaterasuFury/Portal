@@ -156,7 +156,8 @@ void APortalCharacter::OnUnCrouch()
 void APortalCharacter::Interact()
 {
 	check(IsValid(InteractDetectComponent));
-	
+
+	// TODO U might want to check if the character does not interact with something already
 	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
 	{
 		IamsuInteractable::Execute_Interact(InteractedActor.GetObject(), this);

@@ -19,6 +19,24 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void BeginPlay() override;
+	
+	/** Gets all characters in the FOV, of the owner*/
+	TArray<APawn*> FOVCharactersCheck(float InCheckDistance) const;
+	
+	/** Checks if an actor is being Out Of Sight by doing LineTraceSingleByChannel */
+	bool IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+
+	/** Scans for the character in the provided FOVAngle and shot if finds */
+	void OnActiveMode(float InDeltaTime);
+
+	UPROPERTY(Transient)
+	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
+
+	void DeactivateTurret();
+	
+private:
+	UPROPERTY(Transient)
+	TObjectPtr<APawn> TargetPawn = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Turret parameters")
 	/** Recommended value is about 90 degrees */
@@ -30,21 +48,4 @@ public:
 	//** The damage of the turret  */
 	UPROPERTY(EditAnywhere, Category = "Turret parameters")
 	float TurretDamage = 90.f;
-	
-	/** Gets all characters in the FOV, of the owner*/
-	TArray<APawn*> FOVCharactersCheck(float InCheckDistance) const;
-	
-	/** Checks if an actor is being Out Of Sight by doing LineTraceSingleByChannel */
-	bool IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
-
-	/** Scans for the character in the provided FOVAngle and shot if finds */
-	void OnActiveMode(float InDeltaTime);
-	
-	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
-
-	void DeactivateTurret();
-	
-private:
-	UPROPERTY(Transient)
-	TObjectPtr<APawn> TargetPawn = nullptr;
 };
