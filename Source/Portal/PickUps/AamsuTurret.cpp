@@ -18,7 +18,7 @@ void AamsuTurret::Tick(float DeltaTime)
 
 	
 
-	OnActiveMode(DeltaTime);
+	TickActiveMode(DeltaTime);
 }
 
 void AamsuTurret::BeginPlay()
@@ -32,7 +32,7 @@ void AamsuTurret::BeginPlay()
 
 
 /** Returns all pawns in the FOV that are owned by PlayerController*/
-TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
+TArray<APawn*> AamsuTurret::GetPawnsInFOV(float InCheckDistance) const
 {
 	TArray<APawn*> PlayerPawnsInRadius;
 	if (PlayerControllersInWorld.IsEmpty())
@@ -45,7 +45,7 @@ TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
 		UE_LOG(amsuTurret, Log, TEXT("WARNING, the RootComponet of the amsuTurret is not valid"))
 	}
 	
-	const FVector TurretLocation = RootComponent->GetComponentLocation();;
+	const FVector TurretLocation = RootComponent->GetComponentLocation();
 	
 	for (const TObjectPtr<APlayerController> PlayerController : PlayerControllersInWorld)
 	{
@@ -68,21 +68,23 @@ TArray<APawn*> AamsuTurret::FOVCharactersCheck(float InCheckDistance) const
 	
 	const FVector NormalizedOwnerForward = RootComponent->GetForwardVector();
 	TArray<FVector> NormalizedDirectionToTargets;
+	const float Threshold = FMath::Cos(FMath::DegreesToRadians(FOVAngle / 2));
+
 	
 	for (APawn* PlayerPawn: PlayerPawnsInRadius)
 	{
-		if (IsValid(PlayerPawn))
+		if (!IsValid(PlayerPawn))
 		{
-			const FVector NormalizedDirectionToTarget = (PlayerPawn->GetActorLocation() - TurretLocation).GetSafeNormal();
+			continue;
+		}
+		
+		const FVector NormalizedDirectionToTarget = (PlayerPawn->GetActorLocation() - TurretLocation).GetSafeNormal();
 
-			const float DotProduct = FVector::DotProduct(NormalizedOwnerForward, NormalizedDirectionToTarget);
-			
-			const float Threshold = FMath::Cos(FMath::DegreesToRadians(FOVAngle / 2));
-			
-			if (DotProduct >= Threshold && !IsActorCovered(TurretLocation, PlayerPawn, ECC_Pawn)) 
-			{
-				PlayerPawnsInFOV.Add(PlayerPawn);
-			}
+		const float DotProduct = FVector::DotProduct(NormalizedOwnerForward, NormalizedDirectionToTarget);
+		
+		if (DotProduct >= Threshold && !IsActorCovered(TurretLocation, PlayerPawn, ECC_Pawn)) 
+		{
+			PlayerPawnsInFOV.Add(PlayerPawn);
 		}
 	}
 	
@@ -110,10 +112,10 @@ bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetAct
 	return HitResult.GetActor() != TargetActor;
 } 
 
-void AamsuTurret::OnActiveMode(float InDeltaTime)
+void AamsuTurret::TickActiveMode(float InDeltaTime)
 {
 	
-	TArray<APawn*> FOVCharacters = FOVCharactersCheck(CheckDistance);
+	TArray<APawn*> FOVCharacters = GetPawnsInFOV(CheckDistance);
 	
 	if (FOVCharacters.IsEmpty())
 	{
@@ -139,6 +141,11 @@ void AamsuTurret::OnActiveMode(float InDeltaTime)
 #endif
 	APortalCharacter* TargetCharacter = Cast<APortalCharacter>(TargetPawn);
 
+	if (!IsValid(TargetCharacter))
+	{
+		return;
+	}
+	
 	TargetCharacter->DamageCharacter(TurretDamage, InDeltaTime);
 }
 

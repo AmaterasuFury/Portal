@@ -21,13 +21,13 @@ public:
 	virtual void BeginPlay() override;
 	
 	/** Gets all characters in the FOV, of the owner*/
-	TArray<APawn*> FOVCharactersCheck(float InCheckDistance) const;
+	TArray<APawn*> GetPawnsInFOV(float InCheckDistance) const;
 	
 	/** Checks if an actor is being Out Of Sight by doing LineTraceSingleByChannel */
 	bool IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
 
 	/** Scans for the character in the provided FOVAngle and shot if finds */
-	void OnActiveMode(float InDeltaTime);
+	void TickActiveMode(float InDeltaTime);
 
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
