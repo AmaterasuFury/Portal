@@ -5,7 +5,6 @@
 
 #include "EngineUtils.h"
 #include "Portal/CharactersAndController/PortalCharacter.h"
-#include "Portal/CodeHelpers/amsuGetHelper.h"
 
 DEFINE_LOG_CATEGORY(amsuTurret)
 
@@ -89,13 +88,13 @@ TArray<APawn*> AamsuTurret::GetPawnsInFOV(float InCheckDistance) const
 
 bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetActor, ECollisionChannel InCollisionChannel) const
 {
-	FHitResult HitResult;
 	FCollisionQueryParams FCollisionQueryParams;
 	
 	FCollisionQueryParams.AddIgnoredActor(this);
+	FCollisionQueryParams.AddIgnoredActor(TargetActor);
 	
-	GetWorld()->LineTraceSingleByChannel(HitResult, OwnerPosition, TargetActor->GetActorLocation(), InCollisionChannel, FCollisionQueryParams);
-
+	const bool bHitDetected = GetWorld()->LineTraceTestByChannel(OwnerPosition, TargetActor->GetActorLocation(), InCollisionChannel, FCollisionQueryParams);
+	
 #if ENABLE_DRAW_DEBUG && 0
 	if (HitResult.GetActor() == TargetActor)
 	{
@@ -104,7 +103,7 @@ bool AamsuTurret::IsActorCovered(const FVector& OwnerPosition, AActor* TargetAct
 	}
 #endif
 	
-	return HitResult.GetActor() != TargetActor;
+	return bHitDetected;
 } 
 
 void AamsuTurret::TickActiveMode(float InDeltaTime)
