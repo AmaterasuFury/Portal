@@ -2,6 +2,8 @@
 
 
 #include "AamsuTurret.h"
+
+#include "EngineUtils.h"
 #include "Portal/CharactersAndController/PortalCharacter.h"
 #include "Portal/CodeHelpers/amsuGetHelper.h"
 
@@ -26,8 +28,6 @@ void AamsuTurret::BeginPlay()
 	Super::BeginPlay();
 
 	SetActorTickEnabled(true);
-
-	PlayerControllersInWorld = amsuGetHelper::GetAllPlayerControllers(GetWorld());
 }
 
 
@@ -35,10 +35,6 @@ void AamsuTurret::BeginPlay()
 TArray<APawn*> AamsuTurret::GetPawnsInFOV(float InCheckDistance) const
 {
 	TArray<APawn*> PlayerPawnsInRadius;
-	if (PlayerControllersInWorld.IsEmpty())
-	{
-		return PlayerPawnsInRadius;
-	}
 	
 	if (!IsValid(RootComponent))
 	{
@@ -47,16 +43,15 @@ TArray<APawn*> AamsuTurret::GetPawnsInFOV(float InCheckDistance) const
 	
 	const FVector TurretLocation = RootComponent->GetComponentLocation();
 	
-	for (const TObjectPtr<APlayerController> PlayerController : PlayerControllersInWorld)
+	for (const TObjectPtr<APawn> PawnInWorld : TActorRange<APawn>(GetWorld()))
 	{
-		APawn* PlayerControllerPawn = PlayerController->GetPawn();
-		if (!IsValid(PlayerControllerPawn))
+		if (!IsValid(PawnInWorld))
 		{
 			continue;
 		}
-		if (FVector::Dist(PlayerControllerPawn->GetActorLocation(), TurretLocation) <= InCheckDistance)
+		if (FVector::Dist(PawnInWorld->GetActorLocation(), TurretLocation) <= InCheckDistance)
 		{
-			PlayerPawnsInRadius.Add(PlayerControllerPawn);
+			PlayerPawnsInRadius.Add(PawnInWorld);
 		}
 	}
 	if (PlayerPawnsInRadius.IsEmpty())

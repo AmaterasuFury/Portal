@@ -29,9 +29,6 @@ public:
 	/** Scans for the character in the provided FOVAngle and shot if finds */
 	void TickActiveMode(float InDeltaTime);
 
-	UPROPERTY(Transient)
-	TArray<TObjectPtr<APlayerController>> PlayerControllersInWorld;
-
 	void DeactivateTurret();
 	
 private:
