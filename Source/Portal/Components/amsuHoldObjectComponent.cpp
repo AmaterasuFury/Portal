@@ -2,7 +2,8 @@
 
 
 #include "amsuHoldObjectComponent.h"
-#include "Portal/HelperHeaders/amsuGetHelper.h"
+#include "Portal/CodeHelpers/amsuGetHelper.h"
+#include "Portal/PickUps/AamsuPickUpObjectsBase.h"
 
 DEFINE_LOG_CATEGORY(LogHoldObjectComponent)
 
@@ -21,6 +22,19 @@ void UamsuHoldObjectComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void UamsuHoldObjectComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	FTimerManager& Manager = GetWorld()->GetTimerManager();
+
+	Manager.ClearTimer(TimerTillDrop);
+	Super::EndPlay(EndPlayReason);
+}
+
+bool UamsuHoldObjectComponent::IsAlreadyHolding() const
+{
+	return bAlreadyHolding;
+}
+
 void UamsuHoldObjectComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                              FActorComponentTickFunction* ThisTickFunction)
 {
@@ -36,6 +50,13 @@ void UamsuHoldObjectComponent::PickUpStart(AActor* InInteractedActor)
 		PickUpEnd();
 		return;
 	}
+	
+	AamsuPickUpObjectsBase* PickUpObject = Cast<AamsuPickUpObjectsBase>(GetOwner());
+	if (IsValid(PickUpObject))
+	{
+		PickUpObject->PhysicsToggle(false);
+	}
+	
 	InteractingActor = InInteractedActor;
 	bAlreadyHolding = true;
 	SetComponentTickEnabled(true);
@@ -49,13 +70,19 @@ void UamsuHoldObjectComponent::PickUpEnd()
 	bAlreadyHolding = false;
 	SetComponentTickEnabled(false);
 
+	AamsuPickUpObjectsBase* PickUpObject = Cast<AamsuPickUpObjectsBase>(GetOwner());
+	if (IsValid(PickUpObject))
+	{
+		PickUpObject->PhysicsToggle(true);
+	}
+
 	UE_LOG(LogHoldObjectComponent, Log, TEXT("Uamsu Hold Object Component::PickUpEnd() Called"));
 }
 
 void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)   
 {
 	
-	const APlayerController* PlayerController = GetPlayerController(InteractingActor); 
+	const APlayerController* PlayerController = amsuGetHelper::GetPlayerController(InteractingActor); 
 	if (!(IsValid(PlayerController) && IsValid(GetOwner())))
 	{
 		return;
@@ -82,8 +109,12 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	{
 		return;
 	}
-	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);	
-
+	
+	FRotator DeltaRotation = FRotator::ZeroRotator;
+	DeltaRotation.Yaw = ViewRotation.Yaw;
+	
+	GetOwner()->GetRootComponent()->AddRelativeLocation(Delta, true);
+	GetOwner()->GetRootComponent()->SetRelativeRotation(DeltaRotation, true);
 	
 	const FVector TraceEnd = ViewLocation + ViewRotation.Vector() * HoldDistance;
 	FHitResult HitResult;
@@ -103,11 +134,4 @@ void UamsuHoldObjectComponent::PickUpAndCarry(float InDeltaTime)
 	{
 		Manager.ClearTimer(TimerTillDrop);
 	}
-	
-
-// todo	Sweep that we can move
-// todo Follow the character rotation	
-//	First task:
-// 
-	
 }

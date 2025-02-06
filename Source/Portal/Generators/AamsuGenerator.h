@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "AamsuBridge.generated.h"
+#include "AamsuGenerator.generated.h"
 
 class UArrowComponent;
 
 UCLASS()
-class PORTAL_API AamsuBridge : public AActor
+class PORTAL_API AamsuGenerator : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	AamsuBridge();
+	AamsuGenerator();
 
 	virtual void OnConstruction(const FTransform& Transform) override;	
 

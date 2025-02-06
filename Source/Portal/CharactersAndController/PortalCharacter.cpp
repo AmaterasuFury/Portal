@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "PortalCharacter.h"
-#include "Portal/PortalGunAndComponents/PortalProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -14,6 +13,7 @@
 #include "Portal/Components/amsuIntreactionDetectComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
+DEFINE_LOG_CATEGORY(LogHealthCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // APortalCharacter
@@ -45,6 +45,8 @@ void APortalCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	Health = MaxHealth;
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -69,7 +71,7 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APortalCharacter::Look);
 
 		// Interacting
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APortalCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &APortalCharacter::Interact);
 	}
 	else
 	{
@@ -80,6 +82,38 @@ void APortalCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APortalCharacter::BroadcastOnGunPickUp()
 {
 	OnGunPickedUp.Broadcast();
+}
+
+void APortalCharacter::DamageCharacter(float DamageGiven, float InDeltaTime)
+{
+	Health -= DamageGiven * InDeltaTime;
+
+	if (Health <= 0.f)
+	{
+		Die();
+	}
+}
+
+void APortalCharacter::HealthRegenerate(float HealPerSecond, float InDeltaTime)
+{
+	if (MaxHealth > Health)
+	{
+		Health = FMath::Clamp(Health + (HealPerSecond * InDeltaTime), 0.f, MaxHealth);
+	}
+}
+
+void APortalCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	HealthRegenerate(HealthRegeneratePerSecond, DeltaSeconds);
+	UE_LOG(LogHealthCharacter, Verbose, TEXT("The Character health is: %f"), Health);
+}
+
+void APortalCharacter::Die()
+{
+	//TODO Implement Death
+	UE_LOG(LogHealthCharacter, Verbose, TEXT("DEAD!!!!"));
 }
 
 
@@ -122,20 +156,12 @@ void APortalCharacter::OnUnCrouch()
 void APortalCharacter::Interact()
 {
 	check(IsValid(InteractDetectComponent));
-	
+
+	// TODO U might want to check if the character does not interact with something already
 	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
 	{
 		IamsuInteractable::Execute_Interact(InteractedActor.GetObject(), this);
 	}
 }
 
-void APortalCharacter::InteractStop()
-{
-	check(IsValid(InteractDetectComponent));
-	
-	if (const TScriptInterface<IamsuInteractable> InteractedActor = InteractDetectComponent->GetAimedInteractable())
-	{
-		IamsuInteractable::Execute_InteractStop(InteractedActor.GetObject(), this);
-	}
-}
 
