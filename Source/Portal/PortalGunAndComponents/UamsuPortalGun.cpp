@@ -36,10 +36,13 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	}
 	
 	const APlayerController* PlayerController = Cast<APlayerController>(PawnOwner->GetController());
-	if (IsValid(PlayerController))
+	if (!IsValid(PlayerController))
 	{
-		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
+		FHitResult EmptyHitResult {};
+		return EmptyHitResult;
 	}
+
+	PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
 	const FVector TraceDestination = ViewLocation + ViewRotation.Vector() * InCheckDistance;
  
 #if ENABLE_DRAW_DEBUG && 0
