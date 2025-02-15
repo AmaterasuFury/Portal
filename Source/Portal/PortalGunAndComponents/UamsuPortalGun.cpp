@@ -3,7 +3,6 @@
 
 #include "UamsuPortalGun.h"
 #include "Portal/CharactersAndController/PortalCharacter.h"
-#include "PortalProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -13,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "Portal/Portals/amsuPortal.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPortalGun, Log, All);
 
@@ -78,16 +78,45 @@ void UamsuPortalGun::BeginPlay()
 	}
 }
 
-void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
+bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
+{
+//	 //TODO add some error for this check
+//	if (!(IsValid(PortalSurfaceMaterial) && HitResult.bBlockingHit) )
+//	{
+//		return false;
+//	}
+//	if (HitResult.PhysMaterial->GetClass() != PortalSurfaceMaterial.GetClass())
+//	{
+//		return false;
+//	}
+
+
+
+
+
+
+	
+	return true;
+}
+
+void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 {
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
 	{
 		return;
 	}
-	
-	FHitResult AimedHit = GetAimedHitResult();
 
-	// Todo Upgrade the spawn location of the portal
+	FHitResult AimedHit = GetAimedHitResult();
+	
+
+	//	todo Fix Linker ERROR
+
+	if (!CanSpawnPortalHere(AimedHit))
+	{
+		return;	
+	}
+
+	
 	const FVector PortalSpawnLocation = AimedHit.Location;
 	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();
 	
@@ -119,11 +148,6 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	Portal->OnPortalPlaced(true);
 }
 
-bool UamsuPortalGun::CanBeSpawnedHere() const
-{
-	// TODO  finish this function
-	return false;
-}
 
 void UamsuPortalGun::FireLeft() 
 {
