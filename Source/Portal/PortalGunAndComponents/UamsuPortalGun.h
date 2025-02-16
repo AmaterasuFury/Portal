@@ -90,6 +90,12 @@ private:
 	UPROPERTY(Transient)
 	TObjectPtr<APortalCharacter> Character;
 
+	/** The only surface that the portals can be spawned on */
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UPhysicalMaterial> PortalSurfaceMaterial;
+	TObjectPtr<UMaterialInstance> PortalSurfaceMaterialTest;
+
+	/** The only surface that the portals can be spawned on */
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInterface> PortalSurfaceMaterial;
+	
 };

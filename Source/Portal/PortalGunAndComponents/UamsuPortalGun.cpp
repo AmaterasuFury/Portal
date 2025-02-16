@@ -76,28 +76,47 @@ void UamsuPortalGun::BeginPlay()
 		PortalOne->AnotherPortal = PortalTwo;
 		PortalTwo->AnotherPortal = PortalOne;
 	}
-}
 
+	// Make sure the PortalSurfaceMaterial is set at the PortalGun instance
+	check(IsValid(PortalSurfaceMaterial));
+}
+PRAGMA_DISABLE_OPTIMIZATION
 bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 {
-//	 //TODO add some error for this check
-//	if (!(IsValid(PortalSurfaceMaterial) && HitResult.bBlockingHit) )
-//	{
-//		return false;
-//	}
-//	if (HitResult.PhysMaterial->GetClass() != PortalSurfaceMaterial.GetClass())
-//	{
-//		return false;
-//	}
+	
 
+	if (!IsValid(PortalSurfaceMaterial) || !HitResult.bBlockingHit)
+	{
+		return false;
+	}
 
+	const UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 
+	if (!IsValid(HitComponent))
+	{
+		return false;
+	}
 
+	const UMaterialInterface* HitMaterial = HitComponent->GetMaterial(HitResult.ElementIndex);
 
-
+	if(HitMaterial != PortalSurfaceMaterial)
+	{
+		return false;
+	}
+	
+	FVector TopEdge = FVector::ZeroVector;
+	FVector BotEdge = FVector::ZeroVector;
+	FVector RightEdge = FVector::ZeroVector;
+	FVector LeftEdge = FVector::ZeroVector;
+	
+	
+	
+	
 	
 	return true;
 }
+
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 {
@@ -108,8 +127,6 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 
 	FHitResult AimedHit = GetAimedHitResult();
 	
-
-	//	todo Fix Linker ERROR
 
 	if (!CanSpawnPortalHere(AimedHit))
 	{
