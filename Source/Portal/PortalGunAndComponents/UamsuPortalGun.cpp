@@ -80,8 +80,12 @@ void UamsuPortalGun::BeginPlay()
 	// Make sure the PortalSurfaceMaterial is set at the PortalGun instance
 	check(IsValid(PortalSurfaceMaterial));
 
-	//PortalsWidth = 
-    //PortalsHeight =
+	FVector Origin = PortalOne->GetActorLocation();
+	FVector BoxExtent = FVector::ZeroVector;
+	PortalOne->GetActorBounds(false, Origin, BoxExtent);
+	
+	PortalsHalfWidth = BoxExtent.Y;
+    PortalsHalfHeight = BoxExtent.Z;
 }
 PRAGMA_DISABLE_OPTIMIZATION
 bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
@@ -114,14 +118,12 @@ bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 	FVector RightEdge = FVector::ZeroVector;
 
 	
-	FVector Origin = PortalOne->GetActorLocation();
-	FVector BoxExtent = FVector::ZeroVector;
-	PortalOne->GetActorBounds(false, Origin, BoxExtent);
+	
 
 	FVector HitPoint = HitResult.ImpactPoint;
 
-	BotEdge = HitPoint - (HitResult.ImpactNormal * (BoxExtent.X * 2));
-	TopEdge = HitPoint + (HitResult.ImpactNormal * (BoxExtent.X * 2));
+	BotEdge = HitPoint - (HitResult.ImpactNormal * (PortalsHalfHeight));
+	TopEdge = HitPoint + (HitResult.ImpactNormal * (PortalsHalfHeight));
 
 	FVector RightVector = FVector::ZeroVector;
 	FVector ForwardVector = FVector::ZeroVector;
@@ -130,8 +132,8 @@ bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 
 	// todo  save the portal size on the beginplay
 	
-	LeftEdge =  HitPoint - (RightVector * BoxExtent.X * 2);
-	RightEdge = HitPoint +  (RightVector * BoxExtent.X * 2);
+	LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
+	RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
 
 #if ENABLE_DRAW_DEBUG && 1
 	DrawDebugSphere(GetWorld(), TopEdge, 10.f ,12, FColor::Red, false, 10.f);

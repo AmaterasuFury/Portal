@@ -98,6 +98,6 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInterface> PortalSurfaceMaterial;
 
-	float PortalsWidth = 0.0f;
-	float PortalsHeight = 0.0f;
+	float PortalsHalfWidth = 0.0f;
+	float PortalsHalfHeight = 0.0f;
 };
