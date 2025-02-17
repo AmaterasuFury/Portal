@@ -97,5 +97,7 @@ private:
 	/** The only surface that the portals can be spawned on */
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInterface> PortalSurfaceMaterial;
-	
+
+	float PortalsWidth = 0.0f;
+	float PortalsHeight = 0.0f;
 };
