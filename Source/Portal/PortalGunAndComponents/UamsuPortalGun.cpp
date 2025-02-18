@@ -116,30 +116,47 @@ bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 	FVector TopEdge = FVector::ZeroVector;
 	FVector LeftEdge = FVector::ZeroVector;
 	FVector RightEdge = FVector::ZeroVector;
-
-	
 	
 
-	FVector HitPoint = HitResult.ImpactPoint;
-
-	BotEdge = HitPoint - (HitResult.ImpactNormal * (PortalsHalfHeight));
-	TopEdge = HitPoint + (HitResult.ImpactNormal * (PortalsHalfHeight));
-
-	FVector RightVector = FVector::ZeroVector;
+	const FVector HitPoint = HitResult.ImpactPoint;
+	
+	FVector RightVector = FVector::ZeroVector; 
 	FVector ForwardVector = FVector::ZeroVector;
 	
 	HitResult.ImpactNormal.FindBestAxisVectors(ForwardVector,RightVector);
 
-	// todo  save the portal size on the beginplay
-	
+	TArray<FVector> PortalEdges;
+	PortalEdges.Reserve(4);
+
+	BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
+	TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
 	LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
 	RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
+	
+	PortalEdges.Add((BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight))));
+	PortalEdges.Add((TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight))));
+	PortalEdges.Add((LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth)));
+	PortalEdges.Add((RightEdge = HitPoint +  (RightVector * PortalsHalfWidth)));
 
-#if ENABLE_DRAW_DEBUG && 1
-	DrawDebugSphere(GetWorld(), TopEdge, 10.f ,12, FColor::Red, false, 10.f);
-	DrawDebugSphere(GetWorld(), BotEdge, 10.f, 12, FColor::Red, false, 10.f);
-	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Red, false, 10.f);
-	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Red, false, 10.f);
+	
+	
+	for (FVector PortalEdge : PortalEdges)
+	{
+
+		
+		
+		if(HitMaterial != PortalSurfaceMaterial)
+		{
+			return false;
+		}
+	}
+	
+	
+#if ENABLE_DRAW_DEBUG && 0
+	DrawDebugSphere(GetWorld(), TopEdge, 10.f ,12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), BotEdge, 10.f, 12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);
 #endif
 	
 	
