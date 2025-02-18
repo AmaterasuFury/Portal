@@ -13,6 +13,7 @@
 #include "Engine/World.h"
 #include "Portal/Portals/amsuPortal.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Engine/OverlapResult.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPortalGun, Log, All);
 
@@ -87,10 +88,11 @@ void UamsuPortalGun::BeginPlay()
 	PortalsHalfWidth = BoxExtent.Y;
     PortalsHalfHeight = BoxExtent.Z;
 }
+
+// todo u can rename it to "CanSpawnPortaHereOrAdjust"
 PRAGMA_DISABLE_OPTIMIZATION
-bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
+bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 {
-	
 
 	if (!IsValid(PortalSurfaceMaterial) || !HitResult.bBlockingHit)
 	{
@@ -104,20 +106,13 @@ bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 		return false;
 	}
 
-	const UMaterialInterface* HitMaterial = HitComponent->GetMaterial(HitResult.ElementIndex);
+	const UMaterialInterface* const HitMaterial = HitComponent->GetMaterial(HitResult.ElementIndex);
 
 	if(HitMaterial != PortalSurfaceMaterial)
 	{
 		return false;
 	}
 	
-
-	FVector BotEdge = FVector::ZeroVector;
-	FVector TopEdge = FVector::ZeroVector;
-	FVector LeftEdge = FVector::ZeroVector;
-	FVector RightEdge = FVector::ZeroVector;
-	
-
 	const FVector HitPoint = HitResult.ImpactPoint;
 	
 	FVector RightVector = FVector::ZeroVector; 
@@ -128,33 +123,58 @@ bool UamsuPortalGun::CanSpawnPortalHere(FHitResult & HitResult)
 	TArray<FVector> PortalEdges;
 	PortalEdges.Reserve(4);
 
-	BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
-	TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
-	LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
-	RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
+	FVector BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
+	FVector TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
+	FVector LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
+	FVector RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
 	
 	PortalEdges.Add((BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight))));
 	PortalEdges.Add((TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight))));
 	PortalEdges.Add((LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth)));
 	PortalEdges.Add((RightEdge = HitPoint +  (RightVector * PortalsHalfWidth)));
 
+
+	FCollisionQueryParams QueryParams;
+
+	QueryParams.AddIgnoredActor(Character);
 	
+	
+	TArray<FOverlapResult> OutOverlaps;
+
+	TArray<FOverlapResult> SecondTopOverlaps;
+
+	int i = 0;
 	
 	for (FVector PortalEdge : PortalEdges)
 	{
+		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
+			FCollisionShape::MakeSphere(5.0f), QueryParams);
 
-		
-		
-		if(HitMaterial != PortalSurfaceMaterial)
+		if (OutOverlaps.Num() < 1 || OutOverlaps.Num() > 1)
 		{
 			return false;
 		}
+		
+		const UPrimitiveComponent* OverlappedComponent = OutOverlaps[0].GetComponent();
+		
+		const UMaterialInterface* OverlappedMaterial = OverlappedComponent->GetMaterial(OutOverlaps[0].ItemIndex);
+		
+		if (i == 1)
+		{
+			SecondTopOverlaps = OutOverlaps;
+		}
+		AActor* location = OutOverlaps[0].GetActor();
+		i++;
+		//if(OverlappedMaterial != PortalSurfaceMaterial)
+		//{
+		//	return false;
+		//}
 	}
 	
 	
-#if ENABLE_DRAW_DEBUG && 0
-	DrawDebugSphere(GetWorld(), TopEdge, 10.f ,12, FColor::Purple, false, 10.f);
-	DrawDebugSphere(GetWorld(), BotEdge, 10.f, 12, FColor::Purple, false, 10.f);
+#if ENABLE_DRAW_DEBUG && 1
+	DrawDebugSphere(GetWorld(), TopEdge, 1.f ,12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), BotEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);
 #endif
@@ -175,7 +195,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 	FHitResult AimedHit = GetAimedHitResult();
 	
 
-	if (!CanSpawnPortalHere(AimedHit))
+	if (!CanAdjustAndSpawnPortalHere(AimedHit))
 	{
 		return;	
 	}

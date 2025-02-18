@@ -84,7 +84,7 @@ protected:
 	
 private:
 
-	bool CanSpawnPortalHere(FHitResult & HitResult);
+	bool CanAdjustAndSpawnPortalHere(FHitResult & HitResult);
 	
 	/** The Character holding this weapon*/
 	UPROPERTY(Transient)
