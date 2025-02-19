@@ -19,8 +19,12 @@ AamsuPortal::AamsuPortal()
 
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
-
 	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
+
+	//CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Capture Component"));
+	//CaptureComponent->SetupAttachment(RootComponent);
+	
+	//CreateDefaultSubobject<>()
 }
 
 // Called when the game starts or when spawned

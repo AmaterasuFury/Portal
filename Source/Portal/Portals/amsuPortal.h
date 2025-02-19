@@ -50,4 +50,10 @@ public:
 
 	void SetPortalVisibility(bool bMakeVisible);
 	
+private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneCaptureComponent2D> CaptureComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UTextureRenderTarget2D> RenderTarget;
 };

@@ -93,7 +93,7 @@ void UamsuPortalGun::BeginPlay()
 
 bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal)
 {
-
+	
 	if (!IsValid(PortalSurfaceMaterial) || !HitResult.bBlockingHit)
 	{
 		return false;
