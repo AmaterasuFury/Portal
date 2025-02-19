@@ -89,8 +89,8 @@ void UamsuPortalGun::BeginPlay()
     PortalsHalfHeight = BoxExtent.Z;
 }
 
-// todo u can rename it to "CanSpawnPortaHereOrAdjust"
-PRAGMA_DISABLE_OPTIMIZATION
+// todo u can rename it to "CanSpawnPortaHereOrAdjust" or a better name
+
 bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal)
 {
 
@@ -178,7 +178,6 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 	return true;
 }
 
-PRAGMA_ENABLE_OPTIMIZATION
 
 void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 {
