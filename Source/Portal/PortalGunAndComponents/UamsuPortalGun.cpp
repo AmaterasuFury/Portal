@@ -123,10 +123,10 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 	TArray<FVector> PortalEdges;
 	PortalEdges.Reserve(4);
 
-	FVector BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
-	FVector TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
-	FVector LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
-	FVector RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
+	FVector BotEdge = FVector::ZeroVector;
+	FVector TopEdge = FVector::ZeroVector;
+	FVector LeftEdge =  FVector::ZeroVector;
+	FVector RightEdge = FVector::ZeroVector;
 	
 	PortalEdges.Add((BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight))));
 	PortalEdges.Add((TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight))));
@@ -159,20 +159,19 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 		
 		const UMaterialInterface* OverlappedMaterial = OverlappedComponent->GetMaterial(0);
 		
-		if(OverlappedMaterial != PortalSurfaceMaterial)
+		if(OverlappedMaterial != PortalSurfaceMaterial || HitResult.GetActor() != OutOverlaps[0].GetActor())
 		{
 			return false;
 		}
 	}
 	
 	
-#if ENABLE_DRAW_DEBUG && 1
+#if ENABLE_DRAW_DEBUG && 0
 	DrawDebugSphere(GetWorld(), TopEdge, 1.f ,12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), BotEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);
 #endif
-	
 	
 	return true;
 }
