@@ -91,7 +91,7 @@ void UamsuPortalGun::BeginPlay()
 
 // todo u can rename it to "CanSpawnPortaHereOrAdjust"
 PRAGMA_DISABLE_OPTIMIZATION
-bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
+bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal)
 {
 
 	if (!IsValid(PortalSurfaceMaterial) || !HitResult.bBlockingHit)
@@ -137,6 +137,7 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 	FCollisionQueryParams QueryParams;
 
 	QueryParams.AddIgnoredActor(Character);
+	QueryParams.AddIgnoredActor(Portal);
 	
 	
 	TArray<FOverlapResult> OutOverlaps;
@@ -149,7 +150,8 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 		OutOverlaps.Empty();
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
-
+		
+		
 		if (OutOverlaps.Num() < 1 || OutOverlaps.Num() > 1)
 		{
 			return false;
@@ -188,7 +190,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
 	FHitResult AimedHit = GetAimedHitResult();
 	
 
-	if (!CanAdjustAndSpawnPortalHere(AimedHit))
+	if (!CanAdjustAndSpawnPortalHere(AimedHit, Portal))
 	{
 		return;	
 	}
