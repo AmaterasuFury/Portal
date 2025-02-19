@@ -142,11 +142,11 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 	TArray<FOverlapResult> OutOverlaps;
 
 	TArray<FOverlapResult> SecondTopOverlaps;
-
-	int i = 0;
+	
 	
 	for (FVector PortalEdge : PortalEdges)
 	{
+		OutOverlaps.Empty();
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
 
@@ -157,18 +157,12 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult)
 		
 		const UPrimitiveComponent* OverlappedComponent = OutOverlaps[0].GetComponent();
 		
-		const UMaterialInterface* OverlappedMaterial = OverlappedComponent->GetMaterial(OutOverlaps[0].ItemIndex);
+		const UMaterialInterface* OverlappedMaterial = OverlappedComponent->GetMaterial(0);
 		
-		if (i == 1)
+		if(OverlappedMaterial != PortalSurfaceMaterial)
 		{
-			SecondTopOverlaps = OutOverlaps;
+			return false;
 		}
-		AActor* location = OutOverlaps[0].GetActor();
-		i++;
-		//if(OverlappedMaterial != PortalSurfaceMaterial)
-		//{
-		//	return false;
-		//}
 	}
 	
 	
