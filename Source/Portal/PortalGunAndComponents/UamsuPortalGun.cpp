@@ -89,7 +89,7 @@ void UamsuPortalGun::BeginPlay()
     PortalsHalfHeight = BoxExtent.Z;
 }
 
-// todo u can rename it to "CanSpawnPortaHereOrAdjust" or a better name
+// todo u can rename it to "CanSpawnPortalHereOrAdjust" or a better name
 
 bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal)
 {
@@ -123,36 +123,32 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 	TArray<FVector> PortalEdges;
 	PortalEdges.Reserve(4);
 
-	FVector BotEdge = FVector::ZeroVector;
-	FVector TopEdge = FVector::ZeroVector;
-	FVector LeftEdge =  FVector::ZeroVector;
-	FVector RightEdge = FVector::ZeroVector;
+	FVector BottomEdge = BottomEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
+	FVector TopEdge = TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
+	FVector LeftEdge = LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
+	FVector RightEdge = RightEdge = HitPoint +  (RightVector * PortalsHalfWidth);
 	
-	PortalEdges.Add((BotEdge = HitPoint - (ForwardVector * (PortalsHalfHeight))));
-	PortalEdges.Add((TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight))));
-	PortalEdges.Add((LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth)));
-	PortalEdges.Add((RightEdge = HitPoint +  (RightVector * PortalsHalfWidth)));
-
+	PortalEdges.Add(BottomEdge);
+	PortalEdges.Add(TopEdge);
+	PortalEdges.Add(LeftEdge);
+	PortalEdges.Add(RightEdge);
 
 	FCollisionQueryParams QueryParams;
 
 	QueryParams.AddIgnoredActor(Character);
 	QueryParams.AddIgnoredActor(Portal);
 	
-	
 	TArray<FOverlapResult> OutOverlaps;
-
-	TArray<FOverlapResult> SecondTopOverlaps;
 	
-	
-	for (FVector PortalEdge : PortalEdges)
+	for (const FVector& PortalEdge : PortalEdges)
 	{
 		OutOverlaps.Empty();
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
 		
-		
-		if (OutOverlaps.Num() < 1 || OutOverlaps.Num() > 1)
+		// todo This 1 overlap check will work bad if there e.g. a wal that consists of 2 actors with the same material but diff actors, so probably just add boxoverlapp check
+		// Also that is better practise to use physmaterial for this kind of check, consider changing to physmaterial
+		if (OutOverlaps.Num() != 1)
 		{
 			return false;
 		}
@@ -169,7 +165,7 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 	
 	
 #if ENABLE_DRAW_DEBUG && 0
-	DrawDebugSphere(GetWorld(), TopEdge, 1.f ,12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), TopEdge, 1.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), BotEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);

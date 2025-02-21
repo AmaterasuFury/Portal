@@ -92,10 +92,6 @@ private:
 
 	/** The only surface that the portals can be spawned on */
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UMaterialInstance> PortalSurfaceMaterialTest;
-
-	/** The only surface that the portals can be spawned on */
-	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMaterialInterface> PortalSurfaceMaterial;
 
 	float PortalsHalfWidth = 0.0f;
