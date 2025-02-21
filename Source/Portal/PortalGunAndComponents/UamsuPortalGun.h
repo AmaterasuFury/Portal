@@ -76,7 +76,7 @@ public:
 
 	virtual void BeginPlay() override;
 	
-	void ShootPortal(AamsuPortal* Portal);
+	void ShootPortal(AamsuPortal* Portal) const;
 	
 protected:
 	UFUNCTION()
@@ -84,7 +84,7 @@ protected:
 	
 private:
 
-	bool CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal);
+	bool CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal) const;
 	
 	/** The Character holding this weapon*/
 	UPROPERTY(Transient)

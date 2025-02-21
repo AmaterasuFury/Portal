@@ -91,7 +91,7 @@ void UamsuPortalGun::BeginPlay()
 
 // todo u can rename it to "CanSpawnPortalHereOrAdjust" or a better name
 
-bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal)
+bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal) const
 {
 	
 	if (!IsValid(PortalSurfaceMaterial) || !HitResult.bBlockingHit)
@@ -175,7 +175,7 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 }
 
 
-void UamsuPortalGun::ShootPortal(AamsuPortal* Portal)
+void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 {
 	if (!IsValid(Character) || !IsValid(Character->GetController()))
 	{
