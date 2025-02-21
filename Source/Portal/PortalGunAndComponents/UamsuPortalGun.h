@@ -10,6 +10,7 @@
 class AamsuPortal;
 class APortalCharacter;
 class UInputAction;
+class UPhysicalMaterial;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PORTAL_API UamsuPortalGun : public USkeletalMeshComponent
@@ -54,8 +55,6 @@ public:
 
 	void FireRight();
 
-	bool CanBeSpawnedHere() const;
-
 	UPROPERTY(Transient)
 	TObjectPtr<AamsuPortal> PortalOne;
 
@@ -82,9 +81,19 @@ public:
 protected:
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
+	
 private:
+
+	bool CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPortal* Portal) const;
+	
 	/** The Character holding this weapon*/
 	UPROPERTY(Transient)
 	TObjectPtr<APortalCharacter> Character;
+
+	/** The only surface that the portals can be spawned on */
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInterface> PortalSurfaceMaterial;
+
+	float PortalsHalfWidth = 0.0f;
+	float PortalsHalfHeight = 0.0f;
 };
