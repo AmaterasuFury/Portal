@@ -24,6 +24,35 @@ UamsuPortalGun::UamsuPortalGun()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 }
 
+void UamsuPortalGun::BeginPlay()
+{
+	Super::BeginPlay();
+
+	/** Spawn the portals on the 0.0.0 positions on the beginning of the game */
+	FTransform const SpawnTransform(SpawnLocation);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
+	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
+
+	if (IsValid(PortalOne) && IsValid(PortalTwo))
+	{
+		PortalOne->AnotherPortal = PortalTwo;
+		PortalTwo->AnotherPortal = PortalOne;
+	}
+
+	// Make sure the PortalSurfaceMaterial is set at the PortalGun instance
+	check(IsValid(PortalSurfaceMaterial));
+
+	FVector Origin = PortalOne->GetActorLocation();
+	FVector BoxExtent = FVector::ZeroVector;
+	PortalOne->MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
+	
+	PortalsHalfWidth = BoxExtent.X;
+	PortalsHalfHeight = BoxExtent.Z;
+}
+
 FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
@@ -60,34 +89,6 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	return HitResult;
 }
 
-void UamsuPortalGun::BeginPlay()
-{
-	Super::BeginPlay();
-
-	/** Spawn the portals on the 0.0.0 positions on the beginning of the game */
-	FTransform const SpawnTransform(SpawnLocation);
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	
-	PortalOne = GetWorld()->SpawnActor<AamsuPortal>(PortalOneClass, SpawnTransform, SpawnParameters);
-	PortalTwo = GetWorld()->SpawnActor<AamsuPortal>(PortalTwoClass, SpawnTransform, SpawnParameters);
-
-	if (IsValid(PortalOne) && IsValid(PortalTwo))
-	{
-		PortalOne->AnotherPortal = PortalTwo;
-		PortalTwo->AnotherPortal = PortalOne;
-	}
-
-	// Make sure the PortalSurfaceMaterial is set at the PortalGun instance
-	check(IsValid(PortalSurfaceMaterial));
-
-	FVector Origin = PortalOne->GetActorLocation();
-	FVector BoxExtent = FVector::ZeroVector;
-	PortalOne->GetActorBounds(false, Origin, BoxExtent);
-	
-	PortalsHalfWidth = BoxExtent.Y;
-    PortalsHalfHeight = BoxExtent.Z;
-}
 
 // todo u can rename it to "CanSpawnPortalHereOrAdjust" or a better name
 
@@ -146,6 +147,7 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
 		
+		
 		// todo This 1 overlap check will work bad if there e.g. a wal that consists of 2 actors with the same material but diff actors, so probably just add boxoverlapp check
 		// Also that is better practise to use physmaterial for this kind of check, consider changing to physmaterial
 		if (OutOverlaps.Num() != 1)
@@ -163,10 +165,9 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		}
 	}
 	
-	
 #if ENABLE_DRAW_DEBUG && 0
 	DrawDebugSphere(GetWorld(), TopEdge, 1.f, 12, FColor::Purple, false, 10.f);
-	DrawDebugSphere(GetWorld(), BotEdge, 5.f, 12, FColor::Purple, false, 10.f);
+	DrawDebugSphere(GetWorld(), BottomEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);
 #endif
@@ -221,7 +222,6 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	
 	Portal->OnPortalPlaced(true);
 }
-
 
 void UamsuPortalGun::FireLeft() 
 {
