@@ -243,6 +243,7 @@ void UamsuPortalGun::FireRight()
 	}
 }
 
+
 bool UamsuPortalGun::AttachWeapon(APortalCharacter* TargetCharacter)
 {
 	Character = TargetCharacter;
