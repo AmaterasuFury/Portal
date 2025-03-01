@@ -165,8 +165,8 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		}
 	}
 	
-#if ENABLE_DRAW_DEBUG && 0
-	DrawDebugSphere(GetWorld(), TopEdge, 1.f, 12, FColor::Purple, false, 10.f);
+#if ENABLE_DRAW_DEBUG && 1
+	DrawDebugSphere(GetWorld(), TopEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), BottomEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), LeftEdge, 10.f, 12, FColor::Purple, false, 10.f);
