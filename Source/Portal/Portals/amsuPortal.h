@@ -52,8 +52,5 @@ public:
 	
 private:
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USceneCaptureComponent2D> CaptureComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UTextureRenderTarget2D> RenderTarget;
+	TObjectPtr<USceneCaptureComponentCube> CaptureComponentCube;
 };
