@@ -109,22 +109,13 @@ void AamsuPortal::UpdateSceneCaptureRotation() const
 	const APawn* PawnCharacter = PlayerController->GetPawn();
 	if (!IsValid(PawnCharacter)) return;
 	
-	// Get player camera location and rotation
-	FVector PlayerLocation;
-	FRotator PlayerRotation;
-	PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
+	const FVector CharacterLocation = PawnCharacter->GetActorLocation();
 
-	// Compute relative vector from this portal to player
-	FVector PortalToPlayer = PlayerLocation - GetActorLocation();
+	const FRotator Rotation = (GetActorTransform().InverseTransformPosition(CharacterLocation)).Rotation();
 
-	// Reflect the vector across the portal's forward direction
-	FVector ReflectedDirection = FMath::GetReflectionVector(PortalToPlayer.GetSafeNormal(), GetActorForwardVector());
+	AnotherPortal->CaptureComponent->SetRelativeRotation(Rotation);
 
-	// Set the capture component rotation to the reflected view direction
-	FRotator NewRotation = ReflectedDirection.Rotation();
-
-	AnotherPortal->CaptureComponent->SetWorldRotation(NewRotation);
-	AnotherPortal->CaptureComponent->CaptureScene();
+	CaptureComponent->CaptureScene();
 }
 
 
