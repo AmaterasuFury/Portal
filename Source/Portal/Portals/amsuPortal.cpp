@@ -65,7 +65,7 @@ void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 	OnPortalStateChange.Broadcast(bPlacePortal);
 }
 
-void AamsuPortal::Teleport(AActor* InteractedActor)
+void AamsuPortal::Teleport(AActor* InteractedActor) const
 {
 	if (!ensure(IsValid(AnotherPortal)))
 	{
@@ -101,7 +101,7 @@ void AamsuPortal::ActivatePortal(bool bMakeVisible)
 	SetActorTickEnabled(bMakeVisible);
 }
 
-void AamsuPortal::UpdateSceneCaptureRotation()
+void AamsuPortal::UpdateSceneCaptureRotation() const
 {
 	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (!IsValid(PlayerController)) return;
@@ -109,13 +109,22 @@ void AamsuPortal::UpdateSceneCaptureRotation()
 	const APawn* PawnCharacter = PlayerController->GetPawn();
 	if (!IsValid(PawnCharacter)) return;
 	
-	const FVector CharacterLocation = PawnCharacter->GetActorLocation();
+	// Get player camera location and rotation
+	FVector PlayerLocation;
+	FRotator PlayerRotation;
+	PlayerController->GetPlayerViewPoint(PlayerLocation, PlayerRotation);
 
-	const FRotator Rotation = (GetActorTransform().InverseTransformPosition(CharacterLocation)).Rotation();
+	// Compute relative vector from this portal to player
+	FVector PortalToPlayer = PlayerLocation - GetActorLocation();
 
-	AnotherPortal->CaptureComponent->SetRelativeRotation(Rotation);
+	// Reflect the vector across the portal's forward direction
+	FVector ReflectedDirection = FMath::GetReflectionVector(PortalToPlayer.GetSafeNormal(), GetActorForwardVector());
 
-	CaptureComponent->CaptureScene();
+	// Set the capture component rotation to the reflected view direction
+	FRotator NewRotation = ReflectedDirection.Rotation();
+
+	AnotherPortal->CaptureComponent->SetWorldRotation(NewRotation);
+	AnotherPortal->CaptureComponent->CaptureScene();
 }
 
 

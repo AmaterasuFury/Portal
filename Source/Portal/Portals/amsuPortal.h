@@ -46,11 +46,11 @@ public:
 
 	FPortalStateDelegate OnPortalStateChange;
 
-	void Teleport(AActor* InteractedActor);
+	void Teleport(AActor* InteractedActor) const;
 
 	void ActivatePortal(bool bMakeVisible);
 
-	void UpdateSceneCaptureRotation();
+	void UpdateSceneCaptureRotation() const;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
