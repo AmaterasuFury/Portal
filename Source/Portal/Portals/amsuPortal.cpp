@@ -25,7 +25,6 @@ AamsuPortal::AamsuPortal()
 	CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Capture Component"));
 	CaptureComponent->SetupAttachment(RootComponent);
 	
-	//CreateDefaultSubobject<>()
 }
 
 // Called when the game starts or when spawned
@@ -36,7 +35,7 @@ void AamsuPortal::BeginPlay()
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 
-	SetPortalVisibility(false);
+	ActivatePortal(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -60,7 +59,7 @@ void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 		return;
 	}
 	
-	SetPortalVisibility(bPlacePortal);
+	ActivatePortal(bPlacePortal);
 
 	bIsActive = bPlacePortal;
 	OnPortalStateChange.Broadcast(bPlacePortal);
@@ -93,7 +92,7 @@ void AamsuPortal::Teleport(AActor* InteractedActor)
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
+void AamsuPortal::ActivatePortal(bool bMakeVisible)
 {
 	SetActorHiddenInGame(!bMakeVisible);
 
@@ -102,9 +101,32 @@ void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
 	SetActorTickEnabled(bMakeVisible);
 }
 
+void AamsuPortal::UpdateSceneCaptureRotation()
+{
+	// Get the player controller
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	APawn* PawnCharacter = PlayerController->GetPawn();
+	
+	if (!PlayerController) return;
+
+	// Get the player's camera location and rotation
+	FVector CharacterLocation = PawnCharacter->GetActorLocation();
+	FVector PortalLocation = GetActorLocation();
+
+	FVector LocalDirection = GetActorTransform().InverseTransformPosition(CharacterLocation);
+	FRotator Rotation = LocalDirection.Rotation();
+
+	AnotherPortal->CaptureComponent->SetRelativeRotation(Rotation);
+
+	CaptureComponent->CaptureScene();
+	
+}
+
 
 void AamsuPortal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	UpdateSceneCaptureRotation();
 }
  

@@ -48,12 +48,11 @@ public:
 
 	void Teleport(AActor* InteractedActor);
 
-	void SetPortalVisibility(bool bMakeVisible);
+	void ActivatePortal(bool bMakeVisible);
+
+	void UpdateSceneCaptureRotation();
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponent2D> CaptureComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UTextureRenderTarget2D> RenderTarget;
 };
