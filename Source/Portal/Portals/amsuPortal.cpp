@@ -103,23 +103,19 @@ void AamsuPortal::ActivatePortal(bool bMakeVisible)
 
 void AamsuPortal::UpdateSceneCaptureRotation()
 {
-	// Get the player controller
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	APawn* PawnCharacter = PlayerController->GetPawn();
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (!IsValid(PlayerController)) return;
 	
-	if (!PlayerController) return;
+	const APawn* PawnCharacter = PlayerController->GetPawn();
+	if (!IsValid(PawnCharacter)) return;
+	
+	const FVector CharacterLocation = PawnCharacter->GetActorLocation();
 
-	// Get the player's camera location and rotation
-	FVector CharacterLocation = PawnCharacter->GetActorLocation();
-	FVector PortalLocation = GetActorLocation();
-
-	FVector LocalDirection = GetActorTransform().InverseTransformPosition(CharacterLocation);
-	FRotator Rotation = LocalDirection.Rotation();
+	const FRotator Rotation = (GetActorTransform().InverseTransformPosition(CharacterLocation)).Rotation();
 
 	AnotherPortal->CaptureComponent->SetRelativeRotation(Rotation);
 
 	CaptureComponent->CaptureScene();
-	
 }
 
 
