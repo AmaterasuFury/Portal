@@ -4,6 +4,7 @@
 #include "Portal/Portals/amsuPortal.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/SceneCaptureComponentCube.h"
 
 
 // Sets default values
@@ -21,10 +22,8 @@ AamsuPortal::AamsuPortal()
 	BoxOverlapComponent->SetupAttachment(RootComponent);
 	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
 
-	//CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Capture Component"));
-	//CaptureComponent->SetupAttachment(RootComponent);
-	
-	//CreateDefaultSubobject<>()
+	CaptureComponentCube = CreateDefaultSubobject<USceneCaptureComponentCube>(TEXT("Capture Component"));
+	CaptureComponentCube->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
