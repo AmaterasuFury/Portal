@@ -43,12 +43,12 @@ public:
 	bool bIsActive = false;
 	
 	void OnPortalPlaced(bool bPlacePortal);
-
+	
 	FPortalStateDelegate OnPortalStateChange;
 
-	void Teleport(AActor* InteractedActor);
+	void Teleport(AActor* InteractedActor) const;
 
-	void SetPortalVisibility(bool bMakeVisible);
+	void ActivatePortal(bool bMakeVisible);
 	
 private:
 	UPROPERTY(VisibleAnywhere)
