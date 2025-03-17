@@ -227,8 +227,6 @@ void UamsuPortalGun::FireLeft()
 {
 	if (IsValid(PortalOne))
 	{
-		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there
-		PortalOne->ActivatePortal(true);
 		ShootPortal(PortalOne);
 	}
 }
@@ -237,8 +235,6 @@ void UamsuPortalGun::FireRight()
 {
 	if (IsValid(PortalTwo))
 	{
-		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there AND broadcast to the chrosshair
-		PortalTwo->ActivatePortal(true);
 		ShootPortal(PortalTwo);
 	}
 }
