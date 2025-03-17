@@ -51,6 +51,11 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
+bool AamsuPortal::IsPortalActive() const
+{
+	return bIsActive;
+}
+
 void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 {
 	if (bIsActive == bPlacePortal)
