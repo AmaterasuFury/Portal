@@ -294,6 +294,7 @@ void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{
+		Super::EndPlay(EndPlayReason);
 		return;
 	}
 
@@ -304,4 +305,5 @@ void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
+	Super::EndPlay(EndPlayReason);
 }
