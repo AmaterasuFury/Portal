@@ -227,8 +227,6 @@ void UamsuPortalGun::FireLeft()
 {
 	if (IsValid(PortalOne))
 	{
-		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there
-		PortalOne->SetPortalVisibility(true);
 		ShootPortal(PortalOne);
 	}
 }
@@ -237,8 +235,6 @@ void UamsuPortalGun::FireRight()
 {
 	if (IsValid(PortalTwo))
 	{
-		//TODO move the  'SetPortalVisibility' to the ShootPortal function, after u check if it can be spawned in there AND broadcast to the chrosshair
-		PortalTwo->SetPortalVisibility(true);
 		ShootPortal(PortalTwo);
 	}
 }
@@ -298,6 +294,7 @@ void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if (Character == nullptr)
 	{
+		Super::EndPlay(EndPlayReason);
 		return;
 	}
 
@@ -308,4 +305,5 @@ void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			Subsystem->RemoveMappingContext(FireMappingContext);
 		}
 	}
+	Super::EndPlay(EndPlayReason);
 }

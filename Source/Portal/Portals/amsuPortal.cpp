@@ -34,13 +34,13 @@ void AamsuPortal::BeginPlay()
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 
-	SetPortalVisibility(false);
+	ActivatePortal(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (IsValid(OtherActor))
+	if (IsValid(OtherActor) && !OtherActor->IsA<AamsuPortal>())
 	{
 		Teleport(OtherActor);
 	}
@@ -51,6 +51,11 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
+bool AamsuPortal::IsPortalActive() const
+{
+	return bIsActive;
+}
+
 void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 {
 	if (bIsActive == bPlacePortal)
@@ -58,13 +63,13 @@ void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 		return;
 	}
 	
-	SetPortalVisibility(bPlacePortal);
+	ActivatePortal(bPlacePortal);
 
 	bIsActive = bPlacePortal;
 	OnPortalStateChange.Broadcast(bPlacePortal);
 }
 
-void AamsuPortal::Teleport(AActor* InteractedActor)
+void AamsuPortal::Teleport(AActor* InteractedActor) const
 {
 	if (!ensure(IsValid(AnotherPortal)))
 	{
@@ -91,7 +96,7 @@ void AamsuPortal::Teleport(AActor* InteractedActor)
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::SetPortalVisibility(bool bMakeVisible)
+void AamsuPortal::ActivatePortal(bool bMakeVisible)
 {
 	SetActorHiddenInGame(!bMakeVisible);
 

@@ -40,17 +40,19 @@ public:
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
 	
-	bool bIsActive = false;
+	bool IsPortalActive() const;
 	
 	void OnPortalPlaced(bool bPlacePortal);
-
+	
 	FPortalStateDelegate OnPortalStateChange;
 
-	void Teleport(AActor* InteractedActor);
+	void Teleport(AActor* InteractedActor) const;
 
-	void SetPortalVisibility(bool bMakeVisible);
+	void ActivatePortal(bool bMakeVisible);
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponentCube> CaptureComponentCube;
+
+	bool bIsActive = false;
 };
