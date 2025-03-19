@@ -36,8 +36,7 @@
 /NODEFAULTLIB:"LIBCPD"
 /FUNCTIONPADMIN:6
 /NOIMPLIB
-"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderGameControl\RiderGameControl.cpp.obj"
-"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderGameControl\PerModuleInline.gen.cpp.obj"
+"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderGameControl\Module.RiderGameControl.cpp.obj"
 "C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderGameControl\Default.rc2.res"
 "C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RD\UnrealEditor-RD.lib"
 "C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLink\UnrealEditor-RiderLink.lib"

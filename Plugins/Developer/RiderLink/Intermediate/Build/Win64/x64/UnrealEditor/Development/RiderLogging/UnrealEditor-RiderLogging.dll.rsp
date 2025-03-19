@@ -36,9 +36,7 @@
 /NODEFAULTLIB:"LIBCPD"
 /FUNCTIONPADMIN:6
 /NOIMPLIB
-"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLogging\RiderLogging.cpp.obj"
-"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLogging\RiderOutputDevice.cpp.obj"
-"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLogging\PerModuleInline.gen.cpp.obj"
+"C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLogging\Module.RiderLogging.cpp.obj"
 "C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RiderLogging\Default.rc2.res"
 "..\Intermediate\Build\Win64\x64\UnrealEditor\Development\Core\UnrealEditor-Core.lib"
 "C:\Users\ibest\Documents\Unreal Projects\Portal\Plugins\Developer\RiderLink\Intermediate\Build\Win64\x64\UnrealEditor\Development\RD\UnrealEditor-RD.lib"
