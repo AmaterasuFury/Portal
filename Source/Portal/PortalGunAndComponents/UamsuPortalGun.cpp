@@ -47,7 +47,7 @@ void UamsuPortalGun::BeginPlay()
 
 	FVector Origin = PortalOne->GetActorLocation();
 	FVector BoxExtent = FVector::ZeroVector;
-	PortalOne->MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
+	PortalOne->MeshComponentActivePortal->GetLocalBounds(Origin, BoxExtent);
 	
 	PortalsHalfWidth = BoxExtent.X;
 	PortalsHalfHeight = BoxExtent.Z;
