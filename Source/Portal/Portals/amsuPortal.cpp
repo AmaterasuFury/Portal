@@ -15,9 +15,12 @@ AamsuPortal::AamsuPortal()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
-	MeshComponentPortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
-	MeshComponentPortal->SetupAttachment(RootComponent);
+	MeshComponentActivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Active Portal Mesh"));
+	MeshComponentActivePortal->SetupAttachment(RootComponent);
 
+	MeshComponentInactivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Inactive Portal Mesh"));
+	MeshComponentInactivePortal->SetupAttachment(RootComponent);
+		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
 	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
