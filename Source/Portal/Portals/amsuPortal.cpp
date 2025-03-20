@@ -102,10 +102,28 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 void AamsuPortal::ActivatePortal(bool bMakeVisible)
 {
 	SetActorHiddenInGame(!bMakeVisible);
-
+	
 	SetActorEnableCollision(bMakeVisible);
 
 	SetActorTickEnabled(bMakeVisible);
+
+	if (!IsValid(AnotherPortal))
+	{
+		return;
+	}
+	
+	if (bMakeVisible && AnotherPortal->bIsActive)
+	{
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
+
+		MeshComponentActivePortal->SetHiddenInGame(false);
+		MeshComponentInactivePortal->SetHiddenInGame(true);
+	}
+	else
+	{
+		
+	}
 }
 
 
