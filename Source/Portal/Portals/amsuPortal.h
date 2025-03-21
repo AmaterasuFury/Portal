@@ -43,7 +43,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
 	
-	bool IsPortalActive() const;
+	bool IsPortalVisible() const;
 	
 	void OnPortalPlaced(bool bPlacePortal);
 	

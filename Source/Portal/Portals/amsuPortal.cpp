@@ -37,7 +37,10 @@ void AamsuPortal::BeginPlay()
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 
+	//** Sets the Portals invisible till they are being spawned by the prtalgun */
 	MakePortalVisible(false);
+	MeshComponentActivePortal->SetHiddenInGame(false);
+	MeshComponentInactivePortal->SetHiddenInGame(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -54,7 +57,7 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
-bool AamsuPortal::IsPortalActive() const
+bool AamsuPortal::IsPortalVisible() const
 {
 	return bIsVisible;
 }
@@ -67,18 +70,25 @@ void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
 	{
 		return;
 	}
+
 	
-	if (AnotherPortal->MeshComponentActivePortal->bHiddenInGame)
+	if (AnotherPortal->IsPortalVisible())
 	{
 		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
 		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
-		
+	
 		MeshComponentActivePortal->SetHiddenInGame(false);
 		MeshComponentInactivePortal->SetHiddenInGame(true);
+		
+	
 	}
 	else
 	{
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
 		
+		MeshComponentActivePortal->SetHiddenInGame(true);
+		MeshComponentInactivePortal->SetHiddenInGame(false);
 	}
 }
 
