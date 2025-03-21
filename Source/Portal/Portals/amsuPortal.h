@@ -51,11 +51,11 @@ public:
 
 	void Teleport(AActor* InteractedActor) const;
 
-	void ActivatePortal(bool bMakeVisible);
+	void MakePortalVisible(bool bMakeVisible);
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponentCube> CaptureComponentCube;
 
-	bool bIsActive = false;
+	bool bIsVisible = true;
 };
