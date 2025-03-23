@@ -220,7 +220,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 		}
 	}
 	
-	Portal->OnPortalPlaced(true);
+	Portal->MakePortalVisible(true);
 }
 
 void UamsuPortalGun::FireLeft() 

@@ -37,10 +37,8 @@ void AamsuPortal::BeginPlay()
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 
-	//** Sets the Portals invisible till they are being spawned by the prtalgun */
+	//** Sets the Portals invisible till they are being spawned by the portalgun */
 	MakePortalVisible(false);
-	MeshComponentActivePortal->SetHiddenInGame(false);
-	MeshComponentInactivePortal->SetHiddenInGame(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -62,35 +60,6 @@ bool AamsuPortal::IsPortalVisible() const
 	return bIsVisible;
 }
 
-void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
-{
-	MakePortalVisible(bPlacePortal);
-
-	if (!IsValid(AnotherPortal))
-	{
-		return;
-	}
-
-	
-	if (AnotherPortal->IsPortalVisible())
-	{
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
-	
-		MeshComponentActivePortal->SetHiddenInGame(false);
-		MeshComponentInactivePortal->SetHiddenInGame(true);
-		
-	
-	}
-	else
-	{
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
-		
-		MeshComponentActivePortal->SetHiddenInGame(true);
-		MeshComponentInactivePortal->SetHiddenInGame(false);
-	}
-}
 
 void AamsuPortal::Teleport(AActor* InteractedActor) const
 {
@@ -119,19 +88,49 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::MakePortalVisible(bool bMakeVisible)
+void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 {
-	if (bIsVisible != bMakeVisible)
+	if (bIsVisible == bMakeVisible)
 	{
-		SetActorHiddenInGame(!bMakeVisible);
+		return;
+	}
 	
-		SetActorEnableCollision(bMakeVisible);
+	OnPortalStateChange.Broadcast(bMakeVisible);
+	bIsVisible = bMakeVisible;
 
-		SetActorTickEnabled(bMakeVisible);
+	SetActorHiddenInGame(!bMakeVisible);  
+	
+	SetActorEnableCollision(bMakeVisible);
 
-		bIsVisible = bMakeVisible;
+	SetActorTickEnabled(bMakeVisible);	
+
+	if (!IsValid(AnotherPortal))
+	{
+		return;
+	}
+	
+	if (!bMakeVisible && AnotherPortal->IsPortalVisible())
+	{
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
 		
-		OnPortalStateChange.Broadcast(bMakeVisible);
+		return;
+	}
+	
+	
+	if (AnotherPortal->IsPortalVisible())
+	{
+		MeshComponentActivePortal->SetHiddenInGame(false);
+		MeshComponentInactivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
+	}
+	else
+	{
+		MeshComponentActivePortal->SetHiddenInGame(true);
+		MeshComponentInactivePortal->SetHiddenInGame(false);
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
 	}
 }
 

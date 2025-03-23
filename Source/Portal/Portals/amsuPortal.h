@@ -45,8 +45,6 @@ public:
 	
 	bool IsPortalVisible() const;
 	
-	void OnPortalPlaced(bool bPlacePortal);
-	
 	FPortalStateDelegate OnPortalStateChange;
 
 	void Teleport(AActor* InteractedActor) const;
