@@ -53,7 +53,7 @@ void UamsuPortalGun::BeginPlay()
 	PortalsHalfHeight = BoxExtent.Z;
 }
 
-FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionChannel InCollisionChannel) const
+FHitResult UamsuPortalGun::GetAimedHitResult(const AamsuPortal* IgnoredPortal, float InCheckDistance, ECollisionChannel InCollisionChannel) const
 {
 	FVector ViewLocation = FVector::ZeroVector;
 	FRotator ViewRotation = FRotator::ZeroRotator;
@@ -83,6 +83,7 @@ FHitResult UamsuPortalGun::GetAimedHitResult(float InCheckDistance, ECollisionCh
 	
 	FCollisionQueryParams FCollisionQueryParams;
 	FCollisionQueryParams.AddIgnoredActor(GetOwner());
+	FCollisionQueryParams.AddIgnoredActor(IgnoredPortal);
 	
 	GetWorld()->LineTraceSingleByChannel(HitResult, ViewLocation, TraceDestination, InCollisionChannel, FCollisionQueryParams);
 	
@@ -165,7 +166,7 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		}
 	}
 	
-#if ENABLE_DRAW_DEBUG && 1
+#if ENABLE_DRAW_DEBUG && 0
 	DrawDebugSphere(GetWorld(), TopEdge, 10.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), BottomEdge, 5.f, 12, FColor::Purple, false, 10.f);
 	DrawDebugSphere(GetWorld(), RightEdge, 10.f, 12, FColor::Purple, false, 10.f);
@@ -183,26 +184,6 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 		return;
 	}
 
-	FHitResult AimedHit = GetAimedHitResult();
-	
-
-	if (!CanAdjustAndSpawnPortalHere(AimedHit, Portal))
-	{
-		return;	
-	}
-
-	
-	const FVector PortalSpawnLocation = AimedHit.Location;
-	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();
-	
-	const FTransform SpawnTransform(PortalSpawnRotation,PortalSpawnLocation);
-
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	
-	Portal->SetActorTransform(SpawnTransform);
-	
-	
 	// Try and play the sound if specified
 	if (FireSound != nullptr)
 	{
@@ -219,6 +200,32 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+
+	FHitResult AimedHit = GetAimedHitResult(Portal);
+
+	if (AimedHit.GetActor() == Portal->AnotherPortal)
+	{
+		Portal->AnotherPortal->MakePortalVisible(false);
+		AimedHit = GetAimedHitResult(Portal);
+	}
+
+	if (!CanAdjustAndSpawnPortalHere(AimedHit, Portal))
+	{
+		return;	
+	}
+
+	
+	
+	const FVector PortalSpawnLocation = AimedHit.Location;
+	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();
+	
+	const FTransform SpawnTransform(PortalSpawnRotation,PortalSpawnLocation);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	Portal->SetActorTransform(SpawnTransform);
+	
 	
 	Portal->MakePortalVisible(true);
 }
