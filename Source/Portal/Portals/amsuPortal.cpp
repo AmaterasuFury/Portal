@@ -15,9 +15,12 @@ AamsuPortal::AamsuPortal()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
-	MeshComponentPortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
-	MeshComponentPortal->SetupAttachment(RootComponent);
+	MeshComponentActivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Active Portal Mesh"));
+	MeshComponentActivePortal->SetupAttachment(RootComponent);
 
+	MeshComponentInactivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Inactive Portal Mesh"));
+	MeshComponentInactivePortal->SetupAttachment(RootComponent);
+		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
 	// TODO fix the BoxComponent overlap (in BP) to overelap with the portal channels only
@@ -34,7 +37,8 @@ void AamsuPortal::BeginPlay()
 	BoxOverlapComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnBeginOverlap);
 	BoxOverlapComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnEndOverlap);
 
-	ActivatePortal(false);
+	//** Sets the Portals invisible till they are being spawned by the portalgun */
+	MakePortalVisible(false);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -51,23 +55,11 @@ void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 {
 }
 
-bool AamsuPortal::IsPortalActive() const
+bool AamsuPortal::IsPortalVisible() const
 {
-	return bIsActive;
+	return bIsVisible;
 }
 
-void AamsuPortal::OnPortalPlaced(bool bPlacePortal)
-{
-	if (bIsActive == bPlacePortal)
-	{
-		return;
-	}
-	
-	ActivatePortal(bPlacePortal);
-
-	bIsActive = bPlacePortal;
-	OnPortalStateChange.Broadcast(bPlacePortal);
-}
 
 void AamsuPortal::Teleport(AActor* InteractedActor) const
 {
@@ -96,13 +88,50 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::ActivatePortal(bool bMakeVisible)
+void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 {
-	SetActorHiddenInGame(!bMakeVisible);
+	if (bIsVisible == bMakeVisible)
+	{
+		return;
+	}
+	
+	OnPortalStateChange.Broadcast(bMakeVisible);
+	bIsVisible = bMakeVisible;
 
+	SetActorHiddenInGame(!bMakeVisible);  
+	
 	SetActorEnableCollision(bMakeVisible);
 
-	SetActorTickEnabled(bMakeVisible);
+	SetActorTickEnabled(bMakeVisible);	
+
+	if (!IsValid(AnotherPortal))
+	{
+		return;
+	}
+	
+	if (!bMakeVisible && AnotherPortal->IsPortalVisible())
+	{
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
+		
+		return;
+	}
+	
+	
+	if (AnotherPortal->IsPortalVisible())
+	{
+		MeshComponentActivePortal->SetHiddenInGame(false);
+		MeshComponentInactivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
+	}
+	else
+	{
+		MeshComponentActivePortal->SetHiddenInGame(true);
+		MeshComponentInactivePortal->SetHiddenInGame(false);
+		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
+		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
+	}
 }
 
 

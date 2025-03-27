@@ -25,7 +25,10 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> MeshComponentPortal;
+	TObjectPtr<UStaticMeshComponent> MeshComponentInactivePortal;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
+	TObjectPtr<UStaticMeshComponent> MeshComponentActivePortal;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;
@@ -40,19 +43,17 @@ public:
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal; 
 	
-	bool IsPortalActive() const;
-	
-	void OnPortalPlaced(bool bPlacePortal);
+	bool IsPortalVisible() const;
 	
 	FPortalStateDelegate OnPortalStateChange;
 
 	void Teleport(AActor* InteractedActor) const;
 
-	void ActivatePortal(bool bMakeVisible);
+	void MakePortalVisible(bool bMakeVisible);
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USceneCaptureComponentCube> CaptureComponentCube;
 
-	bool bIsActive = false;
+	bool bIsVisible = true;
 };

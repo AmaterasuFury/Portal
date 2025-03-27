@@ -69,7 +69,7 @@ public:
 	
 	/** Gets the HitResultOf the aim */
 	UFUNCTION()
-	FHitResult GetAimedHitResult(float InCheckDistance = 20000.f,  ECollisionChannel InCollisionChannel = ECC_Visibility) const;
+	FHitResult GetAimedHitResult(const AamsuPortal* IgnoredPortal, float InCheckDistance = 20000.f, ECollisionChannel InCollisionChannel = ECC_Visibility) const;
 
 	/** The location of the default 'hidden' from the player locations of the portals */
 	FVector SpawnLocation = FVector::ZeroVector;
