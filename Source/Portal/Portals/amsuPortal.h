@@ -41,7 +41,13 @@ public:
 		int32 OtherBodyIndex);
 
 	UPROPERTY()
-	TObjectPtr<AamsuPortal> AnotherPortal; 
+	TObjectPtr<AamsuPortal> AnotherPortal;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInterface> ActivePortalMaterial;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialInterface> InactivePortalMaterial;
 	
 	bool IsPortalVisible() const;
 	

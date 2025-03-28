@@ -147,6 +147,14 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		OutOverlaps.Empty();
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
+//
+//		for (FOverlapResult OutOverlap : OutOverlaps)
+//		{
+//			if (OutOverlap.GetActor() == Portal->AnotherPortal)
+//			{
+//				
+//			}
+//		}
 		
 		
 		// todo This 1 overlap check will work bad if there e.g. a wal that consists of 2 actors with the same material but diff actors, so probably just add boxoverlapp check
@@ -213,8 +221,6 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	{
 		return;	
 	}
-
-	
 	
 	const FVector PortalSpawnLocation = AimedHit.Location;
 	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();

@@ -94,8 +94,12 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 	{
 		return;
 	}
+
+	ON_SCOPE_EXIT
+	{
+		OnPortalStateChange.Broadcast(bMakeVisible);	
+	};
 	
-	OnPortalStateChange.Broadcast(bMakeVisible);
 	bIsVisible = bMakeVisible;
 
 	SetActorHiddenInGame(!bMakeVisible);  
@@ -104,6 +108,9 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 
 	SetActorTickEnabled(bMakeVisible);	
 
+	// do 
+	//MeshComponentActivePortal->SetMaterial(0, bMakeVisible ?  ActivePortalMaterial : InactivePortalMaterial);
+	
 	if (!IsValid(AnotherPortal))
 	{
 		return;
