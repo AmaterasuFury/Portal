@@ -76,3 +76,5 @@ DerivedDataCache/*
 .idea/*
 
 Plugins/Developer/RiderLink/Intermediate/
+
+Plugins/Developer/RiderLink/Binaries/
