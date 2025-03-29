@@ -17,9 +17,6 @@ AamsuPortal::AamsuPortal()
 
 	MeshComponentActivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Active Portal Mesh"));
 	MeshComponentActivePortal->SetupAttachment(RootComponent);
-
-	MeshComponentInactivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Inactive Portal Mesh"));
-	MeshComponentInactivePortal->SetupAttachment(RootComponent);
 		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
@@ -88,7 +85,7 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
+void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
 {
 	if (bIsVisible == bMakeVisible)
 	{
@@ -107,9 +104,6 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 	SetActorEnableCollision(bMakeVisible);
 
 	SetActorTickEnabled(bMakeVisible);	
-
-	// do 
-	//MeshComponentActivePortal->SetMaterial(0, bMakeVisible ?  ActivePortalMaterial : InactivePortalMaterial);
 	
 	if (!IsValid(AnotherPortal))
 	{
@@ -118,27 +112,12 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 	
 	if (!bMakeVisible && AnotherPortal->IsPortalVisible())
 	{
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
-		
+		AnotherPortal->MeshComponentActivePortal->SetMaterial(0, InactivePortalMaterial);
 		return;
 	}
 	
-	
-	if (AnotherPortal->IsPortalVisible())
-	{
-		MeshComponentActivePortal->SetHiddenInGame(false);
-		MeshComponentInactivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
-	}
-	else
-	{
-		MeshComponentActivePortal->SetHiddenInGame(true);
-		MeshComponentInactivePortal->SetHiddenInGame(false);
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
-	}
+	MeshComponentActivePortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
+	AnotherPortal->MeshComponentActivePortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
 

@@ -25,9 +25,6 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> MeshComponentInactivePortal;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UStaticMeshComponent> MeshComponentActivePortal;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
@@ -43,10 +40,10 @@ public:
 	UPROPERTY()
 	TObjectPtr<AamsuPortal> AnotherPortal;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, Category = "Portal")
 	TObjectPtr<UMaterialInterface> ActivePortalMaterial;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, Category = "Portal")
 	TObjectPtr<UMaterialInterface> InactivePortalMaterial;
 	
 	bool IsPortalVisible() const;
