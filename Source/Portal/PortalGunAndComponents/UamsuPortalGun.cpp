@@ -47,7 +47,7 @@ void UamsuPortalGun::BeginPlay()
 
 	FVector Origin = PortalOne->GetActorLocation();
 	FVector BoxExtent = FVector::ZeroVector;
-	PortalOne->MeshComponentActivePortal->GetLocalBounds(Origin, BoxExtent);
+	PortalOne->MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
 	
 	PortalsHalfWidth = BoxExtent.X;
 	PortalsHalfHeight = BoxExtent.Z;
@@ -147,20 +147,21 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		OutOverlaps.Empty();
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
-//
-//		for (FOverlapResult OutOverlap : OutOverlaps)
-//		{
-//			if (OutOverlap.GetActor() == Portal->AnotherPortal)
-//			{
-//				
-//			}
-//		}
 		
+		for (int32 i = 0; i < OutOverlaps.Num(); ++i)
+		{
+			if (OutOverlaps[i].GetActor() == Portal->AnotherPortal)
+			{
+				Portal->AnotherPortal->MakePortalVisible(false);
+				OutOverlaps.RemoveAt(i);
+			}
+		}
 		
 		// todo This 1 overlap check will work bad if there e.g. a wal that consists of 2 actors with the same material but diff actors, so probably just add boxoverlapp check
 		// Also that is better practise to use physmaterial for this kind of check, consider changing to physmaterial
 		if (OutOverlaps.Num() != 1)
 		{
+			int size = OutOverlaps.Num();
 			return false;
 		}
 		

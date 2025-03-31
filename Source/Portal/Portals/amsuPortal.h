@@ -25,7 +25,7 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> MeshComponentActivePortal;
+	TObjectPtr<UStaticMeshComponent> MeshComponentPortal;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;

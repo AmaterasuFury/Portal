@@ -15,8 +15,8 @@ AamsuPortal::AamsuPortal()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
-	MeshComponentActivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Active Portal Mesh"));
-	MeshComponentActivePortal->SetupAttachment(RootComponent);
+	MeshComponentPortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
+	MeshComponentPortal->SetupAttachment(RootComponent);
 		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
@@ -112,12 +112,12 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	
 	if (!bMakeVisible && AnotherPortal->IsPortalVisible())
 	{
-		AnotherPortal->MeshComponentActivePortal->SetMaterial(0, InactivePortalMaterial);
+		AnotherPortal->MeshComponentPortal->SetMaterial(0, InactivePortalMaterial);
 		return;
 	}
 	
-	MeshComponentActivePortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
-	AnotherPortal->MeshComponentActivePortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
+	MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
+	AnotherPortal->MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
 
