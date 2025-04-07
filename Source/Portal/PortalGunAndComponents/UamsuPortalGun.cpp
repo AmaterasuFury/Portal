@@ -121,10 +121,10 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 	FVector ForwardVector = FVector::ZeroVector;
 	
 	HitResult.ImpactNormal.FindBestAxisVectors(ForwardVector,RightVector);
-
+	
 	TArray<FVector> PortalEdges;
 	PortalEdges.Reserve(4);
-
+	
 	FVector BottomEdge = BottomEdge = HitPoint - (ForwardVector * (PortalsHalfHeight));
 	FVector TopEdge = TopEdge = HitPoint + (ForwardVector * (PortalsHalfHeight));
 	FVector LeftEdge = LeftEdge =  HitPoint - (RightVector * PortalsHalfWidth);
@@ -159,11 +159,12 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		
 		// todo This 1 overlap check will work bad if there e.g. a wal that consists of 2 actors with the same material but diff actors, so probably just add boxoverlapp check
 		// Also that is better practise to use physmaterial for this kind of check, consider changing to physmaterial
-		if (OutOverlaps.Num() != 1)
-		{
-			int size = OutOverlaps.Num();
-			return false;
-		}
+//		if (OutOverlaps.Num() != 1)
+//		{
+//			int size = OutOverlaps.Num();
+//			return false;
+//		}
+		
 		
 		const UPrimitiveComponent* OverlappedComponent = OutOverlaps[0].GetComponent();
 		
@@ -174,6 +175,8 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 			return false;
 		}
 	}
+
+
 	
 #if ENABLE_DRAW_DEBUG && 0
 	DrawDebugSphere(GetWorld(), TopEdge, 10.f, 12, FColor::Purple, false, 10.f);
