@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Animation/AnimInstance.h"
+#include "Components/BoxComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
 #include "Portal/Portals/amsuPortal.h"
@@ -233,8 +234,39 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	
 	Portal->SetActorTransform(SpawnTransform);
 	
-	
 	Portal->MakePortalVisible(true);
+}
+	
+bool UamsuPortalGun::BoxOverlapCheck(const FHitResult& HitResult) const 
+{
+	TArray<FOverlapResult> Overlaps;
+	
+	FVector BoxCenter = HitResult.Location + HitResult.ImpactNormal * 10.0f;
+	FVector BoxExtent = FVector(5, PortalsHalfWidth, PortalsHalfHeight);
+	
+	FQuat Rotation = HitResult.ImpactNormal.ToOrientationQuat();
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(PortalOne);
+	QueryParams.AddIgnoredActor(PortalTwo);
+	
+	bool bHasOverlap = GetWorld()->OverlapMultiByChannel(
+		Overlaps,
+		BoxCenter,
+		Rotation,
+		ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent),
+		QueryParams
+	);
+	
+	// Debug draw the overlap box
+	DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
+
+	if (Overlaps.Num() != 0)
+	{
+		return true;
+	}
+	return bHasOverlap;
 }
 
 void UamsuPortalGun::FireLeft() 
@@ -321,3 +353,4 @@ void UamsuPortalGun::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 	Super::EndPlay(EndPlayReason);
 }
+	

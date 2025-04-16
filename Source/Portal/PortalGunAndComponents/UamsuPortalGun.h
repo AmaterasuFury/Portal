@@ -77,6 +77,10 @@ public:
 	virtual void BeginPlay() override;
 	
 	void ShootPortal(AamsuPortal* Portal) const;
+
+	
+	/** Checks if anything is in front of it */
+	bool BoxOverlapCheck(const FHitResult& HitResult) const;
 	
 protected:
 	UFUNCTION()
