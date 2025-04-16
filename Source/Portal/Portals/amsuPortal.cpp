@@ -39,6 +39,13 @@ void AamsuPortal::BeginPlay()
 
 	//** Sets the Portals invisible till they are being spawned by the portalgun */
 	MakePortalVisible(false);
+
+	FVector Origin = PortalOne->GetActorLocation();
+	FVector BoxExtent = FVector::ZeroVector;
+	MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
+	
+	PortalsHalfWidth = BoxExtent.X;
+	PortalsHalfHeight = BoxExtent.Z;
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -46,7 +53,8 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (IsValid(OtherActor) && !OtherActor->IsA<AamsuPortal>())
 	{
-		Teleport(OtherActor);
+		//Teleport(OtherActor);
+		
 	}
 }
 
@@ -86,6 +94,40 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 		}
 	}
 	InteractedActor->SetActorRotation(ResultRotation);
+}
+
+void AamsuPortal::TeleportStart(AActor* InteractedActor) const
+{
+	if (!ensure(IsValid(AnotherPortal)))
+	{
+		return;
+	}
+
+	/** Check what actrs the portal is placed on */
+	TArray<FOverlapResult> Overlaps;
+	
+	FVector BoxCenter = this->GetActorLocation() + this->GetActorForwardVector() * -10.0f;
+	FVector BoxExtent = FVector(5, PortalsHalfWidth, PortalsHalfHeight);
+	
+	FQuat Rotation = this->GetActorRotation().Quaternion();
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	
+	
+	bool bHasOverlap = GetWorld()->OverlapMultiByChannel(
+		Overlaps,
+		BoxCenter,
+		Rotation,
+		ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent),
+		QueryParams
+	);
+	
+	
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
+	
+	
 }
 
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 

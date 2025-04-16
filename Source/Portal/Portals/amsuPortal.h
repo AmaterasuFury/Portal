@@ -55,7 +55,14 @@ public:
 
 	void Teleport(AActor* InteractedActor) const;
 
+	void TeleportStart(AActor* InteractedActor) const;
+
+	void SetCollisionOff() const;
+
 	void MakePortalVisible(bool bMakeVisible);
+
+	float PortalsHalfWidth = 0.0f;
+	float PortalsHalfHeight = 0.0f;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
