@@ -213,6 +213,9 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 
 	FHitResult AimedHit = GetAimedHitResult(Portal);
 
+	
+	IsBoxOverlaps(AimedHit);
+	
 	if (AimedHit.GetActor() == Portal->AnotherPortal)
 	{
 		Portal->AnotherPortal->MakePortalVisible(false);
@@ -237,7 +240,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	Portal->MakePortalVisible(true);
 }
 	
-bool UamsuPortalGun::BoxOverlapCheck(const FHitResult& HitResult) const 
+bool UamsuPortalGun::IsBoxOverlaps(const FHitResult& HitResult) const 
 {
 	TArray<FOverlapResult> Overlaps;
 	
@@ -259,14 +262,11 @@ bool UamsuPortalGun::BoxOverlapCheck(const FHitResult& HitResult) const
 		QueryParams
 	);
 	
-	// Debug draw the overlap box
-	DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
+	
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
 
-	if (Overlaps.Num() != 0)
-	{
-		return true;
-	}
 	return bHasOverlap;
+	
 }
 
 void UamsuPortalGun::FireLeft() 

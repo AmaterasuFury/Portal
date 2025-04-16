@@ -80,7 +80,7 @@ public:
 
 	
 	/** Checks if anything is in front of it */
-	bool BoxOverlapCheck(const FHitResult& HitResult) const;
+	bool IsBoxOverlaps(const FHitResult& HitResult) const;
 	
 protected:
 	UFUNCTION()
