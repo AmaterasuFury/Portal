@@ -5,6 +5,8 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/SceneCaptureComponentCube.h"
+#include "Engine/OverlapResult.h"
+
 
 
 // Sets default values
@@ -40,7 +42,7 @@ void AamsuPortal::BeginPlay()
 	//** Sets the Portals invisible till they are being spawned by the portalgun */
 	MakePortalVisible(false);
 
-	FVector Origin = PortalOne->GetActorLocation();
+	FVector Origin = GetActorLocation();
 	FVector BoxExtent = FVector::ZeroVector;
 	MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
 	
@@ -127,7 +129,10 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 	
 	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
 	
-	
+}
+
+void AamsuPortal::SetCollisionOff() const
+{
 }
 
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
