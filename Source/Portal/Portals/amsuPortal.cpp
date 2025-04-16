@@ -17,6 +17,9 @@ AamsuPortal::AamsuPortal()
 
 	MeshComponentPortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
 	MeshComponentPortal->SetupAttachment(RootComponent);
+
+	MeshComponentPortalFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Frame Mesh"));
+	MeshComponentPortalFrame->SetupAttachment(RootComponent);
 		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
