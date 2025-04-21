@@ -121,7 +121,7 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 		FCollisionShape::MakeBox(BoxExtent), QueryParams);
 	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
 	
-	
+	//
 	
 }
 
