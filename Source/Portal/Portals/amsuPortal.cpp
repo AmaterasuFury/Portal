@@ -56,7 +56,7 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	if (IsValid(OtherActor) && !OtherActor->IsA<AamsuPortal>())
 	{
 		//Teleport(OtherActor);
-		
+		TeleportStart(OtherActor);
 	}
 }
 
@@ -105,10 +105,10 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 		return;
 	}
 
-	/** Check what actrs the portal is placed on */
+	/** Check what actors the portal is placed on */
 	TArray<FOverlapResult> Overlaps;
 	
-	FVector BoxCenter = this->GetActorLocation() + this->GetActorForwardVector() * -10.0f;
+	FVector BoxCenter = this->GetActorLocation() + this->GetActorForwardVector() * -1.0f;
 	FVector BoxExtent = FVector(5, PortalsHalfWidth, PortalsHalfHeight);
 	
 	FQuat Rotation = this->GetActorRotation().Quaternion();
@@ -117,18 +117,16 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 	QueryParams.AddIgnoredActor(this);
 	
 	
-	bool bHasOverlap = GetWorld()->OverlapMultiByChannel(
-		Overlaps,
-		BoxCenter,
-		Rotation,
-		ECC_WorldStatic,
-		FCollisionShape::MakeBox(BoxExtent),
-		QueryParams
-	);
+	bool bHasOverlap = GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent), QueryParams);
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
 	
 	
-	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
 	
+}
+
+void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
+{
 }
 
 void AamsuPortal::SetCollisionOff() const

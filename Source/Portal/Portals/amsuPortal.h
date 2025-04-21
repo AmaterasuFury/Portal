@@ -56,6 +56,7 @@ public:
 	void Teleport(AActor* InteractedActor) const;
 
 	void TeleportStart(AActor* InteractedActor) const;
+	void TeleportEnd(AActor* InteractingActor) const;
 
 	void SetCollisionOff() const;
 
