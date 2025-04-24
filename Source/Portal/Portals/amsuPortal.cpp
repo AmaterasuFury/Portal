@@ -29,6 +29,10 @@ AamsuPortal::AamsuPortal()
 
 	CaptureComponentCube = CreateDefaultSubobject<USceneCaptureComponentCube>(TEXT("Capture Component"));
 	CaptureComponentCube->SetupAttachment(RootComponent);
+
+	InvisibleBackFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Invisible Back Frame"));
+	InvisibleBackFrame->SetupAttachment(RootComponent);
+	InvisibleBackFrame->SetHiddenInGame(true);
 }
 
 // Called when the game starts or when spawned

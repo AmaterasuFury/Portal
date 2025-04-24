@@ -30,6 +30,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UStaticMeshComponent> MeshComponentPortalFrame;
 
+	//* This mesh is supposed to become invisible on the BeginPlay, and colidible with a character only, but only
+	// in case of collisions with the portal*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
+	TObjectPtr<UStaticMeshComponent> InvisibleBackFrame;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;
 
