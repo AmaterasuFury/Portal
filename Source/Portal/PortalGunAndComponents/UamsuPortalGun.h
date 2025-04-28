@@ -80,7 +80,7 @@ public:
 
 	
 	/** Checks if anything is in front of it */
-	bool IsBoxOverlaps(const FHitResult& HitResult) const;
+	bool IsEnoghFrontSpace(const FHitResult& HitResult) const;
 	
 protected:
 	UFUNCTION()
@@ -100,4 +100,6 @@ private:
 
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
+	
+	void SetPlacedOnActors(AamsuPortal* Portal) const;
 };

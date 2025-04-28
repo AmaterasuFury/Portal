@@ -33,6 +33,7 @@ AamsuPortal::AamsuPortal()
 	InvisibleBackFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Invisible Back Frame"));
 	InvisibleBackFrame->SetupAttachment(RootComponent);
 	InvisibleBackFrame->SetHiddenInGame(true);
+	// TODO set this mesh collision to some portalFrame channel so it will only colide when overlapp with portals(create it)
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +53,8 @@ void AamsuPortal::BeginPlay()
 	
 	PortalsHalfWidth = BoxExtent.X;
 	PortalsHalfHeight = BoxExtent.Z;
+
+	PortalIsPlacedOn.Reserve(10);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -108,24 +111,9 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 	{
 		return;
 	}
-
-	/** Check what actors the portal is placed on */
-	TArray<FOverlapResult> Overlaps;
 	
-	FVector BoxCenter = this->GetActorLocation() + this->GetActorForwardVector() * -1.0f;
-	FVector BoxExtent = FVector(5, PortalsHalfWidth, PortalsHalfHeight);
-	
-	FQuat Rotation = this->GetActorRotation().Quaternion();
-	
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-	
-	
-	bool bHasOverlap = GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
-		FCollisionShape::MakeBox(BoxExtent), QueryParams);
-	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
-	
-	//
+	// TODO 
+	// use the PortalIsPlacedOn to ignore overalpp with the walls its on  and the other portal
 	
 }
 

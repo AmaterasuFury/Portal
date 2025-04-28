@@ -186,6 +186,34 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 	return true;
 }
 
+void UamsuPortalGun::SetPlacedOnActors(AamsuPortal* Portal) const
+{
+	check(IsValid(Portal));
+	
+	/** Check what actors the portal is placed on */
+	TArray<FOverlapResult> Overlaps;
+	
+	const FVector BoxCenter = Portal->GetActorLocation() + Portal->GetActorForwardVector() * -1.0f;
+	const FVector BoxExtent = FVector(5, PortalsHalfWidth, PortalsHalfHeight);
+	
+	const FQuat Rotation = Portal->GetActorRotation().Quaternion();
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(Portal);
+	
+	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent), QueryParams);
+	//** Draw box debug if you need*/
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
+	
+	Portal->PortalIsPlacedOn.Empty();
+	
+	for (FOverlapResult Overlap : Overlaps)
+	{
+		Portal->PortalIsPlacedOn.Add(Overlap.GetActor());
+	}
+}
+
 
 void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 {
@@ -213,8 +241,8 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 
 	FHitResult AimedHit = GetAimedHitResult(Portal);
 
-	
-	IsBoxOverlaps(AimedHit);
+	// rename and use if needed
+	//IsBoxOverlaps(AimedHit);
 	
 	if (AimedHit.GetActor() == Portal->AnotherPortal)
 	{
@@ -238,9 +266,11 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	Portal->SetActorTransform(SpawnTransform);
 	
 	Portal->MakePortalVisible(true);
+
+	SetPlacedOnActors(Portal);
 }
 	
-bool UamsuPortalGun::IsBoxOverlaps(const FHitResult& HitResult) const 
+bool UamsuPortalGun::IsEnoghFrontSpace(const FHitResult& HitResult) const 
 {
 	TArray<FOverlapResult> Overlaps;
 	

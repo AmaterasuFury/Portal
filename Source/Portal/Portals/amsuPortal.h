@@ -69,6 +69,9 @@ public:
 
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
+
+	UPROPERTY(Transient)
+	TArray<AActor*> PortalIsPlacedOn;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
