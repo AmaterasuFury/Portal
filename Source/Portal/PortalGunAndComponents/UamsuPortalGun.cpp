@@ -238,7 +238,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	Portal->MakePortalVisible(true);
 }
 	
-bool UamsuPortalGun::IsEnoghFrontSpace(const FHitResult& HitResult) const 
+bool UamsuPortalGun::IsEnoughFrontSpace(const FHitResult& HitResult) const 
 {
 	TArray<FOverlapResult> Overlaps;
 	
@@ -263,7 +263,7 @@ bool UamsuPortalGun::IsEnoghFrontSpace(const FHitResult& HitResult) const
 	
 	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 2.0f);
 
-	return bHasOverlap;
+	return !bHasOverlap;
 	
 }
 

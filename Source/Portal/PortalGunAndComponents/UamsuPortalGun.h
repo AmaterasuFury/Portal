@@ -80,7 +80,7 @@ public:
 
 	
 	/** Checks if anything is in front of it */
-	bool IsEnoghFrontSpace(const FHitResult& HitResult) const;
+	bool IsEnoughFrontSpace(const FHitResult& HitResult) const;
 	
 protected:
 	UFUNCTION()
