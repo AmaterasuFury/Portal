@@ -134,7 +134,8 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 
 	ON_SCOPE_EXIT
 	{
-		OnPortalStateChange.Broadcast(bMakeVisible);	
+		OnPortalStateChange.Broadcast(bMakeVisible);
+		SetPortalIsPlacedOn();
 	};
 	
 	bIsVisible = bMakeVisible;
@@ -160,6 +161,32 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	AnotherPortal->MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
+void AamsuPortal::SetPortalIsPlacedOn()
+{
+	/** Check what actors the portal is placed on */
+	TArray<FOverlapResult> Overlaps;
+	
+	const FVector BoxCenter = GetActorLocation() + GetActorForwardVector() * -1.0f;
+	constexpr float HalfDepth = 5.0f;
+	const FVector BoxExtent = FVector(HalfDepth, PortalsHalfWidth, PortalsHalfHeight);
+	
+	const FQuat Rotation = GetActorRotation().Quaternion();
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	
+	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent), QueryParams);
+	//** Draw box debug if you need*/
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
+	
+	PortalIsPlacedOn.Empty();
+	
+	for (const FOverlapResult& Overlap : Overlaps)
+	{
+		PortalIsPlacedOn.Add(Overlap.GetActor());
+	}
+}
 
 void AamsuPortal::Tick(float DeltaTime)
 {

@@ -66,6 +66,8 @@ public:
 	void SetCollisionOff() const;
 
 	void MakePortalVisible(bool bMakeVisible);
+	
+	void SetPortalIsPlacedOn();
 
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;

@@ -100,6 +100,4 @@ private:
 
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
-	
-	void SetPlacedOnActors(AamsuPortal* Portal) const;
 };
