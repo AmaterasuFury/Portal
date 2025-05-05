@@ -38,7 +38,7 @@ void AamsuSlidingDoor::OpenDoor(float InDeltaTime)
 	{
 		return;
 	}
-	if (FMath::IsNearlyEqual(CurrentPosition, SlideRange))
+	if (FMath::IsNearlyEqual(CurrentDeltaPosition, SlideRange))
 	{
 		return;
 	}
@@ -69,7 +69,7 @@ void AamsuSlidingDoor::Close()
 
 void AamsuSlidingDoor::CloseDoor(float InDeltaTime)
 {
-	if (FMath::IsNearlyEqual(CurrentPosition, 0.0f))
+	if (FMath::IsNearlyEqual(CurrentDeltaPosition, 0.0f))
 	{
 		SetActorTickEnabled(false);
 		return;
@@ -89,7 +89,7 @@ void AamsuSlidingDoor::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 void AamsuSlidingDoor::TickDoorSlide(float InDeltaTime, bool bDoorOpens)
 {
 	float DeltaPosition = InDeltaTime * OpenSpeed;
-	const float OldPosition = CurrentPosition;
+	const float OldPosition = CurrentDeltaPosition;
 	float OldPlusDelta = 0.0f;
 
 	if (bDoorOpens)
@@ -100,10 +100,10 @@ void AamsuSlidingDoor::TickDoorSlide(float InDeltaTime, bool bDoorOpens)
 	{
 		OldPlusDelta = OldPosition - DeltaPosition;
 	}
+	
+	CurrentDeltaPosition = FMath::Clamp<float>(OldPlusDelta, 0.0f, SlideRange);
 
-	CurrentPosition = FMath::Clamp<float>(OldPlusDelta, 0.0f, SlideRange);
-
-	DeltaPosition = CurrentPosition - OldPosition;
+	DeltaPosition = CurrentDeltaPosition - OldPosition;
 	
 	const FVector DeltaVector (DeltaPosition, 0.0, 0.0);
 

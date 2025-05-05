@@ -25,10 +25,15 @@ protected:
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> MeshComponentInactivePortal;
+	TObjectPtr<UStaticMeshComponent> MeshComponentPortal;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
-	TObjectPtr<UStaticMeshComponent> MeshComponentActivePortal;
+	TObjectPtr<UStaticMeshComponent> MeshComponentPortalFrame;
+
+	//* This mesh is supposed to become invisible on the BeginPlay, and colidible with a character only, but only
+	// in case of collisions with the portal*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
+	TObjectPtr<UStaticMeshComponent> InvisibleBackFrame;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Portal")
 	TObjectPtr<UBoxComponent> BoxOverlapComponent;
@@ -41,7 +46,13 @@ public:
 		int32 OtherBodyIndex);
 
 	UPROPERTY()
-	TObjectPtr<AamsuPortal> AnotherPortal; 
+	TObjectPtr<AamsuPortal> AnotherPortal;
+
+	UPROPERTY(EditAnywhere, Category = "Portal")
+	TObjectPtr<UMaterialInterface> ActivePortalMaterial;
+	
+	UPROPERTY(EditAnywhere, Category = "Portal")
+	TObjectPtr<UMaterialInterface> InactivePortalMaterial;
 	
 	bool IsPortalVisible() const;
 	
@@ -49,7 +60,20 @@ public:
 
 	void Teleport(AActor* InteractedActor) const;
 
+	void TeleportStart(AActor* InteractedActor) const;
+	void TeleportEnd(AActor* InteractingActor) const;
+
+	void SetCollisionOff() const;
+
 	void MakePortalVisible(bool bMakeVisible);
+	
+	void SetPortalIsPlacedOn();
+
+	float PortalsHalfWidth = 0.0f;
+	float PortalsHalfHeight = 0.0f;
+
+	UPROPERTY(Transient)
+	TArray<AActor*> PortalIsPlacedOn;
 	
 private:
 	UPROPERTY(VisibleAnywhere)

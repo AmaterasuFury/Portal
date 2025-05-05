@@ -56,7 +56,7 @@ private:
 	void TickDoorSlide (float InDeltaTime, bool bDoorOpens);
 	
 	bool bDoorIsOpening = false;
-	float CurrentPosition = 0.0f;
+	float CurrentDeltaPosition = 0.0f;
 
 	/** This is the time in how much seconds the door will be closed in case it was opened by calling Open() function manually*/
 	UPROPERTY(EditAnywhere, Category = "Door Parameters")

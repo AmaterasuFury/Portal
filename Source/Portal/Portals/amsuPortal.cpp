@@ -5,6 +5,8 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/SceneCaptureComponentCube.h"
+#include "Engine/OverlapResult.h"
+
 
 
 // Sets default values
@@ -15,11 +17,11 @@ AamsuPortal::AamsuPortal()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 
-	MeshComponentActivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Active Portal Mesh"));
-	MeshComponentActivePortal->SetupAttachment(RootComponent);
+	MeshComponentPortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Mesh"));
+	MeshComponentPortal->SetupAttachment(RootComponent);
 
-	MeshComponentInactivePortal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Inactive Portal Mesh"));
-	MeshComponentInactivePortal->SetupAttachment(RootComponent);
+	MeshComponentPortalFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Portal Frame Mesh"));
+	MeshComponentPortalFrame->SetupAttachment(RootComponent);
 		
 	BoxOverlapComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Overlap Comnponent"));
 	BoxOverlapComponent->SetupAttachment(RootComponent);
@@ -27,6 +29,11 @@ AamsuPortal::AamsuPortal()
 
 	CaptureComponentCube = CreateDefaultSubobject<USceneCaptureComponentCube>(TEXT("Capture Component"));
 	CaptureComponentCube->SetupAttachment(RootComponent);
+
+	InvisibleBackFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Invisible Back Frame"));
+	InvisibleBackFrame->SetupAttachment(RootComponent);
+	InvisibleBackFrame->SetHiddenInGame(true);
+	// TODO set this mesh collision to some portalFrame channel so it will only colide when overlapp with portals(create it)
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +46,15 @@ void AamsuPortal::BeginPlay()
 
 	//** Sets the Portals invisible till they are being spawned by the portalgun */
 	MakePortalVisible(false);
+
+	FVector Origin = GetActorLocation();
+	FVector BoxExtent = FVector::ZeroVector;
+	MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
+	
+	PortalsHalfWidth = BoxExtent.X;
+	PortalsHalfHeight = BoxExtent.Z;
+
+	PortalIsPlacedOn.Reserve(10);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -46,7 +62,8 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (IsValid(OtherActor) && !OtherActor->IsA<AamsuPortal>())
 	{
-		Teleport(OtherActor);
+		//Teleport(OtherActor);
+		TeleportStart(OtherActor);
 	}
 }
 
@@ -88,14 +105,39 @@ void AamsuPortal::Teleport(AActor* InteractedActor) const
 	InteractedActor->SetActorRotation(ResultRotation);
 }
 
-void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
+void AamsuPortal::TeleportStart(AActor* InteractedActor) const
+{
+	if (!ensure(IsValid(AnotherPortal)))
+	{
+		return;
+	}
+	
+	// TODO 
+	// use the PortalIsPlacedOn to ignore overalpp with the walls its on  and the other portal
+	
+}
+
+void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
+{
+}
+
+void AamsuPortal::SetCollisionOff() const
+{
+}
+
+void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
 {
 	if (bIsVisible == bMakeVisible)
 	{
 		return;
 	}
+
+	ON_SCOPE_EXIT
+	{
+		OnPortalStateChange.Broadcast(bMakeVisible);
+		SetPortalIsPlacedOn();
+	};
 	
-	OnPortalStateChange.Broadcast(bMakeVisible);
 	bIsVisible = bMakeVisible;
 
 	SetActorHiddenInGame(!bMakeVisible);  
@@ -103,7 +145,7 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 	SetActorEnableCollision(bMakeVisible);
 
 	SetActorTickEnabled(bMakeVisible);	
-
+	
 	if (!IsValid(AnotherPortal))
 	{
 		return;
@@ -111,29 +153,40 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible) //t
 	
 	if (!bMakeVisible && AnotherPortal->IsPortalVisible())
 	{
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
-		
+		AnotherPortal->MeshComponentPortal->SetMaterial(0, InactivePortalMaterial);
 		return;
 	}
 	
-	
-	if (AnotherPortal->IsPortalVisible())
-	{
-		MeshComponentActivePortal->SetHiddenInGame(false);
-		MeshComponentInactivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(false);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(true);
-	}
-	else
-	{
-		MeshComponentActivePortal->SetHiddenInGame(true);
-		MeshComponentInactivePortal->SetHiddenInGame(false);
-		AnotherPortal->MeshComponentActivePortal->SetHiddenInGame(true);
-		AnotherPortal->MeshComponentInactivePortal->SetHiddenInGame(false);
-	}
+	MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
+	AnotherPortal->MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
+void AamsuPortal::SetPortalIsPlacedOn()
+{
+	/** Check what actors the portal is placed on */
+	TArray<FOverlapResult> Overlaps;
+	
+	const FVector BoxCenter = GetActorLocation() + GetActorForwardVector() * -1.0f;
+	constexpr float HalfDepth = 5.0f;
+	const FVector BoxExtent = FVector(HalfDepth, PortalsHalfWidth, PortalsHalfHeight);
+	
+	const FQuat Rotation = GetActorRotation().Quaternion();
+	
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	
+	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
+		FCollisionShape::MakeBox(BoxExtent), QueryParams);
+	//** Draw box debug if you need*/
+	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
+	
+	PortalIsPlacedOn.Empty();
+	
+	for (const FOverlapResult& Overlap : Overlaps)
+	{
+		PortalIsPlacedOn.Add(Overlap.GetActor());
+	}
+}
 
 void AamsuPortal::Tick(float DeltaTime)
 {
