@@ -148,12 +148,13 @@ bool UamsuPortalGun::CanAdjustAndSpawnPortalHere(FHitResult & HitResult, AamsuPo
 		GetWorld()->OverlapMultiByChannel(OutOverlaps, PortalEdge, FQuat::Identity, ECC_Visibility,
 			FCollisionShape::MakeSphere(5.0f), QueryParams);
 		
-		for (int32 i = 0; i < OutOverlaps.Num(); ++i)
+		for (int32 i = OutOverlaps.Num() - 1; i >= 0; --i)
 		{
+			/** Check if there is another portal blocking the spawn of the current one and it if it does - disable it*/
 			if (OutOverlaps[i].GetActor() == Portal->AnotherPortal)
 			{
 				Portal->AnotherPortal->MakePortalVisible(false);
-				OutOverlaps.RemoveAt(i);
+				OutOverlaps.RemoveAtSwap(i);
 			}
 		}
 		
