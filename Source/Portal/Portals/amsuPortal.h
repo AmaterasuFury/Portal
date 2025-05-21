@@ -45,7 +45,7 @@ public:
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<AamsuPortal> AnotherPortal;
 
 	UPROPERTY(EditAnywhere, Category = "Portal")
@@ -73,7 +73,7 @@ public:
 	float PortalsHalfHeight = 0.0f;
 
 	UPROPERTY(Transient)
-	TArray<AActor*> PortalIsPlacedOn;
+	TArray<TObjectPtr<AActor>> PortalIsPlacedOn;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
