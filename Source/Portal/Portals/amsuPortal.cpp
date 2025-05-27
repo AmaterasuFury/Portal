@@ -136,6 +136,11 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	ON_SCOPE_EXIT
 	{
 		OnPortalStateChange.Broadcast(bMakeVisible);
+
+		if (!bMakeVisible)
+		{
+			PortalIsPlacedOn.Reset();	
+		}
 	};
 	
 	bIsVisible = bMakeVisible;
