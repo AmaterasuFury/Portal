@@ -230,10 +230,11 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	const FRotator PortalSpawnRotation = AimedHit.ImpactNormal.Rotation();
 	
 	const FTransform SpawnTransform(PortalSpawnRotation,PortalSpawnLocation);
-
+	
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
+	Portal->SetPortalIsPlacedOn(PortalSpawnLocation, PortalSpawnRotation);
 	Portal->SetActorTransform(SpawnTransform);
 	
 	Portal->MakePortalVisible(true);
