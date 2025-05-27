@@ -66,9 +66,10 @@ public:
 	void SetCollisionOff() const;
 
 	void MakePortalVisible(bool bMakeVisible);
-	
-	void SetPortalIsPlacedOn();
 
+	/** Check what actors the portal is placed on and set it to the array*/
+	void SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation);
+	
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
 

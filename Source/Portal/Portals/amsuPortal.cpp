@@ -47,14 +47,15 @@ void AamsuPortal::BeginPlay()
 	//** Sets the Portals invisible till they are being spawned by the portalgun */
 	MakePortalVisible(false);
 
+	//** Sets the portal size*/
 	FVector Origin = GetActorLocation();
 	FVector BoxExtent = FVector::ZeroVector;
 	MeshComponentPortal->GetLocalBounds(Origin, BoxExtent);
-	
 	PortalsHalfWidth = BoxExtent.X;
 	PortalsHalfHeight = BoxExtent.Z;
 
-	PortalIsPlacedOn.Reserve(10);
+	//** Reserves memory for the array of the actors the portal is placed on*/
+	PortalIsPlacedOn.Reserve(15);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -135,7 +136,6 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	ON_SCOPE_EXIT
 	{
 		OnPortalStateChange.Broadcast(bMakeVisible);
-		SetPortalIsPlacedOn();
 	};
 	
 	bIsVisible = bMakeVisible;
@@ -161,26 +161,28 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	AnotherPortal->MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
-void AamsuPortal::SetPortalIsPlacedOn()
+void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation)
 {
+	PortalIsPlacedOn.Reset();
+	
 	/** Check what actors the portal is placed on */
 	TArray<FOverlapResult> Overlaps;
+
+	constexpr float BoxCheckDepth = -5.0f;
+	const FVector BoxCheckLocation = PortalSpawnLocation + PortalSpawnRotation.Vector() * BoxCheckDepth;
+
+	constexpr float BoxExtendDepth = 5.0f;
+	const FVector BoxExtent = FVector(BoxExtendDepth, PortalsHalfWidth, PortalsHalfHeight);
 	
-	const FVector BoxCenter = GetActorLocation() + GetActorForwardVector() * -1.0f;
-	constexpr float HalfDepth = 5.0f;
-	const FVector BoxExtent = FVector(HalfDepth, PortalsHalfWidth, PortalsHalfHeight);
-	
-	const FQuat Rotation = GetActorRotation().Quaternion();
+	const FQuat Rotation = PortalSpawnRotation.Quaternion();
 	
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 	
-	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCenter, Rotation, ECC_WorldStatic,
+	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCheckLocation, Rotation, ECC_WorldStatic,
 		FCollisionShape::MakeBox(BoxExtent), QueryParams);
 	//** Draw box debug if you need*/
-	//DrawDebugBox(GetWorld(), BoxCenter, BoxExtent, Rotation, FColor::Green, false, 100.0f);
-	
-	PortalIsPlacedOn.Empty();
+	DrawDebugBox(GetWorld(), BoxCheckLocation, BoxExtent, Rotation, FColor::Green, false, 100.0f);
 	
 	for (const FOverlapResult& Overlap : Overlaps)
 	{
