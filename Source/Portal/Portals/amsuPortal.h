@@ -63,7 +63,7 @@ public:
 	void TeleportStart(AActor* InteractedActor) const;
 	void TeleportEnd(AActor* InteractingActor) const;
 
-	void SetCollisionOff() const;
+	void IgnoreOverlappedActor(AActor* ColidedACtor, bool bIgnore) const;
 
 	void MakePortalVisible(bool bMakeVisible);
 

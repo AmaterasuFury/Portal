@@ -122,8 +122,21 @@ void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
 {
 }
 
-void AamsuPortal::SetCollisionOff() const
+void AamsuPortal::IgnoreOverlappedActor(AActor* OverlappedActor, bool bIgnore) const
 {
+	if (!IsValid(OverlappedActor))
+	{
+		return;
+	}
+	UPrimitiveComponent* PrimitiveRootComponent = Cast<UPrimitiveComponent>(OverlappedActor->GetRootComponent());
+
+	if (!ensure(IsValid(PrimitiveRootComponent)))
+	{
+		UE_LOG(LogTemp, Log, TEXT("The actor's root component should be derived from UPrimitiveComponent"));
+		return;
+	}
+
+	PrimitiveRootComponent->IgnoreActorWhenMoving(OverlappedActor, true);
 }
 
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
@@ -149,7 +162,8 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	
 	SetActorEnableCollision(bMakeVisible);
 
-	SetActorTickEnabled(bMakeVisible);	
+	// will set the tick on only when overlaps
+	//SetActorTickEnabled(bMakeVisible);	
 	
 	if (!IsValid(AnotherPortal))
 	{
@@ -187,7 +201,7 @@ void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const 
 	GetWorld()->OverlapMultiByChannel(Overlaps, BoxCheckLocation, Rotation, ECC_WorldStatic,
 		FCollisionShape::MakeBox(BoxExtent), QueryParams);
 	//** Draw box debug if you need*/
-	DrawDebugBox(GetWorld(), BoxCheckLocation, BoxExtent, Rotation, FColor::Green, false, 100.0f);
+	//DrawDebugBox(GetWorld(), BoxCheckLocation, BoxExtent, Rotation, FColor::Green, false, 100.0f);
 	
 	for (const FOverlapResult& Overlap : Overlaps)
 	{

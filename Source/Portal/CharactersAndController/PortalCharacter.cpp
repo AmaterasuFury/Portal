@@ -39,6 +39,8 @@ APortalCharacter::APortalCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	InteractDetectComponent = CreateDefaultSubobject<UamsuInteractionDetectComponent>(TEXT("Interact Detection Component"));
+
+	RootComponent = GetCapsuleComponent();
 }
 
 void APortalCharacter::BeginPlay()
