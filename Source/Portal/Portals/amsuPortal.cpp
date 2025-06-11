@@ -115,7 +115,7 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 	
 	// TODO 
 	// use the PortalIsPlacedOn to ignore overalpp with the walls its on  and the other portal
-	
+	IgnoreOverlappedActor(InteractedActor, true);
 }
 
 void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
@@ -136,7 +136,7 @@ void AamsuPortal::IgnoreOverlappedActor(AActor* OverlappedActor, bool bIgnore) c
 		return;
 	}
 
-	PrimitiveRootComponent->IgnoreActorWhenMoving(OverlappedActor, true);
+	PrimitiveRootComponent->IgnoreActorWhenMoving(OverlappedActor, bIgnore);
 }
 
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
