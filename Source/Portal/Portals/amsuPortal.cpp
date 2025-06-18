@@ -121,24 +121,26 @@ void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
 {
 }
-
+//PRAGMA_DISABLE_OPTIMIZATION
 void AamsuPortal::IgnoreOverlappedActor(AActor* OverlappedActor, bool bIgnore) const
 {
 	if (!IsValid(OverlappedActor))
 	{
 		return;
 	}
-	UPrimitiveComponent* PrimitiveRootComponent = Cast<UPrimitiveComponent>(OverlappedActor->GetRootComponent());
-
-	if (!ensure(IsValid(PrimitiveRootComponent)))
+	for (AActor* PortalIsPlacedOnActor : PortalIsPlacedOn)
 	{
-		UE_LOG(LogTemp, Log, TEXT("The actor's root component should be derived from UPrimitiveComponent"));
-		return;
+		UPrimitiveComponent* OverlappedPrimitiveRoot = Cast<UPrimitiveComponent>(PortalIsPlacedOnActor->GetRootComponent());
+
+		if (!ensure(IsValid(OverlappedPrimitiveRoot)))
+		{
+			UE_LOG(LogTemp, Log, TEXT("The actors portal is placed on should have root component that is derived from UPrimitiveComponent"));
+			return;
+		}
+		OverlappedPrimitiveRoot->IgnoreActorWhenMoving(OverlappedActor, bIgnore);
 	}
-
-	PrimitiveRootComponent->IgnoreActorWhenMoving(OverlappedActor, bIgnore);
 }
-
+//PRAGMA_ENABLE_OPTIMIZATION
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
 {
 	if (bIsVisible == bMakeVisible)
