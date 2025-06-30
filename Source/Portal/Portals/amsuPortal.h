@@ -74,7 +74,7 @@ public:
 	float PortalsHalfHeight = 0.0f;
 
 	UPROPERTY(Transient)
-	TArray<TObjectPtr<AActor>> PortalIsPlacedOn;
+	TArray<TObjectPtr<AActor>> ActorsPortalIsPlacedOn;
 	
 private:
 	UPROPERTY(VisibleAnywhere)

@@ -55,7 +55,7 @@ void AamsuPortal::BeginPlay()
 	PortalsHalfHeight = BoxExtent.Z;
 
 	//** Reserves memory for the array of the actors the portal is placed on*/
-	PortalIsPlacedOn.Reserve(15);
+	ActorsPortalIsPlacedOn.Reserve(15);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -132,7 +132,7 @@ void AamsuPortal::IgnoreOverlappedActor(AActor* OverlappedActor, bool bIgnore) c
 	{
 		return;
 	}
-	for (AActor* PortalIsPlacedOnActor : PortalIsPlacedOn)
+	for (AActor* PortalIsPlacedOnActor : ActorsPortalIsPlacedOn)
 	{
 		UPrimitiveComponent* OverlappedPrimitiveRoot = Cast<UPrimitiveComponent>(PortalIsPlacedOnActor->GetRootComponent());
 
@@ -158,7 +158,7 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 
 		if (!bMakeVisible)
 		{
-			PortalIsPlacedOn.Reset();	
+			ActorsPortalIsPlacedOn.Reset();	
 		}
 	};
 	
@@ -188,7 +188,7 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 
 void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation)
 {
-	PortalIsPlacedOn.Reset();
+	ActorsPortalIsPlacedOn.Reset();
 	
 	/** Check what actors the portal is placed on */
 	TArray<FOverlapResult> Overlaps;
@@ -211,7 +211,7 @@ void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const 
 	
 	for (const FOverlapResult& Overlap : Overlaps)
 	{
-		PortalIsPlacedOn.Add(Overlap.GetActor());
+		ActorsPortalIsPlacedOn.Add(Overlap.GetActor());
 	}
 }
 
