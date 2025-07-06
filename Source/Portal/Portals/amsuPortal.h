@@ -9,6 +9,8 @@
 class UBoxComponent;
 class UStaticMeshComponent;
 
+DECLARE_LOG_CATEGORY_EXTERN(amsuPortal, Log, Warning)
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FPortalStateDelegate, bool /* IsActive */)
 
 UCLASS()
@@ -57,9 +59,7 @@ public:
 	bool IsPortalVisible() const;
 	
 	FPortalStateDelegate OnPortalStateChange;
-
-	void Teleport(AActor* InteractedActor) const;
-
+	
 	void TeleportStart(AActor* InteractedActor) const;
 	void TeleportEnd(AActor* InteractingActor) const;
 
@@ -68,13 +68,13 @@ public:
 	void MakePortalVisible(bool bMakeVisible);
 
 	/** Check what actors the portal is placed on and set it to the array*/
-	void SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation);
+	void AssignPortalAttachedActors(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation);
 	
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
 
 	UPROPERTY(Transient)
-	TArray<TObjectPtr<AActor>> ActorsPortalIsPlacedOn;
+	TArray<TObjectPtr<AActor>> PortalAttachedActors;
 	
 private:
 	UPROPERTY(VisibleAnywhere)

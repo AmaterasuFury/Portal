@@ -9,6 +9,8 @@
 
 
 
+DEFINE_LOG_CATEGORY(amsuPortal)
+
 // Sets default values
 AamsuPortal::AamsuPortal()
 {
@@ -55,7 +57,7 @@ void AamsuPortal::BeginPlay()
 	PortalsHalfHeight = BoxExtent.Z;
 
 	//** Reserves memory for the array of the actors the portal is placed on*/
-	ActorsPortalIsPlacedOn.Reserve(15);
+	PortalAttachedActors.Reserve(15);
 }
 
 void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -78,34 +80,6 @@ bool AamsuPortal::IsPortalVisible() const
 	return bIsVisible;
 }
 
-
-void AamsuPortal::Teleport(AActor* InteractedActor) const
-{
-	if (!ensure(IsValid(AnotherPortal)))
-	{
-		return;
-	}
-
-	const double TeleportDistance = 200.0;
-	
-  	const FVector TeleportLocation = AnotherPortal->GetActorLocation() + AnotherPortal->GetActorForwardVector() * TeleportDistance;
-	InteractedActor->SetActorLocation(TeleportLocation);
-
-	const FVector NewDirection = AnotherPortal->GetActorForwardVector().Rotation().RotateVector(InteractedActor->GetActorForwardVector());
-	
-	const FRotator ResultRotation = NewDirection.Rotation();
-
-	if (const APawn* Pawn = Cast<APawn>(InteractedActor); IsValid(Pawn))
-	{
-		if (const AController* Controller = Pawn->GetController(); IsValid(Controller))
-		{
-			Pawn->GetController()->SetControlRotation(ResultRotation);
-			return;
-		}
-	}
-	InteractedActor->SetActorRotation(ResultRotation);
-}
-
 void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 {
 	if (!ensure(IsValid(AnotherPortal)))
@@ -125,26 +99,36 @@ void AamsuPortal::TeleportEnd(AActor* InteractingActor) const
 	
 	IgnoreOverlappedActor(InteractingActor, false);
 }
-//PRAGMA_DISABLE_OPTIMIZATION
+
 void AamsuPortal::IgnoreOverlappedActor(AActor* OverlappedActor, bool bIgnore) const
 {
 	if (!IsValid(OverlappedActor))
 	{
 		return;
 	}
-	for (AActor* PortalIsPlacedOnActor : ActorsPortalIsPlacedOn)
+	for (AActor* PortalIsPlacedOnActor : PortalAttachedActors)
 	{
 		UPrimitiveComponent* OverlappedPrimitiveRoot = Cast<UPrimitiveComponent>(PortalIsPlacedOnActor->GetRootComponent());
 
 		if (!ensure(IsValid(OverlappedPrimitiveRoot)))
 		{
-			UE_LOG(LogTemp, Log, TEXT("The actors portal is placed on should have root component that is derived from UPrimitiveComponent"));
+			UE_LOG(amsuPortal, Log, TEXT("The actors portal is placed on should have root component that is derived from UPrimitiveComponent"));
 			return;
 		}
-		OverlappedPrimitiveRoot->IgnoreActorWhenMoving(OverlappedActor, bIgnore);
+		//OverlappedPrimitiveRoot->IgnoreActorWhenMoving(OverlappedActor, bIgnore);
+
+		TInlineComponentArray<UPrimitiveComponent*> OverlappedPrimitiveComponents(OverlappedActor);
+		for (UPrimitiveComponent* OverlappedPrimitiveComponent : OverlappedPrimitiveComponents)
+		{
+			if (!ensure(IsValid(OverlappedPrimitiveComponent)))
+			{
+				continue;
+			}
+			OverlappedPrimitiveComponent->IgnoreActorWhenMoving(PortalIsPlacedOnActor, bIgnore);
+		}
 	}
 }
-//PRAGMA_ENABLE_OPTIMIZATION
+
 void AamsuPortal::MakePortalVisible(bool bMakeVisible) 
 {
 	if (bIsVisible == bMakeVisible)
@@ -158,7 +142,7 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 
 		if (!bMakeVisible)
 		{
-			ActorsPortalIsPlacedOn.Reset();	
+			PortalAttachedActors.Reset();	
 		}
 	};
 	
@@ -186,9 +170,9 @@ void AamsuPortal::MakePortalVisible(bool bMakeVisible)
 	AnotherPortal->MeshComponentPortal->SetMaterial(0, AnotherPortal->IsPortalVisible() ? ActivePortalMaterial : InactivePortalMaterial);
 }
 
-void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation)
+void AamsuPortal::AssignPortalAttachedActors(const FVector& PortalSpawnLocation, const FRotator& PortalSpawnRotation)
 {
-	ActorsPortalIsPlacedOn.Reset();
+	PortalAttachedActors.Reset();
 	
 	/** Check what actors the portal is placed on */
 	TArray<FOverlapResult> Overlaps;
@@ -211,7 +195,7 @@ void AamsuPortal::SetPortalIsPlacedOn(const FVector& PortalSpawnLocation, const 
 	
 	for (const FOverlapResult& Overlap : Overlaps)
 	{
-		ActorsPortalIsPlacedOn.Add(Overlap.GetActor());
+		PortalAttachedActors.Add(Overlap.GetActor());
 	}
 }
 
