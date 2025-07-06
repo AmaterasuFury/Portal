@@ -234,7 +234,7 @@ void UamsuPortalGun::ShootPortal(AamsuPortal* Portal) const
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
-	Portal->SetPortalIsPlacedOn(PortalSpawnLocation, PortalSpawnRotation);
+	Portal->AssignPortalAttachedActors(PortalSpawnLocation, PortalSpawnRotation);
 	Portal->SetActorTransform(SpawnTransform);
 	
 	Portal->MakePortalVisible(true);
