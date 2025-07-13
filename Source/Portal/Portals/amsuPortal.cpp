@@ -73,6 +73,7 @@ void AamsuPortal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 void AamsuPortal::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	TeleportEnd(OtherActor);
 }
 
 bool AamsuPortal::IsPortalVisible() const
@@ -83,6 +84,10 @@ bool AamsuPortal::IsPortalVisible() const
 void AamsuPortal::TeleportStart(AActor* InteractedActor) const
 {
 	if (!ensure(IsValid(AnotherPortal)))
+	{
+		return;
+	}
+	if (!AnotherPortal->IsPortalVisible())
 	{
 		return;
 	}
