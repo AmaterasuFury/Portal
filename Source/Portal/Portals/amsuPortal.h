@@ -73,6 +73,7 @@ public:
 	float PortalsHalfWidth = 0.0f;
 	float PortalsHalfHeight = 0.0f;
 
+	/** The actors the portal is placed on/covers */
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<AActor>> PortalAttachedActors;
 	
